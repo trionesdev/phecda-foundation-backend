@@ -1,13 +1,12 @@
 spring:
   application:
-    name: ithere-api
+    name: belt-backend
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     hikari:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      connection-init-sql: SET NAMES utf8mb4
+      driver-class-name: org.postgresql.Driver
   jackson:
     locale: zh_CN
     time-zone: Asia/Shanghai
