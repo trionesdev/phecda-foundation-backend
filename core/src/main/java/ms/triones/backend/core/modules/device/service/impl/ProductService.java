@@ -1,0 +1,94 @@
+package ms.triones.backend.core.modules.device.service.impl;
+
+import cn.hutool.core.util.StrUtil;
+import com.moensun.commons.exception.spring.ex.BusinessException;
+import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.device.dao.entity.ProductThingModel;
+import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelManager;
+import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
+import ms.triones.backend.core.modules.device.thing.model.ThingModel;
+import ms.triones.backend.core.modules.device.thing.model.ThingModelEvent;
+import ms.triones.backend.core.modules.device.thing.model.ThingModelProperty;
+import ms.triones.backend.core.modules.device.thing.model.ThingModelService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@RequiredArgsConstructor
+@Service
+public class ProductService {
+    private final ProductThingModelManager productThingModelManager;
+
+    public void upsertThingModel(String productId, ThingModelUpsertBO thingModelUpsert) {
+        ProductThingModel ptmSnap = productThingModelManager.queryByProductId(productId).orElse(ProductThingModel.builder().productId(productId).thingModel(new ThingModel()).build());
+        if (StrUtil.isBlank(thingModelUpsert.getIdentifier())) {
+            if (Objects.nonNull(thingModelUpsert.getProperty()) && ptmSnap.getThingModel().getProperties().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getProperty().getIdentifier(), t.getIdentifier()))) {
+                throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
+            }
+            if (Objects.nonNull(thingModelUpsert.getService()) && ptmSnap.getThingModel().getServices().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getService().getIdentifier(), t.getIdentifier()))) {
+                throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
+            }
+            if (Objects.nonNull(thingModelUpsert.getEvent()) && ptmSnap.getThingModel().getEvents().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getEvent().getIdentifier(), t.getIdentifier()))) {
+                throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
+            }
+            switch (thingModelUpsert.getAbilityType()) {
+                case PROPERTY:
+                    ptmSnap.getThingModel().getProperties().add(thingModelUpsert.getProperty());
+                    break;
+                case SERVICE:
+                    ptmSnap.getThingModel().getServices().add(thingModelUpsert.getService());
+                    break;
+                case EVENT:
+                    ptmSnap.getThingModel().getEvents().add(thingModelUpsert.getEvent());
+                default:
+                    break;
+            }
+        } else {
+            switch (thingModelUpsert.getAbilityType()) {
+                case PROPERTY:
+                    ThingModelProperty tmp = thingModelUpsert.getProperty();
+                    if (Objects.nonNull(tmp)) {
+                        List<ThingModelProperty> properties = ptmSnap.getThingModel().getProperties().stream().map(t -> {
+                            if (Objects.equals(t.getIdentifier(), thingModelUpsert.getIdentifier())) {
+                                return tmp;
+                            } else {
+                                return t;
+                            }
+                        }).collect(Collectors.toList());
+                        ptmSnap.getThingModel().setProperties(properties);
+                    }
+                    break;
+                case SERVICE:
+                    ThingModelService tms = thingModelUpsert.getService();
+                    if (Objects.nonNull(tms)) {
+                        List<ThingModelService> services = ptmSnap.getThingModel().getServices().stream().map(t -> {
+                            if (Objects.equals(t.getIdentifier(), thingModelUpsert.getIdentifier())) {
+                                return tms;
+                            } else {
+                                return t;
+                            }
+                        }).collect(Collectors.toList());
+                        ptmSnap.getThingModel().setServices(services);
+                    }
+                    break;
+                case EVENT:
+                    ThingModelEvent tme = thingModelUpsert.getEvent();
+                    if (Objects.nonNull(tme)) {
+                        List<ThingModelEvent> events = ptmSnap.getThingModel().getEvents().stream().map(t -> {
+                            if (Objects.equals(t.getIdentifier(), thingModelUpsert.getIdentifier())) {
+                                return tme;
+                            } else {
+                                return t;
+                            }
+                        }).collect(Collectors.toList());
+                        ptmSnap.getThingModel().setEvents(events);
+                    }
+                    break;
+            }
+        }
+        productThingModelManager.upsertByProductId(ptmSnap);
+    }
+
+}
