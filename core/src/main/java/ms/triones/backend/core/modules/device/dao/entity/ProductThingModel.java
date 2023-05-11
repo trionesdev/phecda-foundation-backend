@@ -1,8 +1,10 @@
 package ms.triones.backend.core.modules.device.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,11 +18,11 @@ import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "device_product_thing_model")
+@TableName(value = "device_product_thing_model", autoResultMap = true)
 public class ProductThingModel extends BaseLogicEntity {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     private String productId;
-    private ThingModel thingModel;
-
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ThingModel thingModel = new ThingModel();
 }

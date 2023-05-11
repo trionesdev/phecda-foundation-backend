@@ -1,13 +1,21 @@
 package ms.triones.backend.core.modules.device.thing.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueType;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeEnum;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ThingModelProperty {
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ThingModelProperty extends ThingModelItem{
     private String identifier;
     private String name;
     private ValueTypeEnum valueType;
@@ -15,7 +23,7 @@ public class ThingModelProperty {
     private List<ValueType> valueSpecs;
     private Rw rw;
     private Boolean required;
-    private String description;
+
     private Boolean custom;
 
 
