@@ -3,8 +3,8 @@ package ms.triones.backend.core.modules.device.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.moensun.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
-import ms.triones.backend.core.modules.device.dao.entity.ProductThingModel;
-import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelManager;
+import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelDraft;
+import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelDraftManager;
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelEvent;
@@ -14,15 +14,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ProductService {
-    private final ProductThingModelManager productThingModelManager;
+    private final ProductThingModelDraftManager productThingModelManager;
 
+    public Optional<ProductThingModelDraft> findProductThingModelDraft(String productId){
+        return productThingModelManager.queryByProductId(productId);
+    }
     public void upsertThingModel(String productId, ThingModelUpsertBO thingModelUpsert) {
-        ProductThingModel ptmSnap = productThingModelManager.queryByProductId(productId).orElse(ProductThingModel.builder().productId(productId).thingModel(new ThingModel()).build());
+        ProductThingModelDraft ptmSnap = productThingModelManager.queryByProductId(productId).orElse(ProductThingModelDraft.builder().productId(productId).thingModel(new ThingModel()).build());
         if (StrUtil.isBlank(thingModelUpsert.getIdentifier())) {
             if (Objects.nonNull(thingModelUpsert.getProperty()) && ptmSnap.getThingModel().getProperties().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getProperty().getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");

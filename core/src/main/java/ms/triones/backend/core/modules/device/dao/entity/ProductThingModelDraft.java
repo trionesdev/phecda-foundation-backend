@@ -19,7 +19,7 @@ import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "device_product_thing_model", autoResultMap = true)
-public class ProductThingModel extends BaseLogicEntity {
+public class ProductThingModelDraft extends BaseLogicEntity {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     private String productId;
