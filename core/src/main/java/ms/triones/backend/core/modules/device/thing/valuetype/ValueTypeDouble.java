@@ -5,7 +5,11 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ValueTypeString extends ValueType{
+public class ValueTypeDouble extends ValueType{
     private ValueTypeEnum valueType;
-    private Integer length;
+    private Double max;
+    private Double min;
+    private Double step;
+    private String unit;
+    private String unitName;
 }

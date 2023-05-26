@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ValueTypeString extends ValueType{
+public class ValueTypeArray extends ValueType{
     private ValueTypeEnum valueType;
-    private Integer length;
 }

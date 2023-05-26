@@ -19,4 +19,5 @@ import lombok.experimental.SuperBuilder;
 public class Device extends BaseLogicEntity {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
+
 }
