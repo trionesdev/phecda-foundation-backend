@@ -1,9 +1,13 @@
 package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
+import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelDraft;
+import ms.triones.backend.core.modules.device.manager.impl.ProductManager;
 import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelDraftManager;
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.thing.model.ThingModel;
@@ -20,11 +24,34 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class ProductService {
+    private final ProductManager productManager;
     private final ProductThingModelDraftManager productThingModelManager;
 
-    public Optional<ProductThingModelDraft> findProductThingModelDraft(String productId){
+    public void createProduct(Product product) {
+        productManager.create(product);
+    }
+
+    public void deleteProductById(String id) {
+        productManager.deleteById(Product.builder().id(id).build());
+    }
+
+    public void updateProductById(Product product) {
+        productManager.updateById(product);
+    }
+
+    public Optional<Product> queryProductById(String id) {
+        return productManager.queryById(id);
+    }
+
+    public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
+        return productManager.queryPage(pageNum, pageSize, criteria);
+    }
+
+
+    public Optional<ProductThingModelDraft> findProductThingModelDraft(String productId) {
         return productThingModelManager.queryByProductId(productId);
     }
+
     public void upsertThingModel(String productId, ThingModelUpsertBO thingModelUpsert) {
         ProductThingModelDraft ptmSnap = productThingModelManager.queryByProductId(productId).orElse(ProductThingModelDraft.builder().productId(productId).thingModel(new ThingModel()).build());
         if (StrUtil.isBlank(thingModelUpsert.getIdentifier())) {

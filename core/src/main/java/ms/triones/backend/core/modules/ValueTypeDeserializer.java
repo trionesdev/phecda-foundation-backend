@@ -1,7 +1,6 @@
 package ms.triones.backend.core.modules;
 
 import cn.hutool.core.util.EnumUtil;
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;

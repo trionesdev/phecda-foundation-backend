@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.device.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
@@ -21,7 +22,8 @@ public class Product extends BaseLogicEntity {
     private String id;
     private String name;
     private NodeType nodeType;
-    private String thingModalVersion;
+    @TableField(value = "thing_model_version")
+    private String thingModelVersion;
 
 
     public enum NodeType {
