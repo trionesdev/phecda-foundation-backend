@@ -1,4 +1,4 @@
-package ms.triones.backend.core.modules.device.thing.model;
+package ms.triones.backend.core.modules.device.thing.valuetype;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class ThingModelItem {
-    private String identifier;
-    private String name;
-    private String description;
+public class ValueTypeOption {
+    private String value;
+    private String label;
 }

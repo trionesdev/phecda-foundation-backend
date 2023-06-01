@@ -2,21 +2,15 @@ package ms.triones.backend.core.modules.device.thing.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThingModelEvent extends ThingModelAbility {
-    private Type type;
-
-    public enum Type {
-        INFO,
-        WARN,
-        ERROR,
-    }
+public abstract class ThingModelAbility {
+    private String identifier;
+    private String name;
+    private String description;
 }

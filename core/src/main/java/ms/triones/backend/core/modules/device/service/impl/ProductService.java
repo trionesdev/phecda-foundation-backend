@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,9 @@ import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelEvent;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelProperty;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelService;
+import ms.triones.backend.core.modules.device.thing.valuetype.ValueType;
+import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeEnum;
+import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +30,14 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductManager productManager;
     private final ProductThingModelDraftManager productThingModelManager;
+
+    public List<ValueTypeOption> valueTypeOptions() {
+        List<ValueTypeOption> options = Lists.newArrayList();
+        for (ValueTypeEnum valueType : ValueTypeEnum.values()) {
+            options.add(ValueTypeOption.builder().label(valueType.getLabel()).value(valueType.name()).build());
+        }
+        return options;
+    }
 
     public void createProduct(Product product) {
         productManager.create(product);

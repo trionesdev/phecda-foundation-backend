@@ -5,11 +5,13 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum ValueTypeEnum {
-    BOOL(ValueTypeBool.class, "布尔型"),
-    STRING(ValueTypeString.class, "字符串"),
     INT(ValueTypeInt.class, "整数型"),
     FLOAT(ValueTypeFloat.class, "单精度浮点数"),
     DOUBLE(ValueTypeDouble.class, "双精度浮点数"),
+    BOOL(ValueTypeBool.class, "布尔型"),
+    STRING(ValueTypeString.class, "字符串"),
+
+
     STRUCT(ValueTypeStruct.class, "结构体"),
     ARRAY(ValueTypeArray.class, "数组");
 

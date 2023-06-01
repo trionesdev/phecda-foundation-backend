@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThingModelService extends ThingModelItem {
+public class ThingModelService extends ThingModelAbility {
     private CallType callType;
     private Boolean required;
 

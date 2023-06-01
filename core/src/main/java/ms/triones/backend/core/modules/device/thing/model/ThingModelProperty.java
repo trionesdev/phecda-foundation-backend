@@ -15,7 +15,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThingModelProperty extends ThingModelItem{
+public class ThingModelProperty extends ThingModelAbility {
     private String identifier;
     private String name;
     private ValueTypeEnum valueType;

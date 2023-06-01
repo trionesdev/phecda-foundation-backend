@@ -9,6 +9,7 @@ import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelDraft;
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.service.impl.ProductService;
+import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductCreateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductThingModelUpsertRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductUpdateRO;
@@ -17,6 +18,7 @@ import ms.triones.backend.rest.backend.modules.device.support.DeviceRestConvertM
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "产品")
@@ -26,6 +28,12 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+
+    @Operation(summary = "值类型选项")
+    @GetMapping(value = "value-type/options")
+    public List<ValueTypeOption> valueTypeOptions() {
+        return productService.valueTypeOptions();
+    }
 
     @Operation(summary = "新建产品")
     @PostMapping(value = "products")
@@ -50,6 +58,14 @@ public class ProductController {
     ) {
         Product product = DeviceRestConvertMapper.INSTANT.from(args);
         product.setId(id);
+    }
+
+    @Operation(summary = "根据ID获取产品")
+    @GetMapping(value = "products/{id}")
+    public Product queryProductById(
+            @PathVariable(value = "id") String id
+    ) {
+        return productService.queryProductById(id).orElse(null);
     }
 
     @Operation(summary = "查询产品列表(分页)")
