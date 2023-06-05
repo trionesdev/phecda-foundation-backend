@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ValueTypeFloat extends ValueType{
-    private ValueTypeEnum valueType;
     private Float max;
     private Float min;
     private Float step;

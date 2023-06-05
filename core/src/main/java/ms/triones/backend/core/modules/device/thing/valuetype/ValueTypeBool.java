@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ValueTypeBool extends ValueType{
-    private ValueTypeEnum valueType;
     private Boolean value;
     private String name;
 }

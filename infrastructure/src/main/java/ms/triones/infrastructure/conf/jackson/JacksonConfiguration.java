@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.math.BigInteger;
 import java.time.Instant;
 
-//@Configuration
+@Configuration
 public class JacksonConfiguration {
 
     @Bean
