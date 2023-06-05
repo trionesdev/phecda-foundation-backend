@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import java.math.BigInteger;
 import java.time.Instant;
 
-@RequiredArgsConstructor
-@Configuration
+//@RequiredArgsConstructor
+//@Configuration
 public class JacksonConfiguration {
 
 
@@ -25,7 +25,8 @@ public class JacksonConfiguration {
             builder.serializerByType(Long.TYPE, LongSerializer.instance);
             builder.serializerByType(Instant.class, new InstantSerializer());
             builder.deserializerByType(Instant.class, new InstantDeserializer());
-            builder.deserializerByType(ValueType.class, new ValueTypeDeserializer());
+//            builder.deserializerByType(ValueType.class, new ValueTypeDeserializer());
+//            builder.serializerByType(ValueType.class, new ValueTypeSerializer());
         };
     }
 
