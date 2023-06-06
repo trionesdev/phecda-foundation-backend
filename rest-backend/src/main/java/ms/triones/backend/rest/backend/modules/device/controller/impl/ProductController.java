@@ -79,10 +79,10 @@ public class ProductController {
 
     @Operation(summary = "获取物模型草稿")
     @GetMapping(value = "products/{productId}/thing-model")
-    public Optional<ProductThingModelDraft> findProductThingModelDraft(
+    public ProductThingModelDraft findProductThingModelDraft(
             @PathVariable(value = "productId") String productId
     ) {
-        return productService.findProductThingModelDraft(productId);
+        return productService.findProductThingModelDraft(productId).orElse(null);
     }
 
     @Operation(summary = "新增物模型功能")
