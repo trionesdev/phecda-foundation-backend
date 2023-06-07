@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelDraft;
+import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
 import ms.triones.backend.core.modules.device.manager.impl.ProductManager;
 import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelDraftManager;
+import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelVersionManager;
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelEvent;
@@ -29,7 +31,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     private final ProductManager productManager;
-    private final ProductThingModelDraftManager productThingModelManager;
+    private final ProductThingModelDraftManager productThingModelDraftManager;
+    private final ProductThingModelVersionManager productThingModelVersionManager;
 
     public List<ValueTypeOption> valueTypeOptions() {
         List<ValueTypeOption> options = Lists.newArrayList();
@@ -61,11 +64,11 @@ public class ProductService {
 
 
     public Optional<ProductThingModelDraft> findProductThingModelDraft(String productId) {
-        return productThingModelManager.queryByProductId(productId);
+        return productThingModelDraftManager.queryByProductId(productId);
     }
 
     public void upsertThingModel(String productId, ThingModelUpsertBO thingModelUpsert) {
-        ProductThingModelDraft ptmSnap = productThingModelManager.queryByProductId(productId).orElse(ProductThingModelDraft.builder().productId(productId).thingModel(new ThingModel()).build());
+        ProductThingModelDraft ptmSnap = productThingModelDraftManager.queryByProductId(productId).orElse(ProductThingModelDraft.builder().productId(productId).thingModel(new ThingModel()).build());
         if (StrUtil.isBlank(thingModelUpsert.getIdentifier())) {
             if (Objects.nonNull(thingModelUpsert.getProperty()) && ptmSnap.getThingModel().getProperties().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getProperty().getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
@@ -131,7 +134,33 @@ public class ProductService {
                     break;
             }
         }
-        productThingModelManager.upsertByProductId(ptmSnap);
+        productThingModelDraftManager.upsertByProductId(ptmSnap);
+    }
+
+    public void deleteThingModel(String productId, String identifier) {
+        productThingModelDraftManager.queryByProductId(productId).ifPresent(t -> {
+            t.getThingModel().getProperties().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
+            t.getThingModel().getServices().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
+            t.getThingModel().getEvents().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
+            productThingModelDraftManager.upsertByProductId(t);
+        });
+    }
+
+    /**
+     * 发布物模型
+     *
+     * @param productId
+     */
+    public void publishThingModel(String productId) {
+        productThingModelDraftManager.publish(productId);
+    }
+
+
+    public Optional<ProductThingModelVersion> queryThingModel(String productId, String version) {
+        if (StrUtil.isBlank(version)) {
+            version = productManager.queryById(productId).orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND")).getThingModelVersion();
+        }
+        return productThingModelVersionManager.findByProductVersion(productId, version);
     }
 
 }
