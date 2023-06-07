@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelDraft;
+import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.service.impl.ProductService;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
@@ -77,16 +78,16 @@ public class ProductController {
         return productService.queryPage(pageNum, pageSize, ProductCriteria.builder().build());
     }
 
-    @Operation(summary = "获取物模型草稿")
-    @GetMapping(value = "products/{productId}/thing-model")
+    @Operation(summary = "获取物模型(草稿)")
+    @GetMapping(value = "products/{productId}/thing-model-draft")
     public ProductThingModelDraft findProductThingModelDraft(
             @PathVariable(value = "productId") String productId
     ) {
         return productService.findProductThingModelDraft(productId).orElse(null);
     }
 
-    @Operation(summary = "新增物模型功能")
-    @PutMapping(value = "products/{productId}/thing-model/upsert")
+    @Operation(summary = "新增物模型功能(草稿)")
+    @PutMapping(value = "products/{productId}/thing-model-draft/upsert")
     public void upsertThingModelDraft(
             @PathVariable(value = "productId") String productId,
             @Validated @RequestBody ProductThingModelUpsertRO args
@@ -95,11 +96,29 @@ public class ProductController {
         productService.upsertThingModel(productId, thingModelUpsertBO);
     }
 
-    @Operation(summary = "发布物模型")
-    @PutMapping(value = "products/{productId}/thing-model/publish")
+    @Operation(summary = "新增物模型功能(草稿)")
+    @DeleteMapping(value = "products/{productId}/thing-model-draft/abilities/{identifier}")
+    public void deleteThingModel(
+            @PathVariable(value = "productId") String productId,
+            @PathVariable(value = "identifier") String identifier
+    ) {
+        productService.deleteThingModel(productId, identifier);
+    }
+
+    @Operation(summary = "发布物模型(草稿)")
+    @PutMapping(value = "products/{productId}/thing-model-draft/publish")
     public void publishThingModelDraft(
             @PathVariable(value = "productId") String productId
     ) {
+        productService.publishThingModel(productId);
     }
 
+    @Operation(summary = "获取产品物模型")
+    @GetMapping(value = "products/{productId}/thing-model")
+    public ProductThingModelVersion queryThingModel(
+            @PathVariable(value = "productId") String productId,
+            @RequestParam(value = "version", required = false) String version
+    ) {
+        return productService.queryThingModel(productId, version).orElse(null);
+    }
 }

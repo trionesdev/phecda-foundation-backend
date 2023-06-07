@@ -26,4 +26,8 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
     public PageInfo<Product> selectPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
     }
+
+    public void updateVersion(String productId, String version) {
+        baseMapper.updateById(Product.builder().id(productId).thingModelVersion(version).build());
+    }
 }
