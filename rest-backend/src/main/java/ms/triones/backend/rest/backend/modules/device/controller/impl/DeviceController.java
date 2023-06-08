@@ -2,7 +2,6 @@ package ms.triones.backend.rest.backend.modules.device.controller.impl;
 
 import com.moensun.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
@@ -25,7 +24,7 @@ public class DeviceController {
 
     @Operation(summary = "新建设备")
     @PostMapping(value = "devices")
-    public void createDevice( @RequestBody DeviceCreateRO args) {
+    public void createDevice(@Validated @RequestBody DeviceCreateRO args) {
         Device device = DeviceRestConvertMapper.INSTANT.from(args);
         deviceService.createDevice(device);
     }
