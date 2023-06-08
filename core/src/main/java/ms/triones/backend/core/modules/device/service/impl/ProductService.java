@@ -58,6 +58,10 @@ public class ProductService {
         return productManager.queryById(id);
     }
 
+    public List<Product> queryList(ProductCriteria criteria) {
+        return productManager.queryList(criteria);
+    }
+
     public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return productManager.queryPage(pageNum, pageSize, criteria);
     }

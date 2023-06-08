@@ -11,6 +11,7 @@ import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.mapper.ProductMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -21,6 +22,10 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
             queryWrapper.eq(Objects.nonNull(criteria.getNodeType()), Product::getNodeType, criteria.getNodeType());
         }
         return queryWrapper;
+    }
+
+    public List<Product> selectList(ProductCriteria criteria) {
+        return baseMapper.selectList(buildQueryWrapper(criteria));
     }
 
     public PageInfo<Product> selectPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {

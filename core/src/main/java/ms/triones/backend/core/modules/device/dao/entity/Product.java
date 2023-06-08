@@ -24,6 +24,8 @@ public class Product extends BaseLogicEntity {
     private NodeType nodeType;
     @TableField(value = "thing_model_version")
     private String thingModelVersion;
+    @TableField(value = "is_enabled")
+    private Boolean enabled;
 
 
     public enum NodeType {
