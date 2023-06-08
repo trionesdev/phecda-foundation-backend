@@ -7,6 +7,8 @@ import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.impl.ProductDAO;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -14,23 +16,31 @@ import java.util.Optional;
 public class ProductManager {
     private final ProductDAO productDAO;
 
-    public void create(Product product){
+    public void create(Product product) {
         productDAO.save(product);
     }
 
-    public void deleteById(Product product){
+    public void deleteById(Product product) {
         productDAO.removeById(product);
     }
 
-    public void updateById(Product product){
+    public void updateById(Product product) {
         productDAO.updateById(product);
     }
 
-    public Optional<Product> queryById(String id){
+    public Optional<Product> queryById(String id) {
         return Optional.ofNullable(productDAO.getById(id));
     }
 
-    public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria){
+    public List<Product> queryAllByIds(Collection<String> ids) {
+        return productDAO.listByIds(ids);
+    }
+
+    public List<Product> queryList(ProductCriteria criteria){
+        return productDAO.selectList(criteria);
+    }
+
+    public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return productDAO.selectPage(pageNum, pageSize, criteria);
     }
 

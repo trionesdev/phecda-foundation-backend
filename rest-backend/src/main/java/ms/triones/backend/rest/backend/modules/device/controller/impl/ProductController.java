@@ -11,6 +11,7 @@ import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersio
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.service.impl.ProductService;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
+import ms.triones.backend.rest.backend.modules.device.controller.query.ProductQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductCreateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductThingModelUpsertRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductUpdateRO;
@@ -20,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "产品")
 @RequiredArgsConstructor
@@ -67,6 +67,15 @@ public class ProductController {
             @PathVariable(value = "id") String id
     ) {
         return productService.queryProductById(id).orElse(null);
+    }
+
+    @Operation(summary = "获取产品列表")
+    @GetMapping(value = "products")
+    public List<Product> queryProductList(
+            ProductQuery query
+    ) {
+        ProductCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        return productService.queryList(criteria);
     }
 
     @Operation(summary = "查询产品列表(分页)")
