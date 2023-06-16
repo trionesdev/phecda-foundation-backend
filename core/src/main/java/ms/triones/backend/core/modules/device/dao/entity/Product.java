@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
@@ -28,9 +25,13 @@ public class Product extends BaseLogicEntity {
     private Boolean enabled;
 
 
+    @AllArgsConstructor
     public enum NodeType {
-        DIRECT,
-        GATEWAY,
-        GATEWAY_SUB
+        DIRECT("直连设备"),
+        GATEWAY("网关设备"),
+        GATEWAY_SUB("网关子设备");
+
+        @Getter
+        private final String label;
     }
 }

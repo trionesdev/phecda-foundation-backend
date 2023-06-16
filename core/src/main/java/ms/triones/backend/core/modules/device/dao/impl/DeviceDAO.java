@@ -21,7 +21,7 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(StrUtil.isNotBlank(criteria.getProductId()), Device::getProductId, criteria.getProductId());
         }
-        return queryWrapper;
+        return queryWrapper.orderByDesc(Device::getCreatedAt);
     }
 
     public PageInfo<Device> selectPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {

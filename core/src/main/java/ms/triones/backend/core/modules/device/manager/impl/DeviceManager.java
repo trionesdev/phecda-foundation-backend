@@ -16,6 +16,14 @@ public class DeviceManager {
         deviceDAO.save(device);
     }
 
+    public void deleteById(String id) {
+        deviceDAO.removeById(id);
+    }
+
+    public void updateById(Device device) {
+        deviceDAO.updateById(device);
+    }
+
     public PageInfo<Device> queryPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
         return deviceDAO.selectPage(pageNum, pageSize, criteria);
     }
