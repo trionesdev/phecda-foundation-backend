@@ -1,15 +1,20 @@
 package ms.triones.backend.core.modules.device.manager.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.impl.ProductDAO;
+import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
+import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,11 +37,11 @@ public class ProductManager {
         return Optional.ofNullable(productDAO.getById(id));
     }
 
-    public List<Product> queryAllByIds(Collection<String> ids) {
-        return productDAO.listByIds(ids);
+    public List<ProductDTO> queryAllByIds(Collection<String> ids) {
+        return assembleCollection(productDAO.listByIds(ids));
     }
 
-    public List<Product> queryList(ProductCriteria criteria){
+    public List<Product> queryList(ProductCriteria criteria) {
         return productDAO.selectList(criteria);
     }
 
@@ -44,4 +49,10 @@ public class ProductManager {
         return productDAO.selectPage(pageNum, pageSize, criteria);
     }
 
+    private List<ProductDTO> assembleCollection(List<Product> records) {
+        if (CollectionUtil.isEmpty(records)) {
+            return Collections.emptyList();
+        }
+        return DeviceConvertMapper.INSTANCE.productDtoFromRecord(records);
+    }
 }

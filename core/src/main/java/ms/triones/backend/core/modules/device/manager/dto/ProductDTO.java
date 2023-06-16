@@ -1,19 +1,17 @@
-package ms.triones.backend.core.modules.device.service.bo;
+package ms.triones.backend.core.modules.device.manager.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
-import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceExtBO extends Device {
-    private ProductDTO product;
+public class ProductDTO extends Product {
+    private String nodeTypeLabel;
 }

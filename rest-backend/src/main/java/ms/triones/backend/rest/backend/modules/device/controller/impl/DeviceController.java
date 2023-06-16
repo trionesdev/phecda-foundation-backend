@@ -1,5 +1,6 @@
 package ms.triones.backend.rest.backend.modules.device.controller.impl;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.moensun.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +11,7 @@ import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
 import ms.triones.backend.core.modules.device.service.impl.DeviceService;
 import ms.triones.backend.rest.backend.modules.device.controller.query.DeviceQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceCreateRO;
+import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceEnabledRO;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceConstants;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +31,14 @@ public class DeviceController {
         deviceService.createDevice(device);
     }
 
+    @Operation(summary = "根据ID删除设备")
+    @DeleteMapping(value = "devices/{id}")
+    public void deleteDeviceById(
+            @PathVariable(value = "id") String id
+    ) {
+        deviceService.deleteDeviceById(id);
+    }
+
     @Operation(summary = "查询设备列表(扩展分页)")
     @GetMapping(value = "devices/ext/page")
     public PageInfo<DeviceExtBO> queryExtPage(
@@ -38,6 +48,16 @@ public class DeviceController {
     ) {
         DeviceCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
         return deviceService.queryExtPage(pageNum, pageSize, criteria);
+    }
+
+    @Operation(summary = "修改禁用/启用状态")
+    @PutMapping(value = "devices/{id}/enabled")
+    public void deviceEnable(
+            @PathVariable(value = "id") String id,
+            @RequestBody DeviceEnabledRO args
+    ) {
+        Device device = Device.builder().id(id).enabled(BooleanUtil.isTrue(args.getEnabled())).build();
+        deviceService.updateById(device);
     }
 
 }
