@@ -15,11 +15,28 @@
         <module>rest-backend</module>
         <module>serve</module>
         <module>infrastructure</module>
+        <module>edgex</module>
+        <module>edge-api</module>
     </modules>
 
     <artifactId>triones-backend</artifactId>
     <groupId>ms.triones.backend</groupId>
     <version>1.0-SNAPSHOT</version>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>edge-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>edgex</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
