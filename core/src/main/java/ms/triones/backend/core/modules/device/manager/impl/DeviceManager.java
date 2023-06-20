@@ -7,6 +7,8 @@ import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.impl.DeviceDAO;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class DeviceManager {
@@ -22,6 +24,10 @@ public class DeviceManager {
 
     public void updateById(Device device) {
         deviceDAO.updateById(device);
+    }
+
+    public Optional<Device> queryById(String id) {
+        return Optional.ofNullable(deviceDAO.getById(id));
     }
 
     public PageInfo<Device> queryPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {

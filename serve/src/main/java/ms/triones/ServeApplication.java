@@ -6,11 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"ms.triones", "ms.phecda"})
 @MapperScan(value = {"ms.triones.backend.core.modules.*.dao.mapper"})
 //@EnableFeignClients
 public class ServeApplication {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         log.info("--app start--");
         SpringApplication.run(ServeApplication.class, args);
         log.info("--app end--");

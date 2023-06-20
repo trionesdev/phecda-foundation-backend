@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import ms.triones.backend.core.modules.device.thing.valuetype.ValueType;
-import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeEnum;
+import ms.phecda.edge.commons.valuetype.ValueType;
+import ms.phecda.edge.commons.valuetype.ValueTypeEnum;
 
 import java.io.IOException;
 

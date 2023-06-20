@@ -1,4 +1,4 @@
-package ms.phecda.edgex.device;
+package ms.phecda.edgex.device.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
