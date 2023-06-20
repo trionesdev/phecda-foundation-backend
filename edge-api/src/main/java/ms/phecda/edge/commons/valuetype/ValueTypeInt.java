@@ -1,4 +1,4 @@
-package ms.triones.backend.core.modules.device.thing.valuetype;
+package ms.phecda.edge.commons.valuetype;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;

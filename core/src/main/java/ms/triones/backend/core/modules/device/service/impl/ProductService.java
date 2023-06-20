@@ -17,8 +17,7 @@ import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelEvent;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelProperty;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelService;
-import ms.triones.backend.core.modules.device.thing.valuetype.ValueType;
-import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeEnum;
+import ms.phecda.edge.commons.valuetype.ValueTypeEnum;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
 import org.springframework.stereotype.Service;
 
@@ -167,4 +166,7 @@ public class ProductService {
         return productThingModelVersionManager.findByProductVersion(productId, version);
     }
 
+    public void updateProductProtocolProperties(Product product) {
+        productManager.updateById(product);
+    }
 }

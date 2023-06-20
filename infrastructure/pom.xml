@@ -83,5 +83,10 @@
             <groupId>com.moensun.spring.boot</groupId>
             <artifactId>moensun-security-spring-boot-starter</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>ms.phecda</groupId>
+            <artifactId>edgex</artifactId>
+        </dependency>
     </dependencies>
 </project>

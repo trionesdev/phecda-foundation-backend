@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.triones.backend.core.modules.device.thing.valuetype.ValueType;
-import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeEnum;
+import ms.phecda.edge.commons.valuetype.ValueType;
+import ms.phecda.edge.commons.valuetype.ValueTypeEnum;
 
 import java.util.List;
 

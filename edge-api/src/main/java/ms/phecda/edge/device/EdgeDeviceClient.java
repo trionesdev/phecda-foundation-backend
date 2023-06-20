@@ -2,7 +2,7 @@ package ms.phecda.edge.device;
 
 import ms.phecda.edge.device.req.*;
 
-public interface DeviceClient {
+public interface EdgeDeviceClient {
     void execSetCmd(DeviceCmdRequest request);
 
     void addDevice(AddDeviceRequest request);

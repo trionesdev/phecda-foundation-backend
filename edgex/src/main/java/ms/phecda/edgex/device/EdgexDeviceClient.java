@@ -2,16 +2,25 @@ package ms.phecda.edgex.device;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.edge.device.DeviceClient;
-import ms.phecda.edge.device.req.*;
+import ms.phecda.edge.device.EdgeDeviceClient;
+import ms.phecda.edge.device.req.AddDeviceRequest;
+import ms.phecda.edge.device.req.DeviceCmdRequest;
+import ms.phecda.edge.device.req.RemoveDeviceRequest;
+import ms.phecda.edge.device.req.UpdateDeviceRequest;
 import ms.phecda.edge.ex.EdgeException;
-import org.eclipse.paho.client.mqttv3.IMqttClient;
+import ms.phecda.edgex.device.req.ManageDeviceRequest;
+import ms.phecda.edgex.device.req.SendDeviceCmdRequest;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-public class EdgexDeviceClient implements DeviceClient {
-    private final IMqttClient mqttClient;
+@Component
+public class EdgexDeviceClient implements EdgeDeviceClient {
+    private final IMqttAsyncClient mqttClient;
+    private final String DEVICE_CMD_TOPIC = "device/cmd/exec";
+    private final String DEVICE_MANAGEMENT_TOPIC = "device/management";
 
     @Override
     public void execSetCmd(DeviceCmdRequest request) {
@@ -53,7 +62,7 @@ public class EdgexDeviceClient implements DeviceClient {
     public void sendCmd(SendDeviceCmdRequest request) {
         MqttMessage mqttMessage = new MqttMessage();
         try {
-            mqttClient.publish(StrUtil.join("/", request.getNodeId(), "device/cmd/exec"), mqttMessage);
+            mqttClient.publish(StrUtil.join("/", request.getNodeId(), DEVICE_CMD_TOPIC), mqttMessage);
         } catch (MqttException ex) {
             throw new EdgeException(ex);
         }
@@ -62,7 +71,7 @@ public class EdgexDeviceClient implements DeviceClient {
     public void manageDevice(ManageDeviceRequest request) {
         MqttMessage mqttMessage = new MqttMessage();
         try {
-            mqttClient.publish(StrUtil.join("/", request.getNodeId(), "device/management"), mqttMessage);
+            mqttClient.publish(StrUtil.join("/", request.getNodeId(), DEVICE_MANAGEMENT_TOPIC), mqttMessage);
         } catch (MqttException ex) {
             throw new EdgeException(ex);
         }
