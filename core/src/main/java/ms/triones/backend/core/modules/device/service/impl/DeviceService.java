@@ -42,6 +42,14 @@ public class DeviceService {
         deviceManager.updateById(device);
     }
 
+    public Optional<DeviceExtBO> queryExtById(String id) {
+        return deviceManager.queryById(id).map(t -> {
+            DeviceExtBO deviceExt = DeviceConvertMapper.INSTANCE.from(t);
+            productManager.queryExtById(t.getProductId()).ifPresent(deviceExt::setProduct);
+            return deviceExt;
+        });
+    }
+
     public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
         PageInfo<Device> pageInfo = deviceManager.queryPage(pageNum, pageSize, criteria);
         if (CollectionUtil.isEmpty(pageInfo.getRows())) {
@@ -75,24 +83,23 @@ public class DeviceService {
         addDeviceRequest.setProtocols(protocols);
         if (StrUtil.isNotBlank(device.getGatewayDeviceId())) {
             Device gatewayDevice = deviceManager.queryById(device.getGatewayDeviceId()).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-            addDeviceRequest.setNodeId(gatewayDevice.getGatewayKey());
+            addDeviceRequest.setNodeId(gatewayDevice.getGatewayIdentifier());
         }
         edgeDeviceClient.addDevice(addDeviceRequest);
         //endregion
-        device.setEnabled(true);
-        deviceManager.updateById(device);
+        deviceManager.updateById(Device.builder().id(deviceId).enabled(true).build());
     }
 
     /**
      * 设备下线
+     *
      * @param deviceId
      */
     public void deviceOffline(String deviceId) {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         RemoveDeviceRequest removeDeviceRequest = RemoveDeviceRequest.builder().deviceName(device.getName()).build();
         edgeDeviceClient.removeDevice(removeDeviceRequest);
-        device.setEnabled(false);
-        deviceManager.updateById(device);
+        deviceManager.updateById(Device.builder().id(deviceId).enabled(false).build());
     }
 
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -26,7 +28,9 @@ public class ManageDeviceRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Add {
+        private String driver;
         private String deviceName;
+        private Map<String,Object> protocols;
     }
 
     @Data

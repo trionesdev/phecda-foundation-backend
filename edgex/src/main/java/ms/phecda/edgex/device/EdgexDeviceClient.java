@@ -1,7 +1,10 @@
 package ms.phecda.edgex.device;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ms.phecda.edge.device.EdgeDeviceClient;
 import ms.phecda.edge.device.req.AddDeviceRequest;
 import ms.phecda.edge.device.req.DeviceCmdRequest;
@@ -15,10 +18,13 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class EdgexDeviceClient implements EdgeDeviceClient {
     private final IMqttAsyncClient mqttClient;
+    private final ObjectMapper objectMapper;
+    private final String TOPIC_PREFIX = "/phecda";
     private final String DEVICE_CMD_TOPIC = "device/cmd/exec";
     private final String DEVICE_MANAGEMENT_TOPIC = "device/management";
 
@@ -36,10 +42,15 @@ public class EdgexDeviceClient implements EdgeDeviceClient {
 
     @Override
     public void addDevice(AddDeviceRequest request) {
+        ManageDeviceRequest.Add add = ManageDeviceRequest.Add.builder()
+                .driver(request.getDriver())
+                .deviceName(request.getDeviceName())
+                .protocols(request.getProtocols())
+                .build();
         ManageDeviceRequest mdReq = ManageDeviceRequest.builder()
                 .nodeId(request.getNodeId())
                 .action(ManageDeviceRequest.Action.ADD)
-                .add(ManageDeviceRequest.Add.builder().deviceName(request.getDeviceName()).build())
+                .add(add)
                 .build();
         manageDevice(mdReq);
     }
@@ -62,8 +73,12 @@ public class EdgexDeviceClient implements EdgeDeviceClient {
     public void sendCmd(SendDeviceCmdRequest request) {
         MqttMessage mqttMessage = new MqttMessage();
         try {
-            mqttClient.publish(StrUtil.join("/", request.getNodeId(), DEVICE_CMD_TOPIC), mqttMessage);
-        } catch (MqttException ex) {
+            mqttMessage.setPayload(objectMapper.writeValueAsBytes(request));
+            String topic = "/" + StrUtil.join("/", TOPIC_PREFIX, request.getNodeId(), DEVICE_CMD_TOPIC);
+            log.info("send device cmd,topic: {}", topic);
+            mqttClient.publish(topic, mqttMessage);
+        } catch (MqttException | JsonProcessingException ex) {
+            log.error(ex.getMessage(), ex);
             throw new EdgeException(ex);
         }
     }
@@ -71,8 +86,12 @@ public class EdgexDeviceClient implements EdgeDeviceClient {
     public void manageDevice(ManageDeviceRequest request) {
         MqttMessage mqttMessage = new MqttMessage();
         try {
-            mqttClient.publish(StrUtil.join("/", request.getNodeId(), DEVICE_MANAGEMENT_TOPIC), mqttMessage);
-        } catch (MqttException ex) {
+            mqttMessage.setPayload(objectMapper.writeValueAsBytes(request));
+            String topic = StrUtil.join("/", TOPIC_PREFIX, request.getNodeId(), DEVICE_MANAGEMENT_TOPIC);
+            log.info("send device management,topic: {}", topic);
+            mqttClient.publish(topic, mqttMessage);
+        } catch (MqttException | JsonProcessingException ex) {
+            log.error(ex.getMessage(), ex);
             throw new EdgeException(ex);
         }
     }

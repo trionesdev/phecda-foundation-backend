@@ -10,6 +10,5 @@ public class DeviceCreateRO {
     private String productId;
     @NotBlank
     private String name;
-    @NotBlank
     private String remarkName;
 }
