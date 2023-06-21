@@ -37,6 +37,10 @@ public class ProductManager {
         return Optional.ofNullable(productDAO.getById(id));
     }
 
+    public Optional<ProductDTO> queryExtById(String id) {
+        return Optional.ofNullable(productDAO.getById(id)).map(DeviceConvertMapper.INSTANCE::fromRecord);
+    }
+    
     public List<ProductDTO> queryAllByIds(Collection<String> ids) {
         return assembleCollection(productDAO.listByIds(ids));
     }

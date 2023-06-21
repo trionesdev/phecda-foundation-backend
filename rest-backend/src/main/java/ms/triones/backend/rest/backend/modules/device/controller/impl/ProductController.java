@@ -13,6 +13,7 @@ import ms.triones.backend.core.modules.device.service.impl.ProductService;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
 import ms.triones.backend.rest.backend.modules.device.controller.query.ProductQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductCreateRO;
+import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductProtocolPropertiesUpdateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductThingModelUpsertRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductUpdateRO;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceConstants;
@@ -129,5 +130,14 @@ public class ProductController {
             @RequestParam(value = "version", required = false) String version
     ) {
         return productService.queryThingModel(productId, version).orElse(null);
+    }
+
+    @Operation(summary = "根据ID修改协议属性")
+    @PutMapping(value = "products/{productId}/protocol-properties")
+    public void updateProductProtocolProperties(
+            @PathVariable(value = "productId") String productId,
+            @RequestBody ProductProtocolPropertiesUpdateRO args
+    ) {
+        productService.updateProductById(Product.builder().id(productId).protocolProperties(args.getProtocolProperties()).build());
     }
 }

@@ -39,6 +39,14 @@ public class DeviceController {
         deviceService.deleteDeviceById(id);
     }
 
+    @Operation(summary = "根据ID获取设备信息(扩展)")
+    @GetMapping(value = "devices/ext/{id}")
+    public DeviceExtBO queryExtById(
+            @PathVariable(value = "id") String id
+    ) {
+        return deviceService.queryExtById(id).orElse(null);
+    }
+
     @Operation(summary = "查询设备列表(扩展分页)")
     @GetMapping(value = "devices/ext/page")
     public PageInfo<DeviceExtBO> queryExtPage(
@@ -56,8 +64,11 @@ public class DeviceController {
             @PathVariable(value = "id") String id,
             @RequestBody DeviceEnabledRO args
     ) {
-        Device device = Device.builder().id(id).enabled(BooleanUtil.isTrue(args.getEnabled())).build();
-        deviceService.updateById(device);
+        if (BooleanUtil.isTrue(args.getEnabled())) {
+            deviceService.deviceOnline(id);
+        } else {
+            deviceService.deviceOffline(id);
+        }
     }
 
 }
