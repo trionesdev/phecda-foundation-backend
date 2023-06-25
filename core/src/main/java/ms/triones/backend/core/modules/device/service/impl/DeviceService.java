@@ -13,10 +13,15 @@ import ms.phecda.edge.device.req.RemoveDeviceRequest;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
+import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
 import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
 import ms.triones.backend.core.modules.device.manager.impl.DeviceManager;
 import ms.triones.backend.core.modules.device.manager.impl.ProductManager;
+import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelVersionManager;
+import ms.triones.backend.core.modules.device.service.bo.DeviceEventDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
+import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
+import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +33,7 @@ import java.util.stream.Collectors;
 public class DeviceService {
     private final DeviceManager deviceManager;
     private final ProductManager productManager;
+    private final ProductThingModelVersionManager productThingModelVersionManager;
     private final EdgeDeviceClient edgeDeviceClient;
 
     public void createDevice(Device device) {
@@ -100,6 +106,36 @@ public class DeviceService {
         RemoveDeviceRequest removeDeviceRequest = RemoveDeviceRequest.builder().deviceName(device.getName()).build();
         edgeDeviceClient.removeDevice(removeDeviceRequest);
         deviceManager.updateById(Device.builder().id(deviceId).enabled(false).build());
+    }
+
+    public List<DevicePropertyDataBO> queryDeviceThingModelPropertiesData(String deviceId) {
+        Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        return productManager.findThingModel(device.getProductId()).map(thingModel -> {
+            return thingModel.getProperties().stream().map(property -> {
+                DevicePropertyDataBO devicePropertyData = DeviceConvertMapper.INSTANCE.from(property);
+                return devicePropertyData;
+            }).collect(Collectors.toList());
+        }).orElse(Collections.emptyList());
+    }
+
+    public List<DeviceEventDataBO> queryDeviceThingModelEventsData(String deviceId) {
+        Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        return productManager.findThingModel(device.getProductId()).map(thingModel -> {
+            return thingModel.getEvents().stream().map(property -> {
+                DeviceEventDataBO deviceEventData = DeviceConvertMapper.INSTANCE.from(property);
+                return deviceEventData;
+            }).collect(Collectors.toList());
+        }).orElse(Collections.emptyList());
+    }
+
+    public List<DeviceServiceDataBO> queryDeviceThingModelServicesData(String deviceId) {
+        Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        return productManager.findThingModel(device.getProductId()).map(thingModel -> {
+            return thingModel.getServices().stream().map(property -> {
+                DeviceServiceDataBO deviceServiceData = DeviceConvertMapper.INSTANCE.from(property);
+                return deviceServiceData;
+            }).collect(Collectors.toList());
+        }).orElse(Collections.emptyList());
     }
 
 }
