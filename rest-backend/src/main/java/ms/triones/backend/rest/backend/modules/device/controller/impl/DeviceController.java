@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
+import ms.triones.backend.core.modules.device.service.bo.DeviceEventDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
+import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
+import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.service.impl.DeviceService;
 import ms.triones.backend.rest.backend.modules.device.controller.query.DeviceQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceCreateRO;
@@ -16,6 +19,8 @@ import ms.triones.backend.rest.backend.modules.device.support.DeviceConstants;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "设备")
 @RequiredArgsConstructor
@@ -69,6 +74,30 @@ public class DeviceController {
         } else {
             deviceService.deviceOffline(id);
         }
+    }
+
+    @Operation(summary = "获取设备属性数据")
+    @GetMapping(value = "devices/{id}/properties-data")
+    public List<DevicePropertyDataBO> queryDevicePropertiesData(
+            @PathVariable(value = "id") String id
+    ) {
+        return deviceService.queryDeviceThingModelPropertiesData(id);
+    }
+
+    @Operation(summary = "获取设备事件数据")
+    @GetMapping(value = "devices/{id}/events-data")
+    public List<DeviceEventDataBO> queryDeviceEventsData(
+            @PathVariable(value = "id") String id
+    ) {
+        return deviceService.queryDeviceThingModelEventsData(id);
+    }
+
+    @Operation(summary = "获取设备服务数据")
+    @GetMapping(value = "devices/{id}/services-data")
+    public List<DeviceServiceDataBO> queryDeviceServicesData(
+            @PathVariable(value = "id") String id
+    ) {
+        return deviceService.queryDeviceThingModelServicesData(id);
     }
 
 }

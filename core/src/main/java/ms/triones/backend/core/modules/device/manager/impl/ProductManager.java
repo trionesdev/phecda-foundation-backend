@@ -1,13 +1,17 @@
 package ms.triones.backend.core.modules.device.manager.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
+import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
 import ms.triones.backend.core.modules.device.dao.impl.ProductDAO;
+import ms.triones.backend.core.modules.device.dao.impl.ProductThingModelVersionDAO;
 import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
+import ms.triones.backend.core.modules.device.thing.model.ThingModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductManager {
     private final ProductDAO productDAO;
+    private final ProductThingModelVersionDAO productThingModelVersionDAO;
 
     public void create(Product product) {
         productDAO.save(product);
@@ -40,7 +45,7 @@ public class ProductManager {
     public Optional<ProductDTO> queryExtById(String id) {
         return Optional.ofNullable(productDAO.getById(id)).map(DeviceConvertMapper.INSTANCE::fromRecord);
     }
-    
+
     public List<ProductDTO> queryAllByIds(Collection<String> ids) {
         return assembleCollection(productDAO.listByIds(ids));
     }
@@ -51,6 +56,16 @@ public class ProductManager {
 
     public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return productDAO.selectPage(pageNum, pageSize, criteria);
+    }
+
+    public Optional<ThingModel> findThingModel(String productId) {
+        return Optional.ofNullable(productDAO.getById(productId)).map(product -> {
+            if (StrUtil.isNotBlank(product.getThingModelVersion())) {
+                return productThingModelVersionDAO.selectByProductVersion(productId, product.getThingModelVersion());
+            } else {
+                return null;
+            }
+        }).map(ProductThingModelVersion::getThingModel);
     }
 
     private List<ProductDTO> assembleCollection(List<Product> records) {
