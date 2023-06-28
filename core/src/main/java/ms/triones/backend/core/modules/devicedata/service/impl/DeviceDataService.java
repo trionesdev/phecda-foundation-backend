@@ -9,6 +9,8 @@ import org.apache.iotdb.session.SessionDataSet;
 import org.apache.iotdb.session.pool.SessionDataSetWrapper;
 import org.apache.iotdb.session.pool.SessionPool;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
+import org.apache.iotdb.tsfile.read.common.Field;
+import org.apache.iotdb.tsfile.read.common.RowRecord;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,10 +41,17 @@ public class DeviceDataService {
     public List<Map<String, String>> executeLastDataQuery(String nodeId, String deviceName) {
         try (SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last * from root.phecda.default.deveice1")) {
             List<Map<String, String>> results = Lists.newArrayList();
+            List<String> columnNames = sessionDataSet.getColumnNames();
             while (sessionDataSet.hasNext()) {
+                RowRecord rowRecord = sessionDataSet.next();
                 Map<String, String> row = Maps.newHashMap();
+                row.put(columnNames.get(0), String.valueOf(rowRecord.getTimestamp()));
+                if (!rowRecord.getFields().isEmpty()) {
+                    for (int i = 0; i < rowRecord.getFields().size(); i++) {
+                        row.put(columnNames.get(i + 1), rowRecord.getFields().get(i).getStringValue());
+                    }
+                }
                 results.add(row);
-                System.out.println(sessionDataSet.next());
             }
             return results;
         } catch (IoTDBConnectionException | StatementExecutionException e) {

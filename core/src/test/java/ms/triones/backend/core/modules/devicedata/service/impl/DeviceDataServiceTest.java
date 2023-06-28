@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 public class DeviceDataServiceTest extends BaseTest {
 
@@ -21,8 +23,9 @@ public class DeviceDataServiceTest extends BaseTest {
     }
 
     @Test
-    public void queryLastRow_test(){
-        deviceDataService.executeLastDataQuery("default", "deveice1");
+    public void queryLastRow_test() {
+        List<Map<String, String>> res = deviceDataService.executeLastDataQuery("default", "deveice1");
+        System.out.println(res);
     }
 
 }
