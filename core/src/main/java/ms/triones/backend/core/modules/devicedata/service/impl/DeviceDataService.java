@@ -37,8 +37,7 @@ public class DeviceDataService {
     }
 
     public List<Map<String, String>> executeLastDataQuery(String nodeId, String deviceName) {
-        try {
-            SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last * from root.phecda.default.deveice1");
+        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last * from root.phecda.default.deveice1")) {
             List<Map<String, String>> results = Lists.newArrayList();
             while (sessionDataSet.hasNext()) {
                 Map<String, String> row = Maps.newHashMap();
