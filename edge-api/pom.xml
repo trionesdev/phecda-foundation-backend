@@ -8,7 +8,7 @@
         <artifactId>triones-backend</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
+    <name>EdgeApi</name>
     <groupId>ms.phecda</groupId>
     <artifactId>edge-api</artifactId>
 
