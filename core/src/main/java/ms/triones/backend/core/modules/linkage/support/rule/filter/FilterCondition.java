@@ -10,8 +10,6 @@ import lombok.experimental.SuperBuilder;
 import ms.triones.backend.core.modules.linkage.support.rule.RuleCondition;
 import ms.triones.backend.core.modules.linkage.support.rule.othercondition.ThingModelPropertyCondition;
 
-import java.util.List;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
@@ -25,7 +23,7 @@ import java.util.List;
 )
 @JsonSubTypes(
         {
-                @JsonSubTypes.Type(value = ThingModelPropertyCondition.class, name = "THING_MODEL_PROPERTY_EXPORT"),
+                @JsonSubTypes.Type(value = ThingModelExportCondition.class, name = "THING_MODEL_PROPERTY_EXPORT"),
         }
 )
 public abstract class FilterCondition extends RuleCondition {

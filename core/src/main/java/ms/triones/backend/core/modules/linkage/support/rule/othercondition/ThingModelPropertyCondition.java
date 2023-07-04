@@ -1,5 +1,6 @@
 package ms.triones.backend.core.modules.linkage.support.rule.othercondition;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonTypeName("THING_MODEL_PROPERTY")
 public class ThingModelPropertyCondition extends OtherCondition {
     private String product;
     private String deviceName;
