@@ -79,7 +79,9 @@ public class LinkageSceneService {
         rulesEngine.fire(linkageRules, facts);
     }
 
-
+    /**
+     * 注册所有规则
+     */
     public void registerAllRules() {
         List<LinkageScene> scenes = linkageSceneManager.queryList(LinkageSceneCriteria.builder().enabled(true).build());
         if (CollectionUtil.isNotEmpty(scenes)) {
