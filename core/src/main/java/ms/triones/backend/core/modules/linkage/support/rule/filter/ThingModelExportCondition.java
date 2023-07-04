@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.linkage.support.rule.filter;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.collect.Lists;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,6 +13,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonTypeName("THING_MODEL_PROPERTY_EXPORT")
 public class ThingModelExportCondition extends FilterCondition {
     private String product;
     private String deviceName;
