@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.linkage.dao.entity.LinkageScene;
 import ms.triones.backend.core.modules.linkage.service.impl.LinkageSceneService;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneCreateRO;
+import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneEnabledRO;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneRuleRO;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneUpdateRO;
 import ms.triones.backend.rest.backend.modules.linkage.support.LinkageRestConvertMapper;
@@ -55,6 +56,15 @@ public class LinkageSceneController {
             @PathVariable(value = "id") String id
     ) {
         return linkageSceneService.querySceneById(id).orElse(null);
+    }
+
+    @Operation(summary = "联动场景启用/禁用")
+    @PutMapping(value = "scenes/{id}/enabled")
+    public void sceneEnabledChange(
+            @PathVariable(value = "id") String id,
+            @Validated @RequestBody LinkageSceneEnabledRO args
+    ) {
+        linkageSceneService.sceneEnabledChange(id, args.getEnabled());
     }
 
 }
