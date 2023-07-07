@@ -1,0 +1,20 @@
+package ms.triones.backend.rest.backend.modules.linkage.support;
+
+import ms.triones.backend.core.modules.linkage.dao.entity.LinkageScene;
+import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneCreateRO;
+import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneRuleRO;
+import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneUpdateRO;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper(builder = @Builder(disableBuilder = true))
+public interface LinkageRestConvertMapper {
+    LinkageRestConvertMapper INSTANCE = Mappers.getMapper(LinkageRestConvertMapper.class);
+
+    LinkageScene from(LinkageSceneCreateRO args);
+
+    LinkageScene from(LinkageSceneUpdateRO args);
+
+    LinkageScene from(LinkageSceneRuleRO args);
+}
