@@ -9,4 +9,5 @@ import lombok.Data;
 public class UploadVO {
     private String uid;
     private String url;
+    private String fileName;
 }
