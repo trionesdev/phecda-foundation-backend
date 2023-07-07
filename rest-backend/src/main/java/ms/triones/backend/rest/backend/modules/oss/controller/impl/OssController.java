@@ -21,10 +21,11 @@ import static ms.triones.backend.rest.backend.modules.oss.support.OssConstants.O
 public class OssController {
     private final OssService ossService;
 
-    @PostMapping(value = "image/upload")
-    public UploadVO imageUpload(@RequestParam(value = "scene") String scene,
+    @PostMapping(value = "file/upload")
+    public UploadVO fileUpload(@RequestParam(value = "scene") String scene,
                                 @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
-        String url = ossService.putImageObject(scene, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
-        return UploadVO.builder().uid(UUID.randomUUID().toString()).url(url).build();
+        String fileName = multipartFile.getOriginalFilename();
+        String url = ossService.putFileObject(scene, fileName, multipartFile.getInputStream());
+        return UploadVO.builder().uid(UUID.randomUUID().toString()).fileName(fileName).url(url).build();
     }
 }

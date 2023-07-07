@@ -15,8 +15,8 @@ import java.io.InputStream;
 public class OssService {
     private final OssProvider ossProvider;
 
-    public String putImageObject(String scene, String fileName, InputStream inputStream) {
-        String objectName = FilePathUtils.pathResolve(imageScene(scene), FilePathUtils.randomFilename(fileName));
+    public String putFileObject(String scene, String fileName, InputStream inputStream) {
+        String objectName = FilePathUtils.pathResolve(scene, FilePathUtils.randomFilename(fileName));
         OssPutObjectRequest request = OssPutObjectRequest.builder()
                 .objectName(objectName)
                 .inputStream(inputStream)
@@ -25,9 +25,4 @@ public class OssService {
         return response.getUrl();
     }
 
-    private String imageScene(String scene) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("image").append("/").append(scene);
-        return sb.toString();
-    }
 }
