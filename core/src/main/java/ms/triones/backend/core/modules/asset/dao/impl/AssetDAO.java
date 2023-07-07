@@ -1,0 +1,43 @@
+package ms.triones.backend.core.modules.asset.dao.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.moensun.commons.core.page.PageInfo;
+import com.moensun.commons.mybatisplus.util.MpPageUtils;
+import ms.triones.backend.core.modules.asset.dao.criteria.AssetCriteria;
+import ms.triones.backend.core.modules.asset.dao.entity.Asset;
+import ms.triones.backend.core.modules.asset.dao.mapper.AssetMapper;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
+import java.util.Objects;
+
+/**
+ * <p>
+ * 资产(生产设备) 服务实现类
+ * </p>
+ *
+ * @author jscoe
+ * @since 2023-06-30
+ */
+
+@Repository
+public class AssetDAO extends ServiceImpl<AssetMapper, Asset> {
+
+    private LambdaQueryWrapper<Asset> buildQueryWrapper(AssetCriteria criteria) {
+        LambdaQueryWrapper<Asset> queryWrapper = Wrappers.lambdaQuery();
+        if (Objects.nonNull(criteria)) {
+            queryWrapper.eq(StringUtils.isNotBlank(criteria.getTypeCode()), Asset::getTypeCode, criteria.getTypeCode())
+                    .eq(StringUtils.isNotBlank(criteria.getLocationCode()), Asset::getLocationCode, criteria.getLocationCode())
+                    .eq(ObjectUtils.isNotEmpty(criteria.getState()), Asset::getState, criteria.getState());
+        }
+        return queryWrapper.orderByDesc(Asset::getCreatedAt);
+    }
+
+    public PageInfo<Asset> selectPage(Integer pageNum, Integer pageSize, AssetCriteria criteria) {
+        return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
+    }
+}

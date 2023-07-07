@@ -13,7 +13,6 @@ import ms.phecda.edge.device.req.RemoveDeviceRequest;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
-import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
 import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
 import ms.triones.backend.core.modules.device.manager.impl.DeviceManager;
 import ms.triones.backend.core.modules.device.manager.impl.ProductManager;
@@ -25,7 +24,11 @@ import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -136,6 +139,10 @@ public class DeviceService {
                 return deviceServiceData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
+    }
+
+    public List<Device> queryAllDevice() {
+        return deviceManager.listAll();
     }
 
 }

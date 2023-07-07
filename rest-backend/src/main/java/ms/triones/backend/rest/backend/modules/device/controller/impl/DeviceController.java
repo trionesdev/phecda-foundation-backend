@@ -100,4 +100,10 @@ public class DeviceController {
         return deviceService.queryDeviceThingModelServicesData(id);
     }
 
+    @Operation(summary = "获取所有设备")
+    @GetMapping(value = "devices/all")
+    public List<Device> queryAllDevice() {
+        return deviceService.queryAllDevice();
+    }
+
 }
