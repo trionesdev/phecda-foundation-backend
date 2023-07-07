@@ -7,6 +7,7 @@ import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.impl.DeviceDAO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -35,4 +36,7 @@ public class DeviceManager {
     }
 
 
+    public List<Device> listAll() {
+        return deviceDAO.list();
+    }
 }
