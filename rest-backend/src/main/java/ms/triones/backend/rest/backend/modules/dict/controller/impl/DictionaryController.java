@@ -2,6 +2,7 @@ package ms.triones.backend.rest.backend.modules.dict.controller.impl;
 
 import com.moensun.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.dict.dao.criteria.DictionaryCriteria;
 import ms.triones.backend.core.modules.dict.dao.entity.Dictionary;
@@ -9,7 +10,6 @@ import ms.triones.backend.core.modules.dict.service.impl.DictionaryService;
 import ms.triones.backend.rest.backend.modules.dict.controller.query.DictionaryQuery;
 import ms.triones.backend.rest.backend.modules.dict.controller.ro.DictionaryRO;
 import ms.triones.backend.rest.backend.modules.dict.support.DictionaryRestConvertMapper;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static ms.triones.backend.rest.backend.modules.dict.support.DictionaryConstants.DICTIONARY_URI;
 
@@ -72,7 +74,7 @@ public class DictionaryController {
         return dictionaryService.queryById(id).orElse(null);
     }
 
-    @Operation(summary = "查询字典值列表")
+    @Operation(summary = "查询字典值列表(分页)")
     @GetMapping(value = "dictionaries/page")
     public PageInfo<Dictionary> queryDictionaryPage(
             @RequestParam(value = "pageNum") Integer pageNum,
@@ -81,5 +83,14 @@ public class DictionaryController {
     ) {
         DictionaryCriteria criteria = DictionaryRestConvertMapper.INSTANT.form(query);
         return dictionaryService.queryPage(pageNum, pageSize, criteria);
+    }
+
+    @Operation(summary = "查询字典值列表")
+    @GetMapping(value = "dictionaries/list")
+    public List<Dictionary> queryDictionaryList(
+            DictionaryQuery query
+    ) {
+        DictionaryCriteria criteria = DictionaryRestConvertMapper.INSTANT.form(query);
+        return dictionaryService.queryList(criteria);
     }
 }
