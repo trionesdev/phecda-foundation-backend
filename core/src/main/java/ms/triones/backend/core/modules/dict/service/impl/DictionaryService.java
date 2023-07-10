@@ -7,6 +7,7 @@ import ms.triones.backend.core.modules.dict.dao.entity.Dictionary;
 import ms.triones.backend.core.modules.dict.manager.DictionaryManager;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,5 +42,9 @@ public class DictionaryService {
 
     public PageInfo<Dictionary> queryPage(Integer pageNum, Integer pageSize, DictionaryCriteria criteria) {
         return dictionaryManager.queryPage(pageNum, pageSize, criteria);
+    }
+
+    public List<Dictionary> queryList(DictionaryCriteria criteria) {
+        return dictionaryManager.queryList(criteria);
     }
 }

@@ -34,7 +34,7 @@ public class DictionaryDAO extends ServiceImpl<DictionaryMapper, Dictionary> {
             queryWrapper.eq(StringUtils.isNotBlank(criteria.getTypeCode()), Dictionary::getTypeCode, criteria.getTypeCode());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getTypeCodes()), Dictionary::getTypeCode, criteria.getTypeCodes());
         }
-        return queryWrapper.orderByDesc(Dictionary::getSort);
+        return queryWrapper.orderByAsc(Dictionary::getSort);
     }
 
     public PageInfo<Dictionary> selectPage(Integer pageNum, Integer pageSize, DictionaryCriteria criteria) {
