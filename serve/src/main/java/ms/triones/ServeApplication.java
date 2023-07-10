@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = {"ms.triones", "ms.phecda"})
 @MapperScan(value = {"ms.triones.backend.core.modules.*.dao.mapper"})
 @EnableTencentCloudCOSClients
-//@EnableFeignClients
 public class ServeApplication {
     public static void main(String[] args) {
         log.info("--app start--");
