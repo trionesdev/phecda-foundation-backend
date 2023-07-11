@@ -16,4 +16,7 @@ public class DictionaryCriteria {
     private List<String> typeCodes;
     private String typeCode;
 
+    private String parentCode;
+    private String code;
+
 }

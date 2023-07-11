@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.dict.dao.criteria.DictionaryCriteria;
 import ms.triones.backend.core.modules.dict.dao.entity.Dictionary;
+import ms.triones.backend.core.modules.dict.service.bo.DictionaryBO;
 import ms.triones.backend.core.modules.dict.service.impl.DictionaryService;
 import ms.triones.backend.rest.backend.modules.dict.controller.query.DictionaryQuery;
 import ms.triones.backend.rest.backend.modules.dict.controller.ro.DictionaryRO;
@@ -76,7 +77,7 @@ public class DictionaryController {
 
     @Operation(summary = "查询字典值列表(分页)")
     @GetMapping(value = "dictionaries/page")
-    public PageInfo<Dictionary> queryDictionaryPage(
+    public PageInfo<DictionaryBO> queryDictionaryPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             DictionaryQuery query
