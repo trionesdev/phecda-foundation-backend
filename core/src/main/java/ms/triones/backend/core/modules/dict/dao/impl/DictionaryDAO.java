@@ -32,7 +32,10 @@ public class DictionaryDAO extends ServiceImpl<DictionaryMapper, Dictionary> {
         LambdaQueryWrapper<Dictionary> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(StringUtils.isNotBlank(criteria.getTypeCode()), Dictionary::getTypeCode, criteria.getTypeCode());
+            queryWrapper.eq(StringUtils.isNotBlank(criteria.getParentCode()), Dictionary::getParentCode, criteria.getParentCode());
+            queryWrapper.eq(StringUtils.isNotBlank(criteria.getCode()), Dictionary::getCode, criteria.getCode());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getTypeCodes()), Dictionary::getTypeCode, criteria.getTypeCodes());
+            queryWrapper.orderByAsc(Dictionary::getSort);
         }
         return queryWrapper.orderByAsc(Dictionary::getSort);
     }
