@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.linkage.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.triones.backend.core.modules.linkage.dao.criteria.LinkageSceneCriteria;
@@ -27,6 +28,10 @@ public class LinkageSceneService {
     private final Rules linkageRules = new Rules();
     private final LinkageSceneManager linkageSceneManager;
     private final RuleActionFactory ruleActionFactory;
+
+    public PageInfo<LinkageScene> page(LinkageSceneCriteria criteria) {
+        return linkageSceneManager.page(criteria);
+    }
 
     public void createScene(LinkageScene scene) {
         scene.setEnabled(false);
