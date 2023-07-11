@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
-* <p>
-* 字典数据表
-* </p>
-*
-* @author jscoe
-* @since 2023-06-30
-*/
+ * <p>
+ * 字典数据表
+ * </p>
+ *
+ * @author jscoe
+ * @since 2023-06-30
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,24 +29,26 @@ public class Dictionary extends BaseLogicEntity {
     private String typeCode;
 
     /**
-    * 字典标签（例：男/女）
-    */
+     * 字典标签（例：男/女）
+     */
     private String label;
 
     /**
-    * 编码(例：0/1)
-    */
+     * 编码(例：0/1)
+     */
     private String code;
 
+    private String parentCode;
+
     /**
-    * 排序
-    */
+     * 排序
+     */
     private String sort;
 
 
     /**
-    * 备注
-    */
+     * 备注
+     */
     private String remark;
 
 
