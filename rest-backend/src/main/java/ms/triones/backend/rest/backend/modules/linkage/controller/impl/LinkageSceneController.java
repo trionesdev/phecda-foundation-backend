@@ -1,10 +1,13 @@
 package ms.triones.backend.rest.backend.modules.linkage.controller.impl;
 
+import com.moensun.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.triones.backend.core.modules.linkage.dao.entity.LinkageScene;
 import ms.triones.backend.core.modules.linkage.service.impl.LinkageSceneService;
+import ms.triones.backend.rest.backend.modules.linkage.controller.query.LinkageSceneQuery;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneCreateRO;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneEnabledRO;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneRuleRO;
@@ -21,6 +24,13 @@ import static ms.triones.backend.rest.backend.modules.linkage.support.LinkageCon
 @RequestMapping(value = LINKAGE_URI)
 public class LinkageSceneController {
     private final LinkageSceneService linkageSceneService;
+
+    @Operation(summary = "场景分页查询")
+    @GetMapping(value = "scenes/page")
+    public PageInfo<LinkageScene> page(@Validated LinkageSceneQuery args) {
+        LinkageSceneCriteria criteria = LinkageRestConvertMapper.INSTANCE.from(args);
+        return linkageSceneService.page(criteria);
+    }
 
     @Operation(summary = "新建场景")
     @PostMapping(value = "scenes")
