@@ -1,5 +1,8 @@
 package ms.triones.backend.core.modules.linkage.manager.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.moensun.commons.core.page.PageInfo;
+import com.moensun.commons.mybatisplus.util.MpPageUtils;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.triones.backend.core.modules.linkage.dao.entity.LinkageScene;
@@ -13,6 +16,11 @@ import java.util.Optional;
 @Service
 public class LinkageSceneManager {
     private final LinkageSceneDAO linkageSceneDAO;
+
+    public PageInfo<LinkageScene> page(LinkageSceneCriteria criteria) {
+        IPage<LinkageScene> page = linkageSceneDAO.page(criteria);
+        return MpPageUtils.of(page);
+    }
 
     public void create(LinkageScene scene) {
         linkageSceneDAO.save(scene);

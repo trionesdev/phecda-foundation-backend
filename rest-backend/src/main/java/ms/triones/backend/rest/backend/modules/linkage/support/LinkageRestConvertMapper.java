@@ -1,6 +1,8 @@
 package ms.triones.backend.rest.backend.modules.linkage.support;
 
+import ms.triones.backend.core.modules.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.triones.backend.core.modules.linkage.dao.entity.LinkageScene;
+import ms.triones.backend.rest.backend.modules.linkage.controller.query.LinkageSceneQuery;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneCreateRO;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneRuleRO;
 import ms.triones.backend.rest.backend.modules.linkage.controller.ro.LinkageSceneUpdateRO;
@@ -17,4 +19,6 @@ public interface LinkageRestConvertMapper {
     LinkageScene from(LinkageSceneUpdateRO args);
 
     LinkageScene from(LinkageSceneRuleRO args);
+
+    LinkageSceneCriteria from(LinkageSceneQuery args);
 }
