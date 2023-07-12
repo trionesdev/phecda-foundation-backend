@@ -1,16 +1,21 @@
 package ms.triones.backend.core.modules.devicedata.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Lists;
+import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataBO;
+import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataQueryBO;
 import ms.triones.backend.core.modules.devicedata.support.util.IotDbUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.pool.SessionDataSetWrapper;
 import org.apache.iotdb.session.pool.SessionPool;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
+import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,8 +70,60 @@ public class DeviceDataService {
         }
     }
 
+    public List<Map<String, Object>> queryRawDataWithPagination(String nodeId, String deviceName, List<String> fields,
+                                                                long startTime, long endTime, int rowLimit, int rowOffset) {
+        String selectExpr = StrUtil.join(",", fields);
+        String whereCondition = "time >=" + startTime + " and time <= " + endTime;
+        String sql = "select " + selectExpr +
+                " from " + path(nodeId, deviceName) +
+                " where " + whereCondition +
+                " limit " + rowLimit +
+                " offset " + rowOffset;
+        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement(sql, 6000)) {
+            return IotDbUtils.toList(sessionDataSet);
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private String path(String nodeId, String deviceName) {
         return StrUtil.join(".", "root.phecda", nodeId, deviceName);
+    }
+
+
+    public List<DeviceDataBO> queryList(DeviceDataQueryBO queryBO) {
+        List<Map<String, Object>> rawDataList = queryRawData("default", queryBO.getDeviceName(), Lists.newArrayList(queryBO.getField()),
+                queryBO.getStartTime().toEpochMilli(), queryBO.getEndTime().toEpochMilli());
+        return convertToBO(rawDataList, queryBO);
+    }
+
+    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DeviceDataQueryBO queryBO) {
+        List<Map<String, Object>> rawDataList = queryRawDataWithPagination("default", queryBO.getDeviceName(), Lists.newArrayList(queryBO.getField()),
+                queryBO.getStartTime().toEpochMilli(), queryBO.getEndTime().toEpochMilli(), pageSize, pageSize * (pageNum - 1));
+        List<DeviceDataBO> deviceDataBOS = convertToBO(rawDataList, queryBO);
+        return PageInfo.<DeviceDataBO>builder()
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .rows(deviceDataBOS)
+                .build();
+    }
+
+    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DeviceDataQueryBO queryBO) {
+        List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(rawDataList)) {
+            for (Map<String, Object> rwaData : rawDataList) {
+                DeviceDataBO deviceDataBO = DeviceDataBO.builder()
+                        .time((Instant) rwaData.get("Time"))
+                        .value(rwaData.get(path("default", queryBO.getDeviceName()) + queryBO.getField()))
+                        .field(queryBO.getField())
+                        .assetSn(queryBO.getAssetSn())
+                        .deviceName(queryBO.getDeviceName())
+                        .build();
+                deviceDataBOS.add(deviceDataBO);
+            }
+        }
+
+        return deviceDataBOS;
     }
 }
