@@ -3,7 +3,8 @@ package ms.triones.backend.rest.backend.modules.alarm.controller.query;
 import lombok.*;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
 
 /**
 * <p>
@@ -35,7 +36,7 @@ public class AlarmLogQuery {
     /**
     * 告警时间
     */
-    private LocalDateTime alarmTime;
+    private Instant alarmTime;
 
     /**
     * 告警描述
@@ -45,7 +46,7 @@ public class AlarmLogQuery {
     /**
     * 处理时间
     */
-    private LocalDateTime dealTime;
+    private Instant dealTime;
 
     /**
     * 处理状态
