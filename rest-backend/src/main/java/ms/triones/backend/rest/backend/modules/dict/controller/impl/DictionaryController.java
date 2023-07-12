@@ -10,7 +10,7 @@ import ms.triones.backend.core.modules.dict.service.bo.DictionaryBO;
 import ms.triones.backend.core.modules.dict.service.impl.DictionaryService;
 import ms.triones.backend.rest.backend.modules.dict.controller.query.DictionaryQuery;
 import ms.triones.backend.rest.backend.modules.dict.controller.ro.DictionaryRO;
-import ms.triones.backend.rest.backend.modules.dict.support.DictionaryRestConvertMapper;
+import ms.triones.backend.rest.backend.modules.dict.support.DictRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static ms.triones.backend.rest.backend.modules.dict.support.DictionaryConstants.DICTIONARY_URI;
+import static ms.triones.backend.rest.backend.modules.dict.support.DictConstants.DICT_URI;
 
 /**
  * <p>
@@ -37,14 +37,14 @@ import static ms.triones.backend.rest.backend.modules.dict.support.DictionaryCon
 @Tag(name = "字典")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = DICTIONARY_URI)
+@RequestMapping(value = DICT_URI)
 public class DictionaryController {
     private final DictionaryService dictionaryService;
 
     @Operation(summary = "新建字典值")
     @PostMapping(value = "dictionaries")
     public void createDictionary(@Validated @RequestBody DictionaryRO args) {
-        Dictionary dictionary = DictionaryRestConvertMapper.INSTANT.form(args);
+        Dictionary dictionary = DictRestConvertMapper.INSTANCE.from(args);
         dictionaryService.create(dictionary);
     }
 
@@ -54,7 +54,7 @@ public class DictionaryController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody DictionaryRO args
     ) {
-        Dictionary dictionary = DictionaryRestConvertMapper.INSTANT.form(args);
+        Dictionary dictionary = DictRestConvertMapper.INSTANCE.from(args);
         dictionary.setId(id);
         dictionaryService.update(dictionary);
     }
@@ -82,7 +82,7 @@ public class DictionaryController {
             @RequestParam(value = "pageSize") Integer pageSize,
             DictionaryQuery query
     ) {
-        DictionaryCriteria criteria = DictionaryRestConvertMapper.INSTANT.form(query);
+        DictionaryCriteria criteria = DictRestConvertMapper.INSTANCE.from(query);
         return dictionaryService.queryPage(pageNum, pageSize, criteria);
     }
 
@@ -91,7 +91,7 @@ public class DictionaryController {
     public List<Dictionary> queryDictionaryList(
             DictionaryQuery query
     ) {
-        DictionaryCriteria criteria = DictionaryRestConvertMapper.INSTANT.form(query);
+        DictionaryCriteria criteria = DictRestConvertMapper.INSTANCE.from(query);
         return dictionaryService.queryList(criteria);
     }
 }

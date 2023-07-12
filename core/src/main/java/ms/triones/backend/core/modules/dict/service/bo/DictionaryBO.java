@@ -1,11 +1,15 @@
 package ms.triones.backend.core.modules.dict.service.bo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -20,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@Builder
+@SuperBuilder
 public class DictionaryBO {
 
     private String id;
@@ -37,6 +41,14 @@ public class DictionaryBO {
 
     private String remark;
 
-    private List<DictionaryBO> childrenList;
+    private List<DictionaryBO> children;
+
+    private Instant createdAt;
+
+    private String createdBy;
+
+    private Instant updatedAt;
+
+    private String updatedBy;
 
 }
