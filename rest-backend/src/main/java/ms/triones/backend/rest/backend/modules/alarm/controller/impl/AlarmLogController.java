@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.alarm.dao.criteria.AlarmLogCriteria;
 import ms.triones.backend.core.modules.alarm.dao.entity.AlarmLog;
+import ms.triones.backend.core.modules.alarm.service.bo.AlarmLogBO;
 import ms.triones.backend.core.modules.alarm.service.impl.AlarmLogService;
 import ms.triones.backend.rest.backend.modules.alarm.controller.query.AlarmLogQuery;
 import ms.triones.backend.rest.backend.modules.alarm.controller.ro.AlarmLogRO;
@@ -68,7 +69,7 @@ public class AlarmLogController {
 
     @Operation(summary = "查询报警记录列表(分页)")
     @GetMapping(value = "alarm-logs/page")
-    public PageInfo<AlarmLog> queryAlarmLogPage(
+    public PageInfo<AlarmLogBO> queryAlarmLogPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             AlarmLogQuery query
