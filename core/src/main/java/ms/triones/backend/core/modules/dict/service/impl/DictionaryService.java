@@ -36,7 +36,8 @@ public class DictionaryService {
             entity.setParentCode("0");
         }
         List<Dictionary> dictionaries = queryList(DictionaryCriteria.builder().code(entity.getCode()).build());
-        if (Objects.nonNull(dictionaries)) {
+
+        if (!CollectionUtils.isEmpty(dictionaries)) {
             throw new MSException(String.format("编码：{%s}已存在", entity.getCode()));
         }
         dictionaryManager.create(entity);
@@ -84,7 +85,7 @@ public class DictionaryService {
     private List<DictionaryBO> getChildrenList(List<DictionaryBO> roots, List<DictionaryBO> all) {
         roots.forEach(root -> {
             List<DictionaryBO> childernList = all.stream().filter(temp -> temp.getParentCode().equals(root.getCode())).collect(Collectors.toList());
-            root.setChildrenList(getChildrenList(childernList, all));
+            root.setChildren(getChildrenList(childernList, all));
         });
         return roots;
     }

@@ -11,7 +11,7 @@ import ms.triones.backend.core.modules.dict.service.impl.DictionaryTypeService;
 import ms.triones.backend.rest.backend.modules.dict.controller.query.DictionaryTypeQuery;
 import ms.triones.backend.rest.backend.modules.dict.controller.ro.DictionaryTypeRO;
 import ms.triones.backend.rest.backend.modules.dict.support.DictConstants;
-import ms.triones.backend.rest.backend.modules.dict.support.DictionaryTypeRestConvertMapper;
+import ms.triones.backend.rest.backend.modules.dict.support.DictRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +43,7 @@ public class DictionaryTypeController {
     @Operation(summary = "新建字典类型")
     @PostMapping(value = "dictionaryType")
     public void create(@Validated @RequestBody DictionaryTypeRO ro) {
-        DictionaryType entity = DictionaryTypeRestConvertMapper.INSTANCE.from(ro);
+        DictionaryType entity = DictRestConvertMapper.INSTANCE.from(ro);
         dictionaryTypeService.create(entity);
     }
 
@@ -58,7 +58,7 @@ public class DictionaryTypeController {
     @PutMapping(value = "dictionaryType/{id}")
     public void updateById(@PathVariable(value = "id") String id,
                            @Validated @RequestBody DictionaryTypeRO ro) {
-        DictionaryType entity = DictionaryTypeRestConvertMapper.INSTANCE.from(ro);
+        DictionaryType entity = DictRestConvertMapper.INSTANCE.from(ro);
         entity.setId(id);
         dictionaryTypeService.updateById(entity);
     }
@@ -75,7 +75,7 @@ public class DictionaryTypeController {
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             DictionaryTypeQuery query) {
-        DictionaryTypeCriteria criteria = DictionaryTypeRestConvertMapper.INSTANCE.from(query);
+        DictionaryTypeCriteria criteria = DictRestConvertMapper.INSTANCE.from(query);
         return dictionaryTypeService.queryPage(pageNum, pageSize, criteria);
     }
 
