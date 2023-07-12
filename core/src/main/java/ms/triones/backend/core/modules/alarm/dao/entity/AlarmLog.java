@@ -78,6 +78,7 @@ public class AlarmLog extends BaseLogicEntity {
     private String deviceName;
 
     private String assetSn;
+
     private String assetSpareSn;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
