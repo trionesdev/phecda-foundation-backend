@@ -50,6 +50,9 @@ public class AlarmLogService {
     }
 
     public PageInfo<AlarmLog> queryPage(Integer pageNum, Integer pageSize, AlarmLogCriteria criteria) {
+        PageInfo<AlarmLog> alarmLogPageInfo = alarmLogManager.queryPage(pageNum, pageSize, criteria);
+        List<AlarmLog> rows = alarmLogPageInfo.getRows();
+
 
         return alarmLogManager.queryPage(pageNum, pageSize, criteria);
     }
