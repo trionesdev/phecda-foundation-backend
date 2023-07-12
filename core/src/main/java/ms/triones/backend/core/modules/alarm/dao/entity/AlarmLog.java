@@ -14,8 +14,12 @@ import lombok.experimental.SuperBuilder;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.DealStatuEnums;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.ImageTypeEnum;
+import ms.triones.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
+import org.apache.ibatis.type.JdbcType;
 
-import java.time.LocalDateTime;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -50,7 +54,7 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 告警时间
      */
-    private LocalDateTime alarmTime;
+    private Instant alarmTime;
 
     /**
      * 告警描述
@@ -60,7 +64,7 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 处理时间
      */
-    private LocalDateTime dealTime;
+    private Instant dealTime;
 
     /**
      * 处理状态
@@ -81,7 +85,7 @@ public class AlarmLog extends BaseLogicEntity {
 
     private String assetSpareSn;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = ImageInfoListTypeHandler.class)
     private List<ImageInfo> images;
 
     @Data
@@ -90,5 +94,15 @@ public class AlarmLog extends BaseLogicEntity {
         private String name;
         private String url;
         private ImageTypeEnum type;
+    }
+
+    @NoArgsConstructor
+    public static class ImageInfoListTypeHandler extends SpecialListTypeHandler {
+
+        @Override
+        public Class<ImageInfo> specialType() {
+            return ImageInfo.class;
+        }
+
     }
 }
