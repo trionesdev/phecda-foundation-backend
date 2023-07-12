@@ -2,7 +2,7 @@ package ms.triones.backend.core.modules.alarm.dao.criteria;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
 * <p>
@@ -34,7 +34,7 @@ public class AlarmLogCriteria {
     /**
     * 告警时间
     */
-    private LocalDateTime alarmTime;
+    private Instant alarmTime;
 
     /**
     * 告警描述
@@ -44,7 +44,7 @@ public class AlarmLogCriteria {
     /**
     * 处理时间
     */
-    private LocalDateTime dealTime;
+    private Instant dealTime;
 
     /**
     * 处理状态

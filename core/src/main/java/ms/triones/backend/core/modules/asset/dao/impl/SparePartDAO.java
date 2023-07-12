@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.asset.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -30,7 +31,8 @@ public class SparePartDAO extends ServiceImpl<SparePartMapper, SparePart> {
     private LambdaQueryWrapper<SparePart> buildQueryWrapper(SparePartCriteria criteria) {
         LambdaQueryWrapper<SparePart> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
-            queryWrapper.eq(Objects.nonNull(criteria.getAssetSn()), SparePart::getAssetSn, criteria.getAssetSn());
+            queryWrapper.eq(Objects.nonNull(criteria.getAssetSn()), SparePart::getAssetSn, criteria.getAssetSn())
+                    .in(CollectionUtils.isNotEmpty(criteria.getSns()), SparePart::getSn, criteria.getSns());
             queryWrapper.orderByDesc(SparePart::getCreatedAt);
         }
         return queryWrapper;

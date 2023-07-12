@@ -1,11 +1,10 @@
 package ms.triones.backend.core.modules.alarm.service.bo;
 
 import lombok.*;
-import ms.triones.backend.core.modules.alarm.dao.entity.AlarmLog;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.DealStatuEnums;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class AlarmLogBO {
     /**
      * 告警时间
      */
-    private LocalDateTime alarmTime;
+    private Instant alarmTime;
 
     /**
      * 告警描述
@@ -48,7 +47,7 @@ public class AlarmLogBO {
     /**
      * 处理时间
      */
-    private LocalDateTime dealTime;
+    private Instant dealTime;
 
     /**
      * 处理状态
@@ -77,5 +76,8 @@ public class AlarmLogBO {
         private String url;
         private String type;
     }
+
+    private String assetOrAssetSpareName;
+    private String assetOrAssetSpareSn;
 
 }

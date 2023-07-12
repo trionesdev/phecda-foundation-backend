@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.asset.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -32,6 +34,7 @@ public class AssetDAO extends ServiceImpl<AssetMapper, Asset> {
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(StringUtils.isNotBlank(criteria.getTypeCode()), Asset::getTypeCode, criteria.getTypeCode())
                     .eq(StringUtils.isNotBlank(criteria.getLocationCode()), Asset::getLocationCode, criteria.getLocationCode())
+                    .in(CollectionUtils.isNotEmpty(criteria.getSns()), Asset::getSn, criteria.getSns())
                     .eq(ObjectUtils.isNotEmpty(criteria.getState()), Asset::getState, criteria.getState());
         }
         return queryWrapper.orderByDesc(Asset::getCreatedAt);
@@ -39,5 +42,9 @@ public class AssetDAO extends ServiceImpl<AssetMapper, Asset> {
 
     public PageInfo<Asset> selectPage(Integer pageNum, Integer pageSize, AssetCriteria criteria) {
         return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
+    }
+
+    public List<Asset> selectList(AssetCriteria criteria) {
+        return baseMapper.selectList(buildQueryWrapper(criteria));
     }
 }
