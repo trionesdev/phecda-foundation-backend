@@ -11,6 +11,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.DealStatuEnums;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.ImageTypeEnum;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,7 +45,7 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 告警等级
      */
-    private String level;
+    private AlarmLevelEnum level;
 
     /**
      * 告警时间
@@ -62,7 +65,7 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 处理状态
      */
-    private String dealStatus;
+    private DealStatuEnums dealStatus;
 
     /**
      * 处理备注
@@ -72,7 +75,10 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 相机编号
      */
-    private String deviceSn;
+    private String deviceName;
+
+    private String assetSn;
+    private String assetSpareSn;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<ImageInfo> images;
@@ -82,6 +88,6 @@ public class AlarmLog extends BaseLogicEntity {
         private String uid;
         private String name;
         private String url;
-        private String type;
+        private ImageTypeEnum type;
     }
 }
