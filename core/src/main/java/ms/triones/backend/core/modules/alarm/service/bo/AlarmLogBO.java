@@ -74,7 +74,7 @@ public class AlarmLogBO {
         private String uid;
         private String name;
         private String url;
-        private String type;
+        private String imageType;
     }
 
     private String assetOrAssetSpareName;
