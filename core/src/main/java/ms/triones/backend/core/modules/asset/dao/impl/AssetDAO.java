@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>
@@ -39,5 +40,11 @@ public class AssetDAO extends ServiceImpl<AssetMapper, Asset> {
 
     public PageInfo<Asset> selectPage(Integer pageNum, Integer pageSize, AssetCriteria criteria) {
         return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
+    }
+
+    public Optional<Asset> getBySn(String sn) {
+        LambdaQueryWrapper<Asset> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Asset::getSn, sn);
+        return Optional.ofNullable(baseMapper.selectOne(queryWrapper));
     }
 }

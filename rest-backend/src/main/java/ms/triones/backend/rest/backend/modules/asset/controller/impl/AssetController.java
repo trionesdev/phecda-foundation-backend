@@ -86,7 +86,7 @@ public class AssetController {
 
     @Operation(summary = "获取所有资产")
     @GetMapping(value = "assets/all")
-    public List<Asset> queryAllDevice() {
+    public List<Asset> queryAllAsset() {
         return assetService.queryAllAsset();
     }
 

@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.asset.dao.criteria.SparePartCriteria;
 import ms.triones.backend.core.modules.asset.dao.entity.SparePart;
 import ms.triones.backend.core.modules.asset.manager.SparePartManager;
-import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
-import ms.triones.backend.core.modules.device.dao.entity.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,5 +41,9 @@ public class SparePartService {
 
     public PageInfo<SparePart> queryPage(Integer pageNum, Integer pageSize,SparePartCriteria criteria) {
         return sparePartManager.queryPage(pageNum, pageSize,criteria);
+    }
+
+    public List<SparePart> queryAllSpareParts() {
+        return sparePartManager.listAll();
     }
 }
