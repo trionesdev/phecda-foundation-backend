@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +14,7 @@ import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.DealStatuEnums;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.ImageTypeEnum;
 import ms.triones.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
-import org.apache.ibatis.type.JdbcType;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 
@@ -93,7 +89,7 @@ public class AlarmLog extends BaseLogicEntity {
         private String uid;
         private String name;
         private String url;
-        private ImageTypeEnum type;
+        private ImageTypeEnum imageType;
     }
 
     @NoArgsConstructor
