@@ -42,4 +42,9 @@ public class DeviceManager {
     public List<Device> listAll() {
         return deviceDAO.list();
     }
+
+    public Optional<Device> queryByName(String name) {
+        return deviceDAO.getByName(name);
+    }
+
 }

@@ -117,9 +117,18 @@ public class DeviceController {
     @Operation(summary = "获取资产关联的设备")
     @GetMapping(value = "devices/{assetSn}/related-asset")
     public List<Device> queryAssetRelationDevice(
-            @PathVariable(value = "assetSn") String assetSn
+            @PathVariable(value = "assetSn", required = false) String assetSn
     ) {
         return deviceService.queryAssetRelationDevice(assetSn);
     }
+
+    @Operation(summary = "根据设备name获取设备物模型属性")
+    @GetMapping(value = "devices/{deviceName}/properties")
+    public List<DevicePropertyDataBO> queryDeviceProperties(
+            @PathVariable(value = "deviceName", required = false) String deviceName
+    ) {
+        return deviceService.queryDeviceProperties(deviceName);
+    }
+
 
 }
