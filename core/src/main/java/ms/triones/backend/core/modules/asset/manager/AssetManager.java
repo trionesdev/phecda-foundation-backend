@@ -40,6 +40,10 @@ public class AssetManager {
         return Optional.ofNullable(assetDAO.getById(id));
     }
 
+    public Optional<Asset> queryBySn(String sn) {
+        return assetDAO.getBySn(sn);
+    }
+
     public PageInfo<Asset> queryPage(Integer pageNum, Integer pageSize, AssetCriteria criteria) {
         return assetDAO.selectPage(pageNum, pageSize, criteria);
     }

@@ -35,6 +35,9 @@ public class DeviceManager {
         return deviceDAO.selectPage(pageNum, pageSize, criteria);
     }
 
+    public List<Device> queryList(DeviceCriteria criteria) {
+        return deviceDAO.selectList(criteria);
+    }
 
     public List<Device> listAll() {
         return deviceDAO.list();

@@ -41,6 +41,10 @@ public class AssetService {
         return assetManager.queryById(id);
     }
 
+    public Optional<Asset> queryBySn(String sn) {
+        return assetManager.queryBySn(sn);
+    }
+
     public PageInfo<Asset> queryPage(Integer pageNum, Integer pageSize, AssetCriteria criteria) {
         return assetManager.queryPage(pageNum, pageSize, criteria);
     }

@@ -43,4 +43,8 @@ public class SparePartManager {
     public PageInfo<SparePart> queryPage(Integer pageNum, Integer pageSize, SparePartCriteria criteria) {
         return sparePartDAO.selectPage(pageNum, pageSize, criteria);
     }
+
+    public List<SparePart> listAll() {
+        return sparePartDAO.list();
+    }
 }

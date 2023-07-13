@@ -10,6 +10,7 @@ import ms.triones.backend.core.modules.devicedata.service.impl.DeviceDataService
 import ms.triones.backend.rest.backend.modules.devicedata.controller.query.DeviceDataQuery;
 import ms.triones.backend.rest.backend.modules.devicedata.support.DeviceDataConstants;
 import ms.triones.backend.rest.backend.modules.devicedata.support.DeviceDataRestConvertMapper;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,7 @@ public class DeviceDataController {
     private final DeviceDataService deviceDataService;
     @Operation(summary = "查询设备数据列表")
     @GetMapping(value = "device-datas/list")
-    public List<DeviceDataBO> queryDeviceDataList(DeviceDataQuery query) {
+    public List<DeviceDataBO> queryDeviceDataList(@Validated DeviceDataQuery query) {
         DeviceDataQueryBO queryBO = DeviceDataRestConvertMapper.INSTANCE.from(query);
         return deviceDataService.queryList(queryBO);
     }
@@ -36,7 +37,7 @@ public class DeviceDataController {
     public PageInfo<DeviceDataBO> queryDeviceDataPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
-            DeviceDataQuery query) {
+            @Validated DeviceDataQuery query) {
         DeviceDataQueryBO queryBO = DeviceDataRestConvertMapper.INSTANCE.from(query);
         return deviceDataService.queryPage(pageNum, pageSize, queryBO);
     }

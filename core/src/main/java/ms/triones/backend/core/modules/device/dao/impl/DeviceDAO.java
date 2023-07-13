@@ -10,8 +10,10 @@ import com.moensun.commons.mybatisplus.util.MpPageUtils;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.mapper.DeviceMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -20,6 +22,7 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         LambdaQueryWrapper<Device> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(StrUtil.isNotBlank(criteria.getProductId()), Device::getProductId, criteria.getProductId());
+            queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getNames()), Device::getName, criteria.getNames());
         }
         return queryWrapper.orderByDesc(Device::getCreatedAt);
     }
@@ -28,4 +31,7 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
     }
 
+    public List<Device> selectList(DeviceCriteria criteria) {
+        return baseMapper.selectList(buildQueryWrapper(criteria));
+    }
 }

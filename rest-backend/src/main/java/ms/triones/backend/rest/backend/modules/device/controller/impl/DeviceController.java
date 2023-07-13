@@ -106,4 +106,20 @@ public class DeviceController {
         return deviceService.queryAllDevice();
     }
 
+    @Operation(summary = "获取未被资产关联的设备")
+    @GetMapping(value = "devices/{assetSn}/no-relation")
+    public List<Device> queryNoRelationDevice(
+            @PathVariable(value = "assetSn", required = false) String assetSn
+    ) {
+        return deviceService.queryNoRelationDevice(assetSn);
+    }
+
+    @Operation(summary = "获取资产关联的设备")
+    @GetMapping(value = "devices/{assetSn}/related-asset")
+    public List<Device> queryAssetRelationDevice(
+            @PathVariable(value = "assetSn") String assetSn
+    ) {
+        return deviceService.queryAssetRelationDevice(assetSn);
+    }
+
 }

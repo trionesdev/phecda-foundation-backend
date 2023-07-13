@@ -2,6 +2,7 @@ package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.core.util.PageUtils;
@@ -22,6 +23,8 @@ import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
 import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
+import ms.triones.backend.core.provider.ssp.asset.impl.AssetProvider;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -38,6 +41,7 @@ public class DeviceService {
     private final ProductManager productManager;
     private final ProductThingModelVersionManager productThingModelVersionManager;
     private final EdgeDeviceClient edgeDeviceClient;
+    private final AssetProvider assetProvider;
 
     public void createDevice(Device device) {
         deviceManager.create(device);
@@ -145,4 +149,23 @@ public class DeviceService {
         return deviceManager.listAll();
     }
 
+    public List<Device> queryNoRelationDevice(String assetSn) {
+        Set<String> deviceNameSet = assetProvider.queryRelationDeviceNames(assetSn);
+        List<Device> devices = deviceManager.listAll();
+        if (CollectionUtils.isEmpty(deviceNameSet)) {
+            return devices;
+        }
+
+        return devices.stream().filter(device -> !deviceNameSet.contains(device.getName())).collect(Collectors.toList());
+    }
+
+    public List<Device> queryAssetRelationDevice(String assetSn) {
+        List<String> deviceNames = assetProvider.queryAssetRelationDeviceNames(assetSn);
+        if (CollectionUtils.isEmpty(deviceNames)) {
+            return Lists.newArrayList();
+        }
+
+        DeviceCriteria criteria = DeviceCriteria.builder().names(deviceNames).build();
+        return deviceManager.queryList(criteria);
+    }
 }
