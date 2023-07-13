@@ -113,9 +113,12 @@ public class DeviceDataService {
         List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(rawDataList)) {
             for (Map<String, Object> rwaData : rawDataList) {
+                Instant time = Instant.ofEpochMilli(Long.parseLong(String.valueOf(rwaData.get("Time"))));
+                String devicePath = path("default", queryBO.getDeviceName() + "." + queryBO.getField());
+
                 DeviceDataBO deviceDataBO = DeviceDataBO.builder()
-                        .time((Instant) rwaData.get("Time"))
-                        .value(rwaData.get(path("default", queryBO.getDeviceName()) + queryBO.getField()))
+                        .time(time)
+                        .value(rwaData.get(devicePath))
                         .field(queryBO.getField())
                         .assetSn(queryBO.getAssetSn())
                         .deviceName(queryBO.getDeviceName())
