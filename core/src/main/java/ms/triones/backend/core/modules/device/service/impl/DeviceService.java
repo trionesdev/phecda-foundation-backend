@@ -2,7 +2,6 @@ package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.core.util.PageUtils;
@@ -162,10 +161,18 @@ public class DeviceService {
     public List<Device> queryAssetRelationDevice(String assetSn) {
         List<String> deviceNames = assetProvider.queryAssetRelationDeviceNames(assetSn);
         if (CollectionUtils.isEmpty(deviceNames)) {
-            return Lists.newArrayList();
+            return Collections.emptyList();
         }
 
         DeviceCriteria criteria = DeviceCriteria.builder().names(deviceNames).build();
         return deviceManager.queryList(criteria);
+    }
+
+    public List<DevicePropertyDataBO> queryDeviceProperties(String deviceName) {
+        Optional<Device> deviceOptional = deviceManager.queryByName(deviceName);
+        Device device = deviceOptional.orElse(Device.builder().build());
+        return productManager.findThingModel(device.getProductId()).map(thingModel ->
+                thingModel.getProperties().stream().map(property -> DeviceConvertMapper.INSTANCE.from(property))
+                        .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 }

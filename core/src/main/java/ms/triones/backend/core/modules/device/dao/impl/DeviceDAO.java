@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
@@ -33,5 +34,11 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
 
     public List<Device> selectList(DeviceCriteria criteria) {
         return baseMapper.selectList(buildQueryWrapper(criteria));
+    }
+
+    public Optional<Device> getByName(String name) {
+        LambdaQueryWrapper<Device> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Device::getName, name);
+        return Optional.ofNullable(baseMapper.selectOne(queryWrapper));
     }
 }
