@@ -99,9 +99,7 @@ public class DeviceDataService {
     }
 
     public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DeviceDataQueryBO queryBO) {
-        List<Map<String, Object>> rawDataList = queryRawDataWithPagination("default", queryBO.getDeviceName(), Lists.newArrayList(queryBO.getField()),
-                queryBO.getStartTime().toEpochMilli(), queryBO.getEndTime().toEpochMilli(), pageSize, pageSize * (pageNum - 1));
-        List<DeviceDataBO> deviceDataBOS = convertToBO(rawDataList, queryBO);
+        List<DeviceDataBO> deviceDataBOS = queryList(queryBO);
         return PageInfo.<DeviceDataBO>builder()
                 .pageNum(pageNum)
                 .pageSize(pageSize)
