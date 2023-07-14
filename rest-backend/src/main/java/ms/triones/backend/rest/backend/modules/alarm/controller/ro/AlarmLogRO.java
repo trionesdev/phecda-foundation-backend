@@ -1,8 +1,10 @@
 package ms.triones.backend.rest.backend.modules.alarm.controller.ro;
 
 import lombok.*;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
 
 /**
 * <p>
@@ -29,12 +31,12 @@ public class AlarmLogRO {
     /**
     * 告警等级
     */
-    private String level;
+    private AlarmLevelEnum level;
 
     /**
     * 告警时间
     */
-    private LocalDateTime alarmTime;
+    private Instant alarmTime;
 
     /**
     * 告警描述
@@ -44,7 +46,7 @@ public class AlarmLogRO {
     /**
     * 处理时间
     */
-    private LocalDateTime dealTime;
+    private Instant dealTime;
 
     /**
     * 处理状态
@@ -59,6 +61,9 @@ public class AlarmLogRO {
     /**
     * 相机编号
     */
-    private String deviceSn;
+    private String deviceName;
+
+    private String assetSn;
+    private String assetSpareSn;
 
 }

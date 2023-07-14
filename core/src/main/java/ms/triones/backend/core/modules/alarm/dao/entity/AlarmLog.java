@@ -4,15 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.AlarmLevelEnum;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.DealStatuEnums;
+import ms.triones.backend.core.modules.alarm.dao.entity.enums.ImageTypeEnum;
+import ms.triones.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -42,12 +45,12 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 告警等级
      */
-    private String level;
+    private AlarmLevelEnum level;
 
     /**
      * 告警时间
      */
-    private LocalDateTime alarmTime;
+    private Instant alarmTime;
 
     /**
      * 告警描述
@@ -57,12 +60,12 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 处理时间
      */
-    private LocalDateTime dealTime;
+    private Instant dealTime;
 
     /**
      * 处理状态
      */
-    private String dealStatus;
+    private DealStatuEnums dealStatus;
 
     /**
      * 处理备注
@@ -72,9 +75,13 @@ public class AlarmLog extends BaseLogicEntity {
     /**
      * 相机编号
      */
-    private String deviceSn;
+    private String deviceName;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    private String assetSn;
+
+    private String assetSpareSn;
+
+    @TableField(typeHandler = ImageInfoListTypeHandler.class)
     private List<ImageInfo> images;
 
     @Data
@@ -82,6 +89,16 @@ public class AlarmLog extends BaseLogicEntity {
         private String uid;
         private String name;
         private String url;
-        private String type;
+        private ImageTypeEnum imageType;
+    }
+
+    @NoArgsConstructor
+    public static class ImageInfoListTypeHandler extends SpecialListTypeHandler {
+
+        @Override
+        public Class<ImageInfo> specialType() {
+            return ImageInfo.class;
+        }
+
     }
 }
