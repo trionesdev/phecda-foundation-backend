@@ -2,7 +2,9 @@ package ms.triones.backend.core.modules.asset.manager;
 
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.asset.dao.criteria.AssetCriteria;
 import ms.triones.backend.core.modules.asset.dao.criteria.SparePartCriteria;
+import ms.triones.backend.core.modules.asset.dao.entity.Asset;
 import ms.triones.backend.core.modules.asset.dao.entity.SparePart;
 import ms.triones.backend.core.modules.asset.dao.impl.SparePartDAO;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,10 @@ public class SparePartManager {
 
     public PageInfo<SparePart> queryPage(Integer pageNum, Integer pageSize, SparePartCriteria criteria) {
         return sparePartDAO.selectPage(pageNum, pageSize, criteria);
+    }
+
+    public List<SparePart> queryList(SparePartCriteria criteria) {
+        return sparePartDAO.selectList(criteria);
     }
 
     public List<SparePart> listAll() {

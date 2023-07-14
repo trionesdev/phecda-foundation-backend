@@ -1,5 +1,7 @@
 package ms.triones.backend.core.modules.asset.manager;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.asset.dao.criteria.AssetCriteria;
@@ -7,6 +9,7 @@ import ms.triones.backend.core.modules.asset.dao.entity.Asset;
 import ms.triones.backend.core.modules.asset.dao.impl.AssetDAO;
 import org.springframework.stereotype.Service;
 
+import java.sql.Wrapper;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,4 +54,9 @@ public class AssetManager {
     public List<Asset> listAll() {
         return assetDAO.list();
     }
+
+    public List<Asset> queryList(AssetCriteria criteria) {
+        return assetDAO.selectList(criteria);
+    }
+
 }
