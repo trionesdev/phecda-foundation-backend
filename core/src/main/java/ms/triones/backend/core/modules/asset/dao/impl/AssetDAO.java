@@ -1,7 +1,6 @@
 package ms.triones.backend.core.modules.asset.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -10,6 +9,7 @@ import com.moensun.commons.mybatisplus.util.MpPageUtils;
 import ms.triones.backend.core.modules.asset.dao.criteria.AssetCriteria;
 import ms.triones.backend.core.modules.asset.dao.entity.Asset;
 import ms.triones.backend.core.modules.asset.dao.mapper.AssetMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
