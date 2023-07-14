@@ -2,9 +2,7 @@ package ms.triones.backend.core.modules.asset.manager;
 
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import ms.triones.backend.core.modules.asset.dao.criteria.AssetCriteria;
 import ms.triones.backend.core.modules.asset.dao.criteria.SparePartCriteria;
-import ms.triones.backend.core.modules.asset.dao.entity.Asset;
 import ms.triones.backend.core.modules.asset.dao.entity.SparePart;
 import ms.triones.backend.core.modules.asset.dao.impl.SparePartDAO;
 import org.springframework.stereotype.Service;
