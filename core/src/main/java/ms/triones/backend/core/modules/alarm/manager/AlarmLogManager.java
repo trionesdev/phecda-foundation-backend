@@ -7,12 +7,8 @@ import ms.triones.backend.core.modules.alarm.dao.criteria.AlarmLogCriteria;
 import ms.triones.backend.core.modules.alarm.dao.entity.AlarmLog;
 import ms.triones.backend.core.modules.alarm.dao.entity.enums.DealStatuEnums;
 import ms.triones.backend.core.modules.alarm.dao.impl.AlarmLogDAO;
-import ms.triones.backend.core.modules.dict.dao.criteria.DictionaryCriteria;
-import ms.triones.backend.core.modules.dict.dao.entity.Dictionary;
-import ms.triones.backend.core.modules.dict.dao.impl.DictionaryDAO;
 import org.springframework.stereotype.Service;
 
-import java.sql.Wrapper;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
