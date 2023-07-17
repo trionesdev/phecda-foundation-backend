@@ -80,4 +80,7 @@ public class AlarmLogBO {
     private String assetOrAssetSpareName;
     private String assetOrAssetSpareSn;
 
+    private long allAlarms;
+    private long notDealAlarms;
+    private long monthlyAlarms;
 }

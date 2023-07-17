@@ -87,4 +87,10 @@ public class AlarmLogController {
         return alarmLogService.queryList(criteria);
     }
 
+    @Operation(summary = "查询报警统计")
+    @GetMapping(value = "alarm-logs/statistics")
+    public AlarmLogBO queryAlarmLogStatistics() {
+        return alarmLogService.queryAlarmLogStatistics();
+    }
+    
 }
