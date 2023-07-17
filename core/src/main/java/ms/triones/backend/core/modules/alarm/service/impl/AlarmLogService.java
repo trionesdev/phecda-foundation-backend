@@ -16,15 +16,9 @@ import ms.triones.backend.core.modules.asset.dao.entity.Asset;
 import ms.triones.backend.core.modules.asset.dao.entity.SparePart;
 import ms.triones.backend.core.modules.asset.manager.AssetManager;
 import ms.triones.backend.core.modules.asset.manager.SparePartManager;
-import ms.triones.backend.core.modules.dict.dao.criteria.DictionaryCriteria;
-import ms.triones.backend.core.modules.dict.dao.entity.Dictionary;
-import ms.triones.backend.core.modules.dict.manager.DictionaryManager;
-import ms.triones.backend.core.modules.dict.service.bo.DictionaryBO;
-import ms.triones.backend.core.modules.dict.support.DictionaryConvertMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -84,7 +78,7 @@ public class AlarmLogService {
         List<String> assetSpareSns = alarmLogBOS.stream().map(AlarmLogBO::getAssetSpareSn).collect(Collectors.toList());
         List<Asset> assets = assetManager.queryList(AssetCriteria.builder().sns(assetSns).build());
         List<SparePart> spareParts = sparePartManager.queryList(SparePartCriteria.builder().sns(assetSpareSns).build());
-        alarmLogBOS.stream().forEach(alarmLogBO -> {
+        alarmLogBOS.forEach(alarmLogBO -> {
             if (StringUtils.isNotBlank(alarmLogBO.getAssetSpareSn())) {
                 List<SparePart> collectTemp = spareParts.stream().filter(v -> v.getSn().equals(alarmLogBO.getAssetSpareSn())).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(collectTemp)) {

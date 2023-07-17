@@ -46,9 +46,9 @@ public class AlarmLogController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody AlarmLogRO args
     ) {
-        AlarmLog AlarmLog = AlarmRestConvertMapper.INSTANCE.from(args);
-        AlarmLog.setId(id);
-        alarmLogService.update(AlarmLog);
+        AlarmLog alarmLog = AlarmRestConvertMapper.INSTANCE.from(args);
+        alarmLog.setId(id);
+        alarmLogService.update(alarmLog);
     }
 
     @Operation(summary = "根据ID删除报警记录")
