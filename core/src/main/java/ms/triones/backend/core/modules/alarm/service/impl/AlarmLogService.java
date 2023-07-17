@@ -103,4 +103,12 @@ public class AlarmLogService {
         });
         return alarmLogBOS;
     }
+
+    public AlarmLogBO queryAlarmLogStatistics() {
+        long allAlarms = alarmLogManager.countAllAlarms();
+        long notDealAlarms = alarmLogManager.countNotDealAlarms();
+        long monthlyAlarms = alarmLogManager.countMonthlyAlarms();
+        return AlarmLogBO.builder().allAlarms(allAlarms).notDealAlarms(notDealAlarms).monthlyAlarms(monthlyAlarms).build();
+    }
+
 }
