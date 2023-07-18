@@ -122,6 +122,15 @@ public class DeviceController {
         return deviceService.queryAssetRelationDevice(assetSn);
     }
 
+    @Operation(summary = "查询设备列表(不分页)")
+    @GetMapping(value = "devices/list")
+    public List<Device> queryDeviceList(
+            DeviceQuery query
+    ) {
+        DeviceCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        return deviceService.queryList(criteria);
+    }
+
     @Operation(summary = "根据设备name获取设备物模型属性")
     @GetMapping(value = "devices/{deviceName}/properties")
     public List<DevicePropertyDataBO> queryDeviceProperties(
