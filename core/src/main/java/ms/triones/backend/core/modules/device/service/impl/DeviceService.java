@@ -175,4 +175,8 @@ public class DeviceService {
                 thingModel.getProperties().stream().map(property -> DeviceConvertMapper.INSTANCE.from(property))
                         .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
+
+    public List<Device> queryList(DeviceCriteria criteria) {
+        return deviceManager.queryList(criteria);
+    }
 }
