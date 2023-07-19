@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.device.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 @Repository
 public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
+
     private LambdaQueryWrapper<Product> buildQueryWrapper(ProductCriteria criteria) {
         LambdaQueryWrapper<Product> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
@@ -29,7 +31,9 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
     }
 
     public PageInfo<Product> selectPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
-        return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
+        LambdaQueryWrapper<Product> queryWrapper = buildQueryWrapper(criteria);
+        queryWrapper.orderByDesc(Product::getUpdatedAt);
+        return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     public void updateVersion(String productId, String version) {
