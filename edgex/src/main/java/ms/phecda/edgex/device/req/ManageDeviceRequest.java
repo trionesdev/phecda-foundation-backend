@@ -15,11 +15,13 @@ public class ManageDeviceRequest {
     private String nodeId;
     private Action action;
     private Add add;
+    private Update update;
     private Remove remove;
 
 
     public enum Action {
         ADD,
+        UPDATE,
         REMOVE
     }
 
@@ -28,6 +30,16 @@ public class ManageDeviceRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Add {
+        private String driver;
+        private String deviceName;
+        private Map<String,Object> protocols;
+    }
+
+    @Data
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Update {
         private String driver;
         private String deviceName;
         private Map<String,Object> protocols;

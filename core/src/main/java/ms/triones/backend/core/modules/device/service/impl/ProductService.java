@@ -71,15 +71,34 @@ public class ProductService {
     }
 
     public void upsertThingModel(String productId, ThingModelUpsertBO thingModelUpsert) {
-        ProductThingModelDraft ptmSnap = productThingModelDraftManager.queryByProductId(productId).orElse(ProductThingModelDraft.builder().productId(productId).thingModel(new ThingModel()).build());
+        ProductThingModelDraft ptmSnap = productThingModelDraftManager.queryByProductId(productId)
+                .orElse(ProductThingModelDraft.builder()
+                        .productId(productId)
+                        .thingModel(new ThingModel())
+                        .build());
         if (StrUtil.isBlank(thingModelUpsert.getIdentifier())) {
-            if (Objects.nonNull(thingModelUpsert.getProperty()) && ptmSnap.getThingModel().getProperties().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getProperty().getIdentifier(), t.getIdentifier()))) {
+            if (Objects.nonNull(thingModelUpsert.getProperty()) &&
+                    ptmSnap.getThingModel()
+                            .getProperties()
+                            .stream()
+                            .anyMatch(t -> Objects.equals(thingModelUpsert.getProperty()
+                                    .getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
             }
-            if (Objects.nonNull(thingModelUpsert.getService()) && ptmSnap.getThingModel().getServices().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getService().getIdentifier(), t.getIdentifier()))) {
+            if (Objects.nonNull(thingModelUpsert.getService()) &&
+                    ptmSnap.getThingModel()
+                            .getServices()
+                            .stream()
+                            .anyMatch(t -> Objects.equals(thingModelUpsert.getService()
+                                    .getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
             }
-            if (Objects.nonNull(thingModelUpsert.getEvent()) && ptmSnap.getThingModel().getEvents().stream().anyMatch(t -> Objects.equals(thingModelUpsert.getEvent().getIdentifier(), t.getIdentifier()))) {
+            if (Objects.nonNull(thingModelUpsert.getEvent()) &&
+                    ptmSnap.getThingModel()
+                            .getEvents()
+                            .stream()
+                            .anyMatch(t -> Objects.equals(thingModelUpsert.getEvent()
+                                    .getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
             }
             switch (thingModelUpsert.getAbilityType()) {

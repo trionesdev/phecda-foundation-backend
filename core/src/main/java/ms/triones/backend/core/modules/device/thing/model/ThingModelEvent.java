@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
@@ -13,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class ThingModelEvent extends ThingModelAbility {
     private Type type;
+    private List<Param> outParams;
 
     public enum Type {
         INFO,

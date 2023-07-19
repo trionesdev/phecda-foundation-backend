@@ -46,9 +46,7 @@ public class ProductController {
 
     @Operation(summary = "根据ID删除产品")
     @DeleteMapping(value = "products/{id}")
-    public void deleteProductById(
-            @PathVariable(value = "id") String id
-    ) {
+    public void deleteProductById(@PathVariable(value = "id") String id) {
         productService.deleteProductById(id);
     }
 
@@ -56,25 +54,20 @@ public class ProductController {
     @PutMapping(value = "products/{id}")
     public void updateProductById(
             @PathVariable(value = "id") String id,
-            @Validated @RequestBody ProductUpdateRO args
-    ) {
+            @Validated @RequestBody ProductUpdateRO args) {
         Product product = DeviceRestConvertMapper.INSTANT.from(args);
         product.setId(id);
     }
 
     @Operation(summary = "根据ID获取产品")
     @GetMapping(value = "products/{id}")
-    public Product queryProductById(
-            @PathVariable(value = "id") String id
-    ) {
+    public Product queryProductById(@PathVariable(value = "id") String id) {
         return productService.queryProductById(id).orElse(null);
     }
 
     @Operation(summary = "获取产品列表")
     @GetMapping(value = "products")
-    public List<Product> queryProductList(
-            ProductQuery query
-    ) {
+    public List<Product> queryProductList(ProductQuery query) {
         ProductCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
         return productService.queryList(criteria);
     }
@@ -83,16 +76,13 @@ public class ProductController {
     @GetMapping(value = "products/page")
     public PageInfo<Product> queryProductPage(
             @RequestParam(value = "pageNum") Integer pageNum,
-            @RequestParam(value = "pageSize") Integer pageSize
-    ) {
+            @RequestParam(value = "pageSize") Integer pageSize) {
         return productService.queryPage(pageNum, pageSize, ProductCriteria.builder().build());
     }
 
     @Operation(summary = "获取物模型(草稿)")
     @GetMapping(value = "products/{productId}/thing-model-draft")
-    public ProductThingModelDraft findProductThingModelDraft(
-            @PathVariable(value = "productId") String productId
-    ) {
+    public ProductThingModelDraft findProductThingModelDraft(@PathVariable(value = "productId") String productId) {
         return productService.findProductThingModelDraft(productId).orElse(null);
     }
 
@@ -100,13 +90,12 @@ public class ProductController {
     @PutMapping(value = "products/{productId}/thing-model-draft/upsert")
     public void upsertThingModelDraft(
             @PathVariable(value = "productId") String productId,
-            @Validated @RequestBody ProductThingModelUpsertRO args
-    ) {
+            @Validated @RequestBody ProductThingModelUpsertRO args) {
         ThingModelUpsertBO thingModelUpsertBO = DeviceRestConvertMapper.INSTANT.from(args);
         productService.upsertThingModel(productId, thingModelUpsertBO);
     }
 
-    @Operation(summary = "新增物模型功能(草稿)")
+    @Operation(summary = "删除物模型功能(草稿)")
     @DeleteMapping(value = "products/{productId}/thing-model-draft/abilities/{identifier}")
     public void deleteThingModel(
             @PathVariable(value = "productId") String productId,
@@ -117,9 +106,7 @@ public class ProductController {
 
     @Operation(summary = "发布物模型(草稿)")
     @PutMapping(value = "products/{productId}/thing-model-draft/publish")
-    public void publishThingModelDraft(
-            @PathVariable(value = "productId") String productId
-    ) {
+    public void publishThingModelDraft(@PathVariable(value = "productId") String productId) {
         productService.publishThingModel(productId);
     }
 
@@ -127,8 +114,7 @@ public class ProductController {
     @GetMapping(value = "products/{productId}/thing-model")
     public ProductThingModelVersion queryThingModel(
             @PathVariable(value = "productId") String productId,
-            @RequestParam(value = "version", required = false) String version
-    ) {
+            @RequestParam(value = "version", required = false) String version) {
         return productService.queryThingModel(productId, version).orElse(null);
     }
 
@@ -136,8 +122,10 @@ public class ProductController {
     @PutMapping(value = "products/{productId}/protocol-properties")
     public void updateProductProtocolProperties(
             @PathVariable(value = "productId") String productId,
-            @RequestBody ProductProtocolPropertiesUpdateRO args
-    ) {
-        productService.updateProductById(Product.builder().id(productId).protocolProperties(args.getProtocolProperties()).build());
+            @RequestBody ProductProtocolPropertiesUpdateRO args) {
+        productService.updateProductById(Product.builder()
+                .id(productId)
+                .protocolProperties(args.getProtocolProperties())
+                .build());
     }
 }

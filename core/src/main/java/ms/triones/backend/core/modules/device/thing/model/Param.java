@@ -10,22 +10,15 @@ import ms.phecda.edge.commons.valuetype.ValueTypeEnum;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThingModelProperty extends ThingModelAbility {
+public class Param {
+    private String identifier;
+    private String name;
     private ValueTypeEnum valueType;
     private ValueType valueSpec;
     private List<ValueType> valueSpecs;
-    private Rw rw;
-    private Boolean required;
-    private Boolean custom;
-
-    public enum Rw {
-        R,
-        W,
-        RW
-    }
 }
