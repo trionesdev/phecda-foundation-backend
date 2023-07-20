@@ -139,5 +139,19 @@ public class DeviceController {
         return deviceService.queryDeviceProperties(deviceName);
     }
 
+    @Operation(summary = "添加子设备")
+    @PostMapping(value = "devices/{id}/children/{ids}")
+    public void addChildDevice(
+            @PathVariable(value = "id") String parentDeviceId,
+            @PathVariable(value = "ids") List<String> childDeviceIds) {
+        deviceService.addChildDevice(parentDeviceId, childDeviceIds);
+    }
 
+    @Operation(summary = "删除子设备（只是移除与父设备之间的关系）")
+    @DeleteMapping(value = "devices/{id}/children/{ids}")
+    public void removeChildDevice(
+            @PathVariable(value = "id") String parentDeviceId,
+            @PathVariable(value = "ids") List<String> childDeviceIds) {
+        deviceService.removeChildDevice(parentDeviceId, childDeviceIds);
+    }
 }

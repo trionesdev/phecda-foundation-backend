@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
@@ -13,6 +14,7 @@ import ms.phecda.edge.device.req.RemoveDeviceRequest;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
+import ms.triones.backend.core.modules.device.dao.entity.Product.NodeType;
 import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
 import ms.triones.backend.core.modules.device.manager.impl.DeviceManager;
 import ms.triones.backend.core.modules.device.manager.impl.ProductManager;
@@ -24,11 +26,13 @@ import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import ms.triones.backend.core.provider.ssp.asset.impl.AssetProvider;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,6 +47,12 @@ public class DeviceService {
     private final AssetProvider assetProvider;
 
     public void createDevice(Device device) {
+        Product product = productManager.queryById(device.getProductId())
+                .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        if (Objects.equals(NodeType.GATEWAY, product.getNodeType())) {
+            device.setGatewayIdentifier(IdUtil.nanoId(8));
+        }
+
         deviceManager.create(device);
     }
 
@@ -178,5 +188,23 @@ public class DeviceService {
 
     public List<Device> queryList(DeviceCriteria criteria) {
         return deviceManager.queryList(criteria);
+    }
+
+    public void addChildDevice(String parentDeviceId, List<String> childDeviceIds) {
+        DeviceCriteria criteria = DeviceCriteria.builder()
+                .ids(childDeviceIds)
+                .build();
+        List<Device> devices = deviceManager.queryList(criteria);
+        List<Device> canAddDevices = devices.stream()
+                .filter(i -> StringUtils.isBlank(i.getGatewayDeviceId()) && (!Objects.equals(parentDeviceId, i.getId())))
+                .collect(Collectors.toList());
+        for (Device canAddDevice : canAddDevices) {
+            canAddDevice.setGatewayDeviceId(parentDeviceId);
+        }
+        deviceManager.updateBatchById(canAddDevices);
+    }
+
+    public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
+        deviceManager.removeChildDevice(parentDeviceId, childDeviceIds);
     }
 }
