@@ -27,6 +27,10 @@ public class DeviceManager {
         deviceDAO.updateById(device);
     }
 
+    public void updateBatchById(List<Device> entityList) {
+        deviceDAO.updateBatchById(entityList);
+    }
+
     public Optional<Device> queryById(String id) {
         return Optional.ofNullable(deviceDAO.getById(id));
     }
@@ -47,4 +51,7 @@ public class DeviceManager {
         return deviceDAO.getByName(name);
     }
 
+    public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
+        deviceDAO.removeChildDevice(parentDeviceId, childDeviceIds);
+    }
 }
