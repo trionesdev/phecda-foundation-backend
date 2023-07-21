@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ms.triones.backend.core.modules.device.dao.entity.Device.Protocol;
+import ms.triones.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class Device extends BaseLogicEntity {
     private String remarkName;
     private String gatewayIdentifier;
     private String gatewayDeviceId;
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<Protocol> protocols;
     @TableField(value = "is_activated")
     private Boolean activated;
@@ -39,5 +41,12 @@ public class Device extends BaseLogicEntity {
     public static class Protocol {
         private String name;
         private String value;
+    }
+
+    public static class ProtocolListTypeHandler extends SpecialListTypeHandler<Protocol> {
+        @Override
+        public Class<Protocol> specialType() {
+            return Protocol.class;
+        }
     }
 }
