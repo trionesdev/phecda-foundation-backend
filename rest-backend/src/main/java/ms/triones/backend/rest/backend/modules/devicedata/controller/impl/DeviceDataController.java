@@ -4,8 +4,8 @@ import com.moensun.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.devicedata.dao.criteria.DeviceDataCriteria;
 import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataBO;
-import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataQueryBO;
 import ms.triones.backend.core.modules.devicedata.service.impl.DeviceDataService;
 import ms.triones.backend.rest.backend.modules.devicedata.controller.query.DeviceDataQuery;
 import ms.triones.backend.rest.backend.modules.devicedata.support.DeviceDataConstants;
@@ -28,8 +28,8 @@ public class DeviceDataController {
     @Operation(summary = "查询设备数据列表")
     @GetMapping(value = "device-datas/list")
     public List<DeviceDataBO> queryDeviceDataList(@Validated DeviceDataQuery query) {
-        DeviceDataQueryBO queryBO = DeviceDataRestConvertMapper.INSTANCE.from(query);
-        return deviceDataService.queryList(queryBO);
+        DeviceDataCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
+        return deviceDataService.queryList(criteria);
     }
 
     @Operation(summary = "查询设备数据分页")
@@ -38,8 +38,8 @@ public class DeviceDataController {
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             @Validated DeviceDataQuery query) {
-        DeviceDataQueryBO queryBO = DeviceDataRestConvertMapper.INSTANCE.from(query);
-        return deviceDataService.queryPage(pageNum, pageSize, queryBO);
+        DeviceDataCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
+        return deviceDataService.queryPage(pageNum, pageSize, criteria);
     }
 
 

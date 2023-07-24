@@ -207,4 +207,15 @@ public class DeviceService {
     public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
         deviceManager.removeChildDevice(parentDeviceId, childDeviceIds);
     }
+    
+    public String getNodeIdByName(String name) {
+        Optional<Device> deviceOptional = deviceManager.queryByName(name);
+        Device device = deviceOptional.orElse(Device.builder().build());
+        if (StringUtils.isBlank(device.getGatewayDeviceId())) {
+            return device.getGatewayIdentifier();
+        }
+        Optional<Device> parentDeviceOpt = deviceManager.queryById(device.getGatewayDeviceId());
+        Device parentDevice = parentDeviceOpt.orElse(Device.builder().build());
+        return parentDevice.getGatewayIdentifier();
+    }
 }
