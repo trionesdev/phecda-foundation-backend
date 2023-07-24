@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
+import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.service.bo.DeviceEventDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
 import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
@@ -15,6 +16,7 @@ import ms.triones.backend.core.modules.device.service.impl.DeviceService;
 import ms.triones.backend.rest.backend.modules.device.controller.query.DeviceQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceCreateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceEnabledRO;
+import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceProtocolUpdateRO;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceConstants;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
@@ -153,5 +155,16 @@ public class DeviceController {
             @PathVariable(value = "id") String parentDeviceId,
             @PathVariable(value = "ids") List<String> childDeviceIds) {
         deviceService.removeChildDevice(parentDeviceId, childDeviceIds);
+    }
+
+    @Operation(summary = "根据ID修改协议值")
+    @PutMapping(value = "devices/{deviceId}/protocol")
+    public void updateDeviceProtocol(
+            @PathVariable(value = "deviceId") String productId,
+            @RequestBody DeviceProtocolUpdateRO args) {
+        deviceService.updateById(Device.builder()
+                .id(productId)
+                .protocols(args.getProtocols())
+                .build());
     }
 }
