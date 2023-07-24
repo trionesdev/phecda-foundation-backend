@@ -1,6 +1,6 @@
 package ms.triones.backend.rest.backend.modules.devicedata.support;
 
-import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataQueryBO;
+import ms.triones.backend.core.modules.devicedata.dao.criteria.DeviceDataCriteria;
 import ms.triones.backend.rest.backend.modules.devicedata.controller.query.DeviceDataQuery;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -11,5 +11,5 @@ public interface DeviceDataRestConvertMapper {
 
     DeviceDataRestConvertMapper INSTANCE = Mappers.getMapper(DeviceDataRestConvertMapper.class);
 
-    DeviceDataQueryBO from(DeviceDataQuery query);
+    DeviceDataCriteria from(DeviceDataQuery query);
 }
