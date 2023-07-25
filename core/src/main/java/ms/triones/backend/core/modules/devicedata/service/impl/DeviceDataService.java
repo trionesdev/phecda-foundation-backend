@@ -3,9 +3,10 @@ package ms.triones.backend.core.modules.devicedata.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.modules.devicedata.dao.criteria.DeviceDataCriteria;
 import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataBO;
-import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataQueryBO;
 import ms.triones.backend.core.modules.devicedata.support.util.IotDbUtils;
+import ms.triones.backend.core.provider.ssp.device.impl.DeviceProvider;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class DeviceDataService {
 
     private final SessionPool sessionPool;
+    private final DeviceProvider deviceProvider;
 
     public void insertRecord(String nodeId, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
         try {
@@ -92,14 +94,16 @@ public class DeviceDataService {
     }
 
 
-    public List<DeviceDataBO> queryList(DeviceDataQueryBO queryBO) {
-        List<Map<String, Object>> rawDataList = queryRawData("default", queryBO.getDeviceName(), Lists.newArrayList(queryBO.getField()),
-                queryBO.getStartTime().toEpochMilli(), queryBO.getEndTime().toEpochMilli());
-        return convertToBO(rawDataList, queryBO);
+    public List<DeviceDataBO> queryList(DeviceDataCriteria criteria) {
+        String nodeId = deviceProvider.getNodeIdByName(criteria.getDeviceName());
+        criteria.setNodeId(nodeId);
+        List<Map<String, Object>> rawDataList = queryRawData(criteria.getNodeId(), criteria.getDeviceName(), Lists.newArrayList(criteria.getField()),
+                criteria.getStartTime().toEpochMilli() * 1000, criteria.getEndTime().toEpochMilli() * 1000);
+        return convertToBO(rawDataList, criteria);
     }
 
-    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DeviceDataQueryBO queryBO) {
-        List<DeviceDataBO> deviceDataBOS = queryList(queryBO);
+    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DeviceDataCriteria criteria) {
+        List<DeviceDataBO> deviceDataBOS = queryList(criteria);
         return PageInfo.<DeviceDataBO>builder()
                 .pageNum(pageNum)
                 .pageSize(pageSize)
@@ -107,19 +111,20 @@ public class DeviceDataService {
                 .build();
     }
 
-    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DeviceDataQueryBO queryBO) {
+    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DeviceDataCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(rawDataList)) {
             for (Map<String, Object> rwaData : rawDataList) {
-                Instant time = Instant.ofEpochMilli(Long.parseLong(String.valueOf(rwaData.get("Time"))));
-                String devicePath = path("default", queryBO.getDeviceName() + "." + queryBO.getField());
+                String timeStr = String.valueOf(rwaData.get("Time")).substring(0, 13);
+                Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
+                String devicePath = path(criteria.getNodeId(), criteria.getDeviceName() + "." + criteria.getField());
 
                 DeviceDataBO deviceDataBO = DeviceDataBO.builder()
                         .time(time)
                         .value(rwaData.get(devicePath))
-                        .field(queryBO.getField())
-                        .assetSn(queryBO.getAssetSn())
-                        .deviceName(queryBO.getDeviceName())
+                        .field(criteria.getField())
+                        .assetSn(criteria.getAssetSn())
+                        .deviceName(criteria.getDeviceName())
                         .build();
                 deviceDataBOS.add(deviceDataBO);
             }
