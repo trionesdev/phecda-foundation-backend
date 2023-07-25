@@ -120,6 +120,10 @@ public class DeviceService {
     public void deviceOffline(String deviceId) {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         RemoveDeviceRequest removeDeviceRequest = RemoveDeviceRequest.builder().deviceName(device.getName()).build();
+        if (StrUtil.isNotBlank(device.getGatewayDeviceId())) {
+            Device gatewayDevice = deviceManager.queryById(device.getGatewayDeviceId()).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+            removeDeviceRequest.setNodeId(gatewayDevice.getGatewayIdentifier());
+        }
         edgeDeviceClient.removeDevice(removeDeviceRequest);
         deviceManager.updateById(Device.builder().id(deviceId).enabled(false).build());
     }

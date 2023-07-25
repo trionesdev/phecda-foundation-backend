@@ -77,4 +77,10 @@ public class LinkageSceneController {
         linkageSceneService.sceneEnabledChange(id, args.getEnabled());
     }
 
+    @Operation(summary = "删除场景")
+    @DeleteMapping(value = "scenes/{id}")
+    public void removeById(@PathVariable(value = "id") String id) {
+        linkageSceneService.deleteScene(id);
+    }
+
 }

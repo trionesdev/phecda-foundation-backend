@@ -47,6 +47,7 @@ public class LinkageSceneService {
     }
 
     public void deleteScene(String id) {
+        unregisterRule(id);
         linkageSceneManager.deleteById(id);
     }
 
@@ -55,9 +56,9 @@ public class LinkageSceneService {
             LinkageScene linkageScene = LinkageScene.builder().id(id).enabled(enabled).build();
             linkageSceneManager.updateById(linkageScene);
             if (enabled) {
-//TODO 通知规则注册
+                registerRule(id);
             } else {
-//todo 通知规则下线
+                unregisterRule(id);
             }
         });
     }

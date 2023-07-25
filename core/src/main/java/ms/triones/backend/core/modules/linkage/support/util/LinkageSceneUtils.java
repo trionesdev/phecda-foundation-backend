@@ -11,11 +11,16 @@ import org.jeasy.rules.api.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LinkageSceneUtils {
 
     public static Rule createRule(LinkageScene linkageScene, RuleActionFactory factory) {
         if (!BooleanUtil.isTrue(linkageScene.getEnabled())) {
+            return null;
+        }
+
+        if (Objects.isNull(linkageScene.getConditions())) {
             return null;
         }
 
