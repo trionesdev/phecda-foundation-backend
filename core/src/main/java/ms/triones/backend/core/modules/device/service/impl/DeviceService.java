@@ -209,13 +209,14 @@ public class DeviceService {
     }
     
     public String getNodeIdByName(String name) {
-        Optional<Device> deviceOptional = deviceManager.queryByName(name);
-        Device device = deviceOptional.orElse(Device.builder().build());
-        if (StringUtils.isBlank(device.getGatewayDeviceId())) {
-            return device.getGatewayIdentifier();
+        Device device = deviceManager.queryByName(name).orElse(Device.builder().build());
+        Product product = productManager.queryById(device.getProductId()).orElse(Product.builder().build());
+
+        if (product.getNodeType().equals(NodeType.GATEWAY_SUB)) {
+            Optional<Device> parentDeviceOpt = deviceManager.queryById(device.getGatewayDeviceId());
+            Device parentDevice = parentDeviceOpt.orElse(Device.builder().build());
+            return parentDevice.getGatewayIdentifier();
         }
-        Optional<Device> parentDeviceOpt = deviceManager.queryById(device.getGatewayDeviceId());
-        Device parentDevice = parentDeviceOpt.orElse(Device.builder().build());
-        return parentDevice.getGatewayIdentifier();
+        return device.getGatewayIdentifier();
     }
 }
