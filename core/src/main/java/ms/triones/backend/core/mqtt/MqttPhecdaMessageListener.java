@@ -5,8 +5,8 @@ import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.triones.backend.core.modules.device.service.impl.DeviceService;
 import ms.triones.backend.core.modules.devicedata.service.impl.DeviceDataService;
+import ms.triones.backend.core.modules.linkage.service.impl.LinkageSceneService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -20,10 +20,11 @@ import java.util.Objects;
 @Component
 public class MqttPhecdaMessageListener implements IMqttMessageListener {
     private final DeviceDataService deviceDataService;
+    private final LinkageSceneService linkageSceneService;
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        log.info("receice message, topic: {}, message: {}", topic, message);
+//        log.info("receice message, topic: {}, message: {}", topic, message);
         byte[] payload = message.getPayload();
         PhecdaMessage phecdaMessage = JSONObject.parseObject(new String(payload), PhecdaMessage.class);
         if (Objects.isNull(phecdaMessage)
@@ -31,6 +32,7 @@ public class MqttPhecdaMessageListener implements IMqttMessageListener {
             return;
         }
 
+        //save
         List<String> measurements = Lists.newArrayList();
         List<String> values = Lists.newArrayList();
         for (Source source : phecdaMessage.getSources()) {
@@ -38,7 +40,10 @@ public class MqttPhecdaMessageListener implements IMqttMessageListener {
             values.add(source.getValue());
         }
 
-        deviceDataService.insertRecord(phecdaMessage.getNodeId(), phecdaMessage.getDeviceName(), phecdaMessage.getOrigin(), measurements, values);
+        deviceDataService.insertRecord(phecdaMessage.getNodeId(), phecdaMessage.getDeviceName(), phecdaMessage.getTime(), measurements, values);
+
+        System.currentTimeMillis();
+        //TODO alarm
     }
 
     @Data
@@ -48,7 +53,7 @@ public class MqttPhecdaMessageListener implements IMqttMessageListener {
         private String deviceName;
         private String thingModelVersion;
         private String name;
-        private Long origin;
+        private Long time;
         private List<Source> sources;
     }
 
