@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import ms.triones.backend.core.modules.device.dao.entity.enums.ProductStatusEnum;
 
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class Product extends BaseLogicEntity {
     private String thingModelVersion;
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<ProtocolProperty> protocolProperties;
-    @TableField(value = "is_enabled")
-    private Boolean enabled;
+    private ProductStatusEnum status;
 
 
     @AllArgsConstructor

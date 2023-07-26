@@ -12,4 +12,5 @@ public class ProductUpdateRO {
     private String name;
     @NotNull
     private Product.NodeType nodeType;
+    private String driverName;
 }

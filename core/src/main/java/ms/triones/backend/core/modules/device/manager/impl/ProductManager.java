@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
+import ms.triones.backend.core.modules.device.dao.entity.enums.ProductStatusEnum;
 import ms.triones.backend.core.modules.device.dao.impl.ProductDAO;
 import ms.triones.backend.core.modules.device.dao.impl.ProductThingModelVersionDAO;
 import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
@@ -73,5 +74,13 @@ public class ProductManager {
             return Collections.emptyList();
         }
         return DeviceConvertMapper.INSTANCE.productDtoFromRecord(records);
+    }
+
+    public void publish(String id) {
+        productDAO.updateStatus(id, ProductStatusEnum.RELEASE);
+    }
+
+    public void revokePublish(String id) {
+        productDAO.updateStatus(id, ProductStatusEnum.DEVELOPMENT);
     }
 }

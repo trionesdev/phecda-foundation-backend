@@ -12,4 +12,5 @@ public class ProductCreateRO {
     private String name;
     @NotNull
     private Product.NodeType nodeType;
+    private String driverName;
 }

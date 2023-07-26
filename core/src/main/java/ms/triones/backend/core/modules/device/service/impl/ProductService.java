@@ -188,4 +188,12 @@ public class ProductService {
     public void updateProductProtocolProperties(Product product) {
         productManager.updateById(product);
     }
+
+    public void publishProduct(String productId) {
+        productManager.publish(productId);
+    }
+
+    public void revokePublishProduct(String productId) {
+        productManager.revokePublish(productId);
+    }
 }

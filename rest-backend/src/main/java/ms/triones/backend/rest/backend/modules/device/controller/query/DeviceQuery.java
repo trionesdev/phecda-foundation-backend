@@ -6,4 +6,6 @@ import lombok.Data;
 public class DeviceQuery {
     private String productId;
     private String gatewayDeviceId;
+    private String name;
+    private String remarkName;
 }

@@ -11,5 +11,6 @@ import ms.triones.backend.core.modules.device.dao.entity.Product;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductCriteria {
+    private String name;
     private Product.NodeType nodeType;
 }

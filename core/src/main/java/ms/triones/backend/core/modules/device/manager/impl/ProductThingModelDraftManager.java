@@ -40,5 +40,4 @@ public class ProductThingModelDraftManager {
             productDAO.updateVersion(productId, version.getId());
         }
     }
-
 }

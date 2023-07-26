@@ -8,6 +8,7 @@ import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelDraft;
 import ms.triones.backend.core.modules.device.dao.entity.ProductThingModelVersion;
+import ms.triones.backend.core.modules.device.dao.entity.enums.ProductStatusEnum;
 import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.core.modules.device.service.impl.ProductService;
 import ms.triones.backend.core.modules.device.thing.valuetype.ValueTypeOption;
@@ -41,6 +42,7 @@ public class ProductController {
     @PostMapping(value = "products")
     public void createProduct(@Validated @RequestBody ProductCreateRO args) {
         Product product = DeviceRestConvertMapper.INSTANT.from(args);
+        product.setStatus(ProductStatusEnum.DEVELOPMENT);
         productService.createProduct(product);
     }
 
@@ -56,7 +58,9 @@ public class ProductController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody ProductUpdateRO args) {
         Product product = DeviceRestConvertMapper.INSTANT.from(args);
+        product.setStatus(ProductStatusEnum.DEVELOPMENT);
         product.setId(id);
+        productService.updateProductById(product);
     }
 
     @Operation(summary = "根据ID获取产品")
@@ -76,8 +80,10 @@ public class ProductController {
     @GetMapping(value = "products/page")
     public PageInfo<Product> queryProductPage(
             @RequestParam(value = "pageNum") Integer pageNum,
-            @RequestParam(value = "pageSize") Integer pageSize) {
-        return productService.queryPage(pageNum, pageSize, ProductCriteria.builder().build());
+            @RequestParam(value = "pageSize") Integer pageSize,
+            ProductQuery query) {
+        ProductCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        return productService.queryPage(pageNum, pageSize, criteria);
     }
 
     @Operation(summary = "获取物模型(草稿)")
@@ -127,5 +133,17 @@ public class ProductController {
                 .id(productId)
                 .protocolProperties(args.getProtocolProperties())
                 .build());
+    }
+
+    @Operation(summary = "发布产品")
+    @PutMapping(value = "products/{productId}/publish")
+    public void publishProduct(@PathVariable(value = "productId") String productId) {
+        productService.publishProduct(productId);
+    }
+
+    @Operation(summary = "撤销发布产品")
+    @PutMapping(value = "products/{productId}/unpublish")
+    public void revokePublishProduct(@PathVariable(value = "productId") String productId) {
+        productService.revokePublishProduct(productId);
     }
 }
