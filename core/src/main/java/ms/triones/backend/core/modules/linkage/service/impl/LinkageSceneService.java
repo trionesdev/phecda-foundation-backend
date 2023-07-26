@@ -8,9 +8,11 @@ import ms.triones.backend.core.modules.linkage.dao.criteria.LinkageSceneCriteria
 import ms.triones.backend.core.modules.linkage.dao.entity.LinkageScene;
 import ms.triones.backend.core.modules.linkage.manager.impl.LinkageSceneManager;
 import ms.triones.backend.core.modules.linkage.service.factory.ruleaction.RuleActionFactory;
+import ms.triones.backend.core.modules.linkage.support.rule.PhecdaRule;
 import ms.triones.backend.core.modules.linkage.support.util.LinkageSceneUtils;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
+import org.jeasy.rules.api.RuleListener;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
 import org.jeasy.rules.core.DefaultRulesEngine;
@@ -24,10 +26,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class LinkageSceneService {
-    private final RulesEngine rulesEngine = new DefaultRulesEngine();
+    private final DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
     private final Rules linkageRules = new Rules();
     private final LinkageSceneManager linkageSceneManager;
     private final RuleActionFactory ruleActionFactory;
+
+    {
+        rulesEngine.registerRuleListener(new RuleListener() {
+            @Override
+            public void beforeExecute(Rule rule, Facts facts) {
+                facts.put("ruleName", rule.getName());
+            }
+        });
+    }
 
     public PageInfo<LinkageScene> page(LinkageSceneCriteria criteria) {
         return linkageSceneManager.page(criteria);

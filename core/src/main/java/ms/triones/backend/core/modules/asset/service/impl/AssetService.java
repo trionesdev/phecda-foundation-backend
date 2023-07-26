@@ -52,4 +52,8 @@ public class AssetService {
     public List<Asset> queryAllAsset() {
         return assetManager.listAll();
     }
+
+    public Optional<Asset> queryByDeviceName(String deviceName) {
+        return assetManager.queryByDeviceName(deviceName);
+    }
 }

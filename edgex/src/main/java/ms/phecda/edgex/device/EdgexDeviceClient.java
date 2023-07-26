@@ -45,6 +45,7 @@ public class EdgexDeviceClient implements EdgeDeviceClient {
         ManageDeviceRequest.Add add = ManageDeviceRequest.Add.builder()
                 .driver(request.getDriver())
                 .deviceName(request.getDeviceName())
+                .thingModelVersion(request.getThingModelVersion())
                 .protocols(request.getProtocols())
                 .build();
         ManageDeviceRequest mdReq = ManageDeviceRequest.builder()

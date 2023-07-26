@@ -46,4 +46,8 @@ public class SparePartService {
     public List<SparePart> queryAllSpareParts() {
         return sparePartManager.listAll();
     }
+
+    public Optional<SparePart> queryByDeviceName(String deviceName) {
+        return sparePartManager.queryByDeviceName(deviceName);
+    }
 }

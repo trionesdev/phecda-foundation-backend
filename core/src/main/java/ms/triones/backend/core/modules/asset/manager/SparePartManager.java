@@ -51,4 +51,8 @@ public class SparePartManager {
     public List<SparePart> listAll() {
         return sparePartDAO.list();
     }
+
+    public Optional<SparePart> queryByDeviceName(String deviceName) {
+        return sparePartDAO.queryByDeviceName(deviceName);
+    }
 }

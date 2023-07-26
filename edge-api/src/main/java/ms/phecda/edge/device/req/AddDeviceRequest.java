@@ -12,5 +12,6 @@ import java.util.Map;
 public class AddDeviceRequest extends BaseDeviceRequest{
     private String driver;
     private String deviceName;
+    private String thingModelVersion;
     private Map<String,Object> protocols;
 }
