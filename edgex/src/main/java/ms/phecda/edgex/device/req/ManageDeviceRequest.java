@@ -32,6 +32,7 @@ public class ManageDeviceRequest {
     public static class Add {
         private String driver;
         private String deviceName;
+        private String thingModelVersion;
         private Map<String,Object> protocols;
     }
 

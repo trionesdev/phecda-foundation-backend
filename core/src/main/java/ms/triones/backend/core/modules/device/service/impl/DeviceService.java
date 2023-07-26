@@ -96,7 +96,10 @@ public class DeviceService {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         //region edge add device
-        AddDeviceRequest addDeviceRequest = AddDeviceRequest.builder().deviceName(device.getName()).build();
+        AddDeviceRequest addDeviceRequest = AddDeviceRequest.builder()
+                .deviceName(device.getName())
+                .thingModelVersion(product.getThingModelVersion())
+                .build();
         addDeviceRequest.setDriver(product.getDriverName());
         Map<String, Object> protocols = Maps.newHashMap();
         if (CollectionUtil.isNotEmpty(device.getProtocols())) {
@@ -211,7 +214,7 @@ public class DeviceService {
     public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
         deviceManager.removeChildDevice(parentDeviceId, childDeviceIds);
     }
-    
+
     public String getNodeIdByName(String name) {
         Device device = deviceManager.queryByName(name).orElse(Device.builder().build());
         Product product = productManager.queryById(device.getProductId()).orElse(Product.builder().build());
@@ -222,5 +225,9 @@ public class DeviceService {
             return parentDevice.getGatewayIdentifier();
         }
         return device.getGatewayIdentifier();
+    }
+
+    public Optional<Device> queryByName(String name) {
+        return deviceManager.queryByName(name);
     }
 }

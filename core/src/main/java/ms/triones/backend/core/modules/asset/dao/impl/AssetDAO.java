@@ -54,4 +54,10 @@ public class AssetDAO extends ServiceImpl<AssetMapper, Asset> {
         queryWrapper.eq(Asset::getSn, sn);
         return Optional.ofNullable(baseMapper.selectOne(queryWrapper));
     }
+
+    public Optional<Asset> queryByDeviceName(String deviceName) {
+        LambdaQueryWrapper<Asset> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.apply("jsonb_exists(device_names, {0})", deviceName);
+        return Optional.ofNullable(getOne(queryWrapper));
+    }
 }

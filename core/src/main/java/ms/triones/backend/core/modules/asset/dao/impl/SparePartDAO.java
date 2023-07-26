@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.mybatisplus.util.MpPageUtils;
 import ms.triones.backend.core.modules.asset.dao.criteria.SparePartCriteria;
+import ms.triones.backend.core.modules.asset.dao.entity.Asset;
 import ms.triones.backend.core.modules.asset.dao.entity.SparePart;
 import ms.triones.backend.core.modules.asset.dao.mapper.SparePartMapper;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>
@@ -44,5 +46,11 @@ public class SparePartDAO extends ServiceImpl<SparePartMapper, SparePart> {
 
     public PageInfo<SparePart> selectPage(Integer pageNum, Integer pageSize, SparePartCriteria criteria) {
         return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
+    }
+
+    public Optional<SparePart> queryByDeviceName(String deviceName) {
+        LambdaQueryWrapper<SparePart> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.apply("jsonb_exists(device_names, {0})", deviceName);
+        return Optional.ofNullable(getOne(queryWrapper));
     }
 }

@@ -12,6 +12,6 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        linkageSceneService.registerAllRules();
+        linkageSceneService.registerAllRules();
     }
 }

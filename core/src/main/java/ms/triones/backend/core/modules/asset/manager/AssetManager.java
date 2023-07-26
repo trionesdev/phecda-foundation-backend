@@ -59,4 +59,7 @@ public class AssetManager {
         return assetDAO.selectList(criteria);
     }
 
+    public Optional<Asset> queryByDeviceName(String deviceName) {
+        return assetDAO.queryByDeviceName(deviceName);
+    }
 }
