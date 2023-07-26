@@ -1,6 +1,7 @@
 package ms.triones.backend.core.modules.device.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,7 +10,9 @@ import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.mybatisplus.util.MpPageUtils;
 import ms.triones.backend.core.modules.device.dao.criteria.ProductCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
+import ms.triones.backend.core.modules.device.dao.entity.enums.ProductStatusEnum;
 import ms.triones.backend.core.modules.device.dao.mapper.ProductMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +25,7 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
         LambdaQueryWrapper<Product> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(Objects.nonNull(criteria.getNodeType()), Product::getNodeType, criteria.getNodeType());
+            queryWrapper.like(StringUtils.isNotBlank(criteria.getName()), Product::getName, criteria.getName());
         }
         return queryWrapper;
     }
@@ -38,5 +42,12 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
 
     public void updateVersion(String productId, String version) {
         baseMapper.updateById(Product.builder().id(productId).thingModelVersion(version).build());
+    }
+
+    public void updateStatus(String id, ProductStatusEnum status) {
+        LambdaUpdateWrapper<Product> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Product::getStatus, status);
+        updateWrapper.eq(Product::getId, id);
+        update(updateWrapper);
     }
 }

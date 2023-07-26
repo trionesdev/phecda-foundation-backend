@@ -28,6 +28,8 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
             queryWrapper.eq(StrUtil.isNotBlank(criteria.getGatewayDeviceId()), Device::getGatewayDeviceId, criteria.getGatewayDeviceId());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getNames()), Device::getName, criteria.getNames());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getIds()), Device::getId, criteria.getIds());
+            queryWrapper.like(StrUtil.isNotBlank(criteria.getName()), Device::getName, criteria.getName());
+            queryWrapper.like(StrUtil.isNotBlank(criteria.getRemarkName()), Device::getRemarkName, criteria.getRemarkName());
         }
         return queryWrapper.orderByDesc(Device::getCreatedAt);
     }

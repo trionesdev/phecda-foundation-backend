@@ -14,6 +14,8 @@ import java.util.Collection;
 public class DeviceCriteria {
     private String productId;
     private String gatewayDeviceId;
+    private String name;
+    private String remarkName;
 
     private Collection<String> names;
     private Collection<String> ids;

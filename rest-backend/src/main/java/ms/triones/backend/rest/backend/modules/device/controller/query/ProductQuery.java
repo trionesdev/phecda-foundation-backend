@@ -5,5 +5,9 @@ import ms.triones.backend.core.modules.device.dao.entity.Product;
 
 @Data
 public class ProductQuery {
+    private String name;
     private Product.NodeType nodeType;
+
+    private Integer pageNum;
+    private Integer pageSize;
 }
