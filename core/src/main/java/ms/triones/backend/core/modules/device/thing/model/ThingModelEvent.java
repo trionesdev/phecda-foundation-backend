@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ThingModelEvent extends ThingModelAbility {
     private Type type;
-    private List<Param> outParams;
+    private List<Param> outputParams;
 
     public enum Type {
         INFO,
