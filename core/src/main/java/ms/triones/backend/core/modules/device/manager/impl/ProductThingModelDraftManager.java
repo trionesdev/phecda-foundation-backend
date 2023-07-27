@@ -36,6 +36,7 @@ public class ProductThingModelDraftManager {
         ProductThingModelDraft draft = productThingModelDraftDAO.selectByProductId(productId);
         if (Objects.nonNull(draft)) {
             ProductThingModelVersion version = DeviceConvertMapper.INSTANCE.from(draft);
+            version.setId(null);
             productThingModelVersionDAO.save(version);
             productDAO.updateVersion(productId, version.getId());
         }
