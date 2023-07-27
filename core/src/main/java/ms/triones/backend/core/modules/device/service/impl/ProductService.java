@@ -180,7 +180,9 @@ public class ProductService {
 
     public Optional<ProductThingModelVersion> queryThingModel(String productId, String version) {
         if (StrUtil.isBlank(version)) {
-            version = productManager.queryById(productId).orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND")).getThingModelVersion();
+            version = productManager.queryById(productId)
+                    .orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND"))
+                    .getThingModelVersion();
         }
         return productThingModelVersionManager.findByProductVersion(productId, version);
     }
