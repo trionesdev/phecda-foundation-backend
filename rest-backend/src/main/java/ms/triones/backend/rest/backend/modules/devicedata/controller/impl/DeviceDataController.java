@@ -23,8 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = DeviceDataConstants.DEVICE_DATA_URI)
 public class DeviceDataController {
-
     private final DeviceDataService deviceDataService;
+
     @Operation(summary = "查询设备数据列表")
     @GetMapping(value = "device-datas/list")
     public List<DeviceDataBO> queryDeviceDataList(@Validated DeviceDataQuery query) {
@@ -40,6 +40,12 @@ public class DeviceDataController {
             @Validated DeviceDataQuery query) {
         DeviceDataCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
         return deviceDataService.queryPage(pageNum, pageSize, criteria);
+    }
+
+    @Operation(summary = "查询设备某个属性最新的数据值")
+    @GetMapping(value = "device-datas/latest")
+    public DeviceDataBO latestData(@RequestParam String deviceName, @RequestParam String propertyIdentifier) {
+        return deviceDataService.getLatestData(deviceName, propertyIdentifier);
     }
 
 

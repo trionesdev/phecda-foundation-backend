@@ -3,6 +3,7 @@ package ms.triones.backend.core.modules.devicedata.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.moensun.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ms.triones.backend.core.modules.devicedata.dao.criteria.DeviceDataCriteria;
 import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataBO;
 import ms.triones.backend.core.modules.devicedata.support.util.IotDbUtils;
@@ -13,6 +14,8 @@ import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.pool.SessionDataSetWrapper;
 import org.apache.iotdb.session.pool.SessionPool;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
+import org.apache.iotdb.tsfile.read.common.Field;
+import org.apache.iotdb.tsfile.read.common.RowRecord;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DeviceDataService {
@@ -131,5 +135,30 @@ public class DeviceDataService {
         }
 
         return deviceDataBOS;
+    }
+
+    public DeviceDataBO getLatestData(String deviceName, String propertyIdentifier) {
+        try {
+            String nodeId = deviceProvider.getNodeIdByName(deviceName);
+            SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier + " from " + path(nodeId, deviceName));
+
+            DeviceDataBO deviceDataBO = DeviceDataBO.builder().build();
+            while (sessionDataSet.hasNext()) {
+                RowRecord rowRecord = sessionDataSet.next();
+                if (rowRecord.isAllNull()) {
+                    break;
+                }
+
+                deviceDataBO.setTime(Instant.ofEpochMilli(rowRecord.getTimestamp() / 1000));
+
+                Field field = rowRecord.getFields().get(1);
+                deviceDataBO.setValue(field.getObjectValue(field.getDataType()));
+            }
+            return deviceDataBO;
+        } catch (Exception e) {
+            log.error("getLatestData fail: ", e);
+        }
+
+        return null;
     }
 }

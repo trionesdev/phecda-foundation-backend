@@ -7,7 +7,6 @@ import java.time.Instant;
 
 @Data
 public class DeviceDataQuery {
-
     @NotNull
     private Instant startTime;
     @NotNull
