@@ -142,9 +142,7 @@ public class DeviceDataService {
     public DeviceDataBO getLatestData(String deviceName, String propertyIdentifier) {
         try {
             String nodeId = deviceProvider.getNodeIdByName(deviceName);
-            log.info("==query param, nodeId = {}, deviceName = {}, propertyIdentifier = {}", nodeId, deviceName, propertyIdentifier);
             SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier + " from " + path(nodeId, deviceName));
-            log.info("==query data: {}", sessionDataSet);
 
             DeviceDataBO deviceDataBO = DeviceDataBO.builder().build();
             while (sessionDataSet.hasNext()) {
@@ -156,7 +154,7 @@ public class DeviceDataService {
                 deviceDataBO.setTime(Instant.ofEpochMilli(rowRecord.getTimestamp() / 1000));
 
                 Field field = rowRecord.getFields().get(1);
-                deviceDataBO.setValue(field.getObjectValue(field.getDataType()));
+                deviceDataBO.setValue(IotDbUtils.fieldValue(field));
             }
             return deviceDataBO;
         } catch (Exception e) {
