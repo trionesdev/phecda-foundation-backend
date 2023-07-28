@@ -11,7 +11,6 @@ public class DeviceDataQuery {
     private Instant startTime;
     @NotNull
     private Instant endTime;
-    @NotNull
     private String assetSn;
     @NotNull
     private String deviceName;
