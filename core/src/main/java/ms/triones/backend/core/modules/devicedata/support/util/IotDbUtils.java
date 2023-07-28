@@ -46,6 +46,7 @@ public class IotDbUtils {
             case VECTOR:
                 return field.getObjectValue(TSDataType.VECTOR);
             case TEXT:
+                return field.getStringValue();
             default:
                 return field.getBinaryV();
         }
