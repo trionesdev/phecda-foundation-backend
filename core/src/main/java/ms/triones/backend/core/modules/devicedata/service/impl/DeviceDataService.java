@@ -51,7 +51,8 @@ public class DeviceDataService {
     public List<Map<String, Object>> queryRawData(String nodeId, String deviceName,List<String> fields, long startTime, long endTime) {
         String devicePath = path(nodeId, deviceName);
         List<String> paths = fields.stream().map(field -> devicePath + "." + field).collect(Collectors.toList());
-        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeRawDataQuery(paths, startTime, endTime, 6000)) {
+        try {
+            SessionDataSetWrapper sessionDataSet = sessionPool.executeRawDataQuery(paths, startTime, endTime, 6000);
             return IotDbUtils.toList(sessionDataSet);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
@@ -61,7 +62,8 @@ public class DeviceDataService {
     public List<Map<String, Object>> queryLastData(String nodeId, String deviceName, List<String> fields) {
         String devicePath = path(nodeId, deviceName);
         List<String> paths = fields.stream().map(field -> devicePath + "." + field).collect(Collectors.toList());
-        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeLastDataQuery(paths)) {
+        try {
+            SessionDataSetWrapper sessionDataSet = sessionPool.executeLastDataQuery(paths);
             return IotDbUtils.toList(sessionDataSet);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
@@ -140,7 +142,9 @@ public class DeviceDataService {
     public DeviceDataBO getLatestData(String deviceName, String propertyIdentifier) {
         try {
             String nodeId = deviceProvider.getNodeIdByName(deviceName);
+            log.info("==query param, nodeId = {}, deviceName = {}, propertyIdentifier = {}", nodeId, deviceName, propertyIdentifier);
             SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier + " from " + path(nodeId, deviceName));
+            log.info("==query data: {}", sessionDataSet);
 
             DeviceDataBO deviceDataBO = DeviceDataBO.builder().build();
             while (sessionDataSet.hasNext()) {
