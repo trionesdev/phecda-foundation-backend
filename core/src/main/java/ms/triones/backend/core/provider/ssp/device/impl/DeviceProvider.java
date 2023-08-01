@@ -11,8 +11,4 @@ public class DeviceProvider {
     @Lazy
     @Resource
     private DeviceService deviceService;
-
-    public String getNodeIdByName(String name) {
-        return deviceService.getNodeIdByName(name);
-    }
 }

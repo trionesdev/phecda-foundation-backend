@@ -1,12 +1,12 @@
 package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.core.util.PageUtils;
 import com.moensun.commons.exception.NotFoundException;
+import com.moensun.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.edge.device.EdgeDeviceClient;
 import ms.phecda.edge.device.req.AddDeviceRequest;
@@ -14,17 +14,17 @@ import ms.phecda.edge.device.req.RemoveDeviceRequest;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
-import ms.triones.backend.core.modules.device.dao.entity.Product.NodeType;
 import ms.triones.backend.core.modules.device.manager.dto.ProductDTO;
 import ms.triones.backend.core.modules.device.manager.impl.DeviceManager;
 import ms.triones.backend.core.modules.device.manager.impl.ProductManager;
-import ms.triones.backend.core.modules.device.manager.impl.ProductThingModelVersionManager;
 import ms.triones.backend.core.modules.device.service.bo.DeviceEventDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
 import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import ms.triones.backend.core.provider.ssp.asset.impl.AssetProvider;
+import ms.triones.backend.core.provider.ssp.edge.impl.NodeProvider;
+import ms.triones.backend.core.provider.ssp.edge.pdo.NodePDO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -42,17 +42,11 @@ import java.util.stream.Collectors;
 public class DeviceService {
     private final DeviceManager deviceManager;
     private final ProductManager productManager;
-    private final ProductThingModelVersionManager productThingModelVersionManager;
     private final EdgeDeviceClient edgeDeviceClient;
     private final AssetProvider assetProvider;
+    private final NodeProvider nodeProvider;
 
     public void createDevice(Device device) {
-        Product product = productManager.queryById(device.getProductId())
-                .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
-        if (Objects.equals(NodeType.GATEWAY, product.getNodeType())) {
-            device.setGatewayIdentifier(IdUtil.nanoId(8));
-        }
-
         deviceManager.create(device);
     }
 
@@ -95,6 +89,11 @@ public class DeviceService {
     public void deviceOnline(String deviceId) {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+
+        if (StrUtil.isBlank(device.getNodeId())) {
+            throw new BusinessException("NODE_NOT_CONFIG");
+        }
+
         //region edge add device
         AddDeviceRequest addDeviceRequest = AddDeviceRequest.builder()
                 .deviceName(device.getName())
@@ -106,10 +105,13 @@ public class DeviceService {
             device.getProtocols().forEach(t -> protocols.put(t.getName(), t.getValue()));
         }
         addDeviceRequest.setProtocols(protocols);
-        if (StrUtil.isNotBlank(device.getGatewayDeviceId())) {
-            Device gatewayDevice = deviceManager.queryById(device.getGatewayDeviceId()).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-            addDeviceRequest.setNodeId(gatewayDevice.getGatewayIdentifier());
+
+        NodePDO node = nodeProvider.getById(device.getNodeId());
+        if (Objects.isNull(node)) {
+            throw new NotFoundException("NODE_NOT_FOUND");
         }
+        addDeviceRequest.setNodeId(node.getIdentifier());
+
         edgeDeviceClient.addDevice(addDeviceRequest);
         //endregion
         deviceManager.updateById(Device.builder().id(deviceId).enabled(true).build());
@@ -123,10 +125,17 @@ public class DeviceService {
     public void deviceOffline(String deviceId) {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         RemoveDeviceRequest removeDeviceRequest = RemoveDeviceRequest.builder().deviceName(device.getName()).build();
-        if (StrUtil.isNotBlank(device.getGatewayDeviceId())) {
-            Device gatewayDevice = deviceManager.queryById(device.getGatewayDeviceId()).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-            removeDeviceRequest.setNodeId(gatewayDevice.getGatewayIdentifier());
+
+        if (StrUtil.isBlank(device.getNodeId())) {
+            throw new BusinessException("NODE_NOT_CONFIG");
         }
+
+        NodePDO node = nodeProvider.getById(device.getNodeId());
+        if (Objects.isNull(node)) {
+            throw new NotFoundException("NODE_NOT_FOUND");
+        }
+        removeDeviceRequest.setNodeId(node.getIdentifier());
+
         edgeDeviceClient.removeDevice(removeDeviceRequest);
         deviceManager.updateById(Device.builder().id(deviceId).enabled(false).build());
     }
@@ -203,28 +212,16 @@ public class DeviceService {
                 .build();
         List<Device> devices = deviceManager.queryList(criteria);
         List<Device> canAddDevices = devices.stream()
-                .filter(i -> StringUtils.isBlank(i.getGatewayDeviceId()) && (!Objects.equals(parentDeviceId, i.getId())))
+                .filter(i -> StringUtils.isBlank(i.getGatewayId()) && (!Objects.equals(parentDeviceId, i.getId())))
                 .collect(Collectors.toList());
         for (Device canAddDevice : canAddDevices) {
-            canAddDevice.setGatewayDeviceId(parentDeviceId);
+            canAddDevice.setGatewayId(parentDeviceId);
         }
         deviceManager.updateBatchById(canAddDevices);
     }
 
     public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
         deviceManager.removeChildDevice(parentDeviceId, childDeviceIds);
-    }
-
-    public String getNodeIdByName(String name) {
-        Device device = deviceManager.queryByName(name).orElse(Device.builder().build());
-        Product product = productManager.queryById(device.getProductId()).orElse(Product.builder().build());
-
-        if (product.getNodeType().equals(NodeType.GATEWAY_SUB)) {
-            Optional<Device> parentDeviceOpt = deviceManager.queryById(device.getGatewayDeviceId());
-            Device parentDevice = parentDeviceOpt.orElse(Device.builder().build());
-            return parentDevice.getGatewayIdentifier();
-        }
-        return device.getGatewayIdentifier();
     }
 
     public Optional<Device> queryByName(String name) {

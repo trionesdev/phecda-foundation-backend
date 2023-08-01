@@ -51,7 +51,7 @@ public class MqttPhecdaMessageListener implements IMqttMessageListener {
             values.add(source.getValue());
         }
 
-        deviceDataService.insertRecord(phecdaMessage.getNodeId(), phecdaMessage.getDeviceName(), phecdaMessage.getTime(), measurements, values);
+        deviceDataService.insertRecord(phecdaMessage.getDeviceName(), phecdaMessage.getTime(), measurements, values);
 
         //alarm
         Facts facts = new Facts();

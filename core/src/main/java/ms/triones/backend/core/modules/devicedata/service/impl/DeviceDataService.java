@@ -28,28 +28,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class DeviceDataService {
-
     private final SessionPool sessionPool;
-    private final DeviceProvider deviceProvider;
 
-    public void insertRecord(String nodeId, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
+    public void insertRecord(String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
         try {
-            sessionPool.insertRecord(path(nodeId, deviceName), time, measurements, types, values);
+            sessionPool.insertRecord(path(deviceName), time, measurements, types, values);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void insertRecord(String nodeId, String deviceName, long time, List<String> measurements, List<String> values) {
+    public void insertRecord(String deviceName, long time, List<String> measurements, List<String> values) {
         try {
-            sessionPool.insertRecord(path(nodeId, deviceName), time, measurements, values);
+            sessionPool.insertRecord(path(deviceName), time, measurements, values);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<Map<String, Object>> queryRawData(String nodeId, String deviceName,List<String> fields, long startTime, long endTime) {
-        String devicePath = path(nodeId, deviceName);
+    public List<Map<String, Object>> queryRawData(String deviceName,List<String> fields, long startTime, long endTime) {
+        String devicePath = path(deviceName);
         List<String> paths = fields.stream().map(field -> devicePath + "." + field).collect(Collectors.toList());
         try {
             SessionDataSetWrapper sessionDataSet = sessionPool.executeRawDataQuery(paths, startTime, endTime, 6000);
@@ -59,8 +57,8 @@ public class DeviceDataService {
         }
     }
 
-    public List<Map<String, Object>> queryLastData(String nodeId, String deviceName, List<String> fields) {
-        String devicePath = path(nodeId, deviceName);
+    public List<Map<String, Object>> queryLastData(String deviceName, List<String> fields) {
+        String devicePath = path(deviceName);
         List<String> paths = fields.stream().map(field -> devicePath + "." + field).collect(Collectors.toList());
         try {
             SessionDataSetWrapper sessionDataSet = sessionPool.executeLastDataQuery(paths);
@@ -70,8 +68,8 @@ public class DeviceDataService {
         }
     }
 
-    public List<Map<String, Object>> queryLastData(String nodeId, String deviceName) {
-        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last * from " + path(nodeId, deviceName))) {
+    public List<Map<String, Object>> queryLastData(String deviceName) {
+        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last * from " + path(deviceName))) {
             return IotDbUtils.toList(sessionDataSet);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
@@ -83,7 +81,7 @@ public class DeviceDataService {
         String selectExpr = StrUtil.join(",", fields);
         String whereCondition = "time >=" + startTime + " and time <= " + endTime;
         String sql = "select " + selectExpr +
-                " from " + path(nodeId, deviceName) +
+                " from " + path(deviceName) +
                 " where " + whereCondition +
                 " limit " + rowLimit +
                 " offset " + rowOffset;
@@ -95,15 +93,13 @@ public class DeviceDataService {
     }
 
 
-    private String path(String nodeId, String deviceName) {
-        return StrUtil.join(".", "root.phecda", nodeId, deviceName);
+    private String path(String deviceName) {
+        return StrUtil.join(".", "root.phecda", deviceName);
     }
 
 
     public List<DeviceDataBO> queryList(DeviceDataCriteria criteria) {
-        String nodeId = deviceProvider.getNodeIdByName(criteria.getDeviceName());
-        criteria.setNodeId(nodeId);
-        List<Map<String, Object>> rawDataList = queryRawData(criteria.getNodeId(), criteria.getDeviceName(), Lists.newArrayList(criteria.getField()),
+        List<Map<String, Object>> rawDataList = queryRawData(criteria.getDeviceName(), Lists.newArrayList(criteria.getField()),
                 criteria.getStartTime().toEpochMilli() * 1000, criteria.getEndTime().toEpochMilli() * 1000);
         return convertToBO(rawDataList, criteria);
     }
@@ -123,7 +119,7 @@ public class DeviceDataService {
             for (Map<String, Object> rwaData : rawDataList) {
                 String timeStr = String.valueOf(rwaData.get("Time")).substring(0, 13);
                 Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
-                String devicePath = path(criteria.getNodeId(), criteria.getDeviceName() + "." + criteria.getField());
+                String devicePath = path(criteria.getDeviceName() + "." + criteria.getField());
 
                 DeviceDataBO deviceDataBO = DeviceDataBO.builder()
                         .time(time)
@@ -141,8 +137,7 @@ public class DeviceDataService {
 
     public DeviceDataBO getLatestData(String deviceName, String propertyIdentifier) {
         try {
-            String nodeId = deviceProvider.getNodeIdByName(deviceName);
-            SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier + " from " + path(nodeId, deviceName));
+            SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier + " from " + path(deviceName));
 
             DeviceDataBO deviceDataBO = DeviceDataBO.builder().build();
             while (sessionDataSet.hasNext()) {
