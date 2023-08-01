@@ -3,7 +3,6 @@ package ms.triones.backend.core.modules.device.dao.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,7 +24,7 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         LambdaQueryWrapper<Device> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(StrUtil.isNotBlank(criteria.getProductId()), Device::getProductId, criteria.getProductId());
-            queryWrapper.eq(StrUtil.isNotBlank(criteria.getGatewayDeviceId()), Device::getGatewayDeviceId, criteria.getGatewayDeviceId());
+            queryWrapper.eq(StrUtil.isNotBlank(criteria.getGatewayId()), Device::getGatewayId, criteria.getGatewayId());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getNames()), Device::getName, criteria.getNames());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getIds()), Device::getId, criteria.getIds());
             queryWrapper.like(StrUtil.isNotBlank(criteria.getName()), Device::getName, criteria.getName());
@@ -54,8 +53,8 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         }
 
         LambdaUpdateWrapper<Device> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.set(Device::getGatewayDeviceId, null);
-        updateWrapper.eq(Device::getGatewayDeviceId, parentDeviceId);
+        updateWrapper.set(Device::getGatewayId, null);
+        updateWrapper.eq(Device::getGatewayId, parentDeviceId);
         updateWrapper.in(Device::getId, childDeviceIds);
 
         update(updateWrapper);

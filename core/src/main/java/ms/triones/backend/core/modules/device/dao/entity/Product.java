@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import ms.triones.backend.core.modules.device.dao.entity.enums.NodeTypeEnum;
 import ms.triones.backend.core.modules.device.dao.entity.enums.ProductStatusEnum;
 
 import java.util.List;
@@ -22,24 +23,14 @@ public class Product extends BaseLogicEntity {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     private String name;
-    private NodeType nodeType;
-    private String driverName;
+    private NodeTypeEnum nodeType;
     @TableField(value = "thing_model_version")
     private String thingModelVersion;
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<ProtocolProperty> protocolProperties;
     private ProductStatusEnum status;
+    private String driverName;
 
-
-    @AllArgsConstructor
-    public enum NodeType {
-        DIRECT("直连设备"),
-        GATEWAY("网关设备"),
-        GATEWAY_SUB("网关子设备");
-
-        @Getter
-        private final String label;
-    }
 
     @Data
     public static class ProtocolProperty {

@@ -11,4 +11,5 @@ public class DeviceCreateRO {
     @NotBlank
     private String name;
     private String remarkName;
+    private String nodeId;
 }

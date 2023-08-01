@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.triones.backend.core.modules.device.dao.entity.Product;
+import ms.triones.backend.core.modules.device.dao.entity.enums.NodeTypeEnum;
 
 @Data
 @SuperBuilder
@@ -12,5 +12,5 @@ import ms.triones.backend.core.modules.device.dao.entity.Product;
 @NoArgsConstructor
 public class ProductCriteria {
     private String name;
-    private Product.NodeType nodeType;
+    private NodeTypeEnum nodeType;
 }

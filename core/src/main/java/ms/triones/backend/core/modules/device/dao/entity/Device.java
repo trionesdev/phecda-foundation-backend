@@ -28,8 +28,8 @@ public class Device extends BaseLogicEntity {
     private String productId;
     private String name;
     private String remarkName;
-    private String gatewayIdentifier;
-    private String gatewayDeviceId;
+    private String nodeId;
+    private String gatewayId;
     @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<Protocol> protocols;
     @TableField(value = "is_activated")
