@@ -12,6 +12,7 @@ import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelEvent;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelProperty;
 import ms.triones.backend.core.modules.device.thing.model.ThingModelService;
+import ms.triones.backend.core.provider.ssp.device.pdo.DevicePDO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -38,4 +39,6 @@ public interface DeviceConvertMapper {
     DeviceEventDataBO from(ThingModelEvent args);
 
     DeviceServiceDataBO from(ThingModelService args);
+
+    List<DevicePDO> toPDOList(List<Device> devices);
 }

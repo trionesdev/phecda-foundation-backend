@@ -10,7 +10,6 @@ public class NodeVO {
     private String name;
     private String identifier;
     private String remark;
-    private Boolean def;
     private Instant createdAt;
     private String createdBy;
     private Instant updatedAt;

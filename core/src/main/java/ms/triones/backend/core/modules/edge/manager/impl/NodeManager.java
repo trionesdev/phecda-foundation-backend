@@ -41,8 +41,4 @@ public class NodeManager {
     public void removeById(String id) {
         nodeDAO.removeById(id);
     }
-
-    public Node getDef() {
-        return nodeDAO.getDef();
-    }
 }

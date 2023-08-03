@@ -8,6 +8,7 @@ import ms.triones.backend.core.modules.device.service.bo.ThingModelUpsertBO;
 import ms.triones.backend.rest.backend.modules.device.controller.query.DeviceQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.query.ProductQuery;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceCreateRO;
+import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceUpdateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductCreateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductThingModelUpsertRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.ProductUpdateRO;
@@ -28,6 +29,8 @@ public interface DeviceRestConvertMapper {
     ThingModelUpsertBO from(ProductThingModelUpsertRO args);
 
     Device from(DeviceCreateRO args);
+
+    Device from(DeviceUpdateRO args);
 
     DeviceCriteria from(DeviceQuery query);
 }

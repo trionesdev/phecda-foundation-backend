@@ -227,4 +227,12 @@ public class DeviceService {
     public Optional<Device> queryByName(String name) {
         return deviceManager.queryByName(name);
     }
+
+    public void updateNodeIdOfDevice(String nodeId, List<String> ids) {
+        deviceManager.updateNodeIdOfDevice(nodeId, ids);
+    }
+
+    public void removeNodeIdOfDevice(String nodeId, List<String> ids) {
+        deviceManager.removeNodeIdOfDevice(nodeId, ids);
+    }
 }

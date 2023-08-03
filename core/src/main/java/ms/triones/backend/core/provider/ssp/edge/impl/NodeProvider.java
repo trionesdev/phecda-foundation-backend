@@ -13,11 +13,6 @@ public class NodeProvider {
     @Resource
     private NodeService nodeService;
 
-    public NodePDO getDef() {
-        Node node = nodeService.getDef();
-        return NodeConvertMapper.INSTANCE.toPDO(node);
-    }
-
     public NodePDO getById(String id) {
         Node node = nodeService.getById(id);
         return NodeConvertMapper.INSTANCE.toPDO(node);

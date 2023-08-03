@@ -30,10 +30,4 @@ public class NodeDAO extends ServiceImpl<NodeMapper, Node> {
         queryWrapper.like(StringUtils.isNotBlank(criteria.getName()), Node::getName, criteria.getName());
         return queryWrapper;
     }
-
-    public Node getDef() {
-        LambdaQueryWrapper<Node> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(Node::getDef, Boolean.TRUE);
-        return getOne(queryWrapper);
-    }
 }
