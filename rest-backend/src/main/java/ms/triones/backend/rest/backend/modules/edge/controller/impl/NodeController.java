@@ -82,7 +82,7 @@ public class NodeController {
     }
 
     @Operation(summary = "添加边缘终端设备到终端")
-    @PostMapping(value = "nodes/{id}/children/{ids}")
+    @PostMapping(value = "nodes/{id}/device-children/{ids}")
     public void addChildDevice(
             @PathVariable(value = "id") String nodeId,
             @PathVariable(value = "ids") List<String> childDeviceIds) {
@@ -90,7 +90,7 @@ public class NodeController {
     }
 
     @Operation(summary = "删除边缘终端设备（只是移除与节点之间的关系）")
-    @DeleteMapping(value = "nodes/{id}/children/{ids}")
+    @DeleteMapping(value = "nodes/{id}/device-children/{ids}")
     public void removeChildDevice(
             @PathVariable(value = "id") String nodeId,
             @PathVariable(value = "ids") List<String> childDeviceIds) {
