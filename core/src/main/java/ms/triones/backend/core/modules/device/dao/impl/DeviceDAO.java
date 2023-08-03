@@ -24,6 +24,7 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         LambdaQueryWrapper<Device> queryWrapper = Wrappers.lambdaQuery();
         if (Objects.nonNull(criteria)) {
             queryWrapper.eq(StrUtil.isNotBlank(criteria.getProductId()), Device::getProductId, criteria.getProductId());
+            queryWrapper.eq(StrUtil.isNotBlank(criteria.getNodeId()), Device::getNodeId, criteria.getNodeId());
             queryWrapper.eq(StrUtil.isNotBlank(criteria.getGatewayId()), Device::getGatewayId, criteria.getGatewayId());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getNames()), Device::getName, criteria.getNames());
             queryWrapper.in(CollectionUtils.isNotEmpty(criteria.getIds()), Device::getId, criteria.getIds());
@@ -56,6 +57,31 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         updateWrapper.set(Device::getGatewayId, null);
         updateWrapper.eq(Device::getGatewayId, parentDeviceId);
         updateWrapper.in(Device::getId, childDeviceIds);
+
+        update(updateWrapper);
+    }
+
+    public void updateNodeIdOfDevice(String nodeId, List<String> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+
+        LambdaUpdateWrapper<Device> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Device::getNodeId, nodeId);
+        updateWrapper.in(Device::getId, ids);
+
+        update(updateWrapper);
+    }
+
+    public void removeNodeIdOfDevice(String nodeId, List<String> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+
+        LambdaUpdateWrapper<Device> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Device::getNodeId, null);
+        updateWrapper.eq(Device::getNodeId, nodeId);
+        updateWrapper.in(Device::getId, ids);
 
         update(updateWrapper);
     }

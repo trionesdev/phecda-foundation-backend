@@ -1,7 +1,6 @@
 package ms.triones.backend.core.modules.edge.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
@@ -23,6 +22,4 @@ public class Node extends BaseLogicEntity {
     private String name;
     private String identifier;
     private String remark;
-    @TableField(value = "is_def")
-    private Boolean def;
 }

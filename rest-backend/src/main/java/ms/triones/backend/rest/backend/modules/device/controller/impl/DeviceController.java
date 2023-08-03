@@ -17,6 +17,7 @@ import ms.triones.backend.rest.backend.modules.device.controller.query.DeviceQue
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceCreateRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceEnabledRO;
 import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceProtocolUpdateRO;
+import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceUpdateRO;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceConstants;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +35,13 @@ public class DeviceController {
     @Operation(summary = "新建设备")
     @PostMapping(value = "devices")
     public void createDevice(@Validated @RequestBody DeviceCreateRO args) {
+        Device device = DeviceRestConvertMapper.INSTANT.from(args);
+        deviceService.createDevice(device);
+    }
+
+    @Operation(summary = "更新设备")
+    @PutMapping(value = "devices")
+    public void updateDevice(@Validated @RequestBody DeviceUpdateRO args) {
         Device device = DeviceRestConvertMapper.INSTANT.from(args);
         deviceService.createDevice(device);
     }
@@ -141,7 +149,7 @@ public class DeviceController {
         return deviceService.queryDeviceProperties(deviceName);
     }
 
-    @Operation(summary = "添加子设备")
+    @Operation(summary = "添加网关子设备")
     @PostMapping(value = "devices/{id}/children/{ids}")
     public void addChildDevice(
             @PathVariable(value = "id") String parentDeviceId,
@@ -149,7 +157,7 @@ public class DeviceController {
         deviceService.addChildDevice(parentDeviceId, childDeviceIds);
     }
 
-    @Operation(summary = "删除子设备（只是移除与父设备之间的关系）")
+    @Operation(summary = "删除网关子设备（只是移除与父设备之间的关系）")
     @DeleteMapping(value = "devices/{id}/children/{ids}")
     public void removeChildDevice(
             @PathVariable(value = "id") String parentDeviceId,
