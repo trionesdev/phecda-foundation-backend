@@ -13,6 +13,7 @@ import java.util.Collection;
 @NoArgsConstructor
 public class DeviceCriteria {
     private String productId;
+    private String nodeId;
     private String gatewayId;
     private String name;
     private String remarkName;
