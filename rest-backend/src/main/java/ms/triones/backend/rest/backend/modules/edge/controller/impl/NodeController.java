@@ -1,6 +1,5 @@
 package ms.triones.backend.rest.backend.modules.edge.controller.impl;
 
-import com.moensun.commons.core.page.MSPageInfo;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.mybatisplus.util.MpPageUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.edge.dao.criteria.NodeCriteria;
 import ms.triones.backend.core.modules.edge.dao.entity.Node;
+import ms.triones.backend.core.modules.edge.service.impl.NodeDeviceService;
 import ms.triones.backend.core.modules.edge.service.impl.NodeService;
 import ms.triones.backend.rest.backend.modules.edge.controller.query.NodeQuery;
 import ms.triones.backend.rest.backend.modules.edge.controller.ro.NodeCreateRO;
@@ -35,6 +35,7 @@ import static ms.triones.backend.rest.backend.modules.edge.support.EdgeConstants
 @RequestMapping(value = EDGE_URI)
 public class NodeController {
     private final NodeService nodeService;
+    private final NodeDeviceService nodeDeviceService;
 
     @Operation(summary = "列表")
     @GetMapping(value = "nodes/list")
@@ -81,19 +82,19 @@ public class NodeController {
         nodeService.removeById(id);
     }
 
-    @Operation(summary = "添加边缘终端设备到终端")
-    @PostMapping(value = "nodes/{id}/device-children/{ids}")
-    public void addChildDevice(
+    @Operation(summary = "添加边缘终端设备")
+    @PostMapping(value = "nodes/{id}/device/{ids}")
+    public void addNodeDevice(
             @PathVariable(value = "id") String nodeId,
-            @PathVariable(value = "ids") List<String> childDeviceIds) {
-        nodeService.addChildDevice(nodeId, childDeviceIds);
+            @PathVariable(value = "ids") List<String> deviceIds) {
+        nodeDeviceService.add(nodeId, deviceIds);
     }
 
     @Operation(summary = "删除边缘终端设备（只是移除与节点之间的关系）")
-    @DeleteMapping(value = "nodes/{id}/device-children/{ids}")
-    public void removeChildDevice(
+    @DeleteMapping(value = "nodes/{id}/device/{ids}")
+    public void removeNodeDevice(
             @PathVariable(value = "id") String nodeId,
-            @PathVariable(value = "ids") List<String> childDeviceIds) {
-        nodeService.removeChildDevice(nodeId, childDeviceIds);
+            @PathVariable(value = "ids") List<String> deviceIds) {
+        nodeDeviceService.remove(nodeId, deviceIds);
     }
 }
