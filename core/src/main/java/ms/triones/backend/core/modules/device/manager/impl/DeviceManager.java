@@ -54,12 +54,4 @@ public class DeviceManager {
     public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
         deviceDAO.removeChildDevice(parentDeviceId, childDeviceIds);
     }
-
-    public void updateNodeIdOfDevice(String nodeId, List<String> ids) {
-        deviceDAO.updateNodeIdOfDevice(nodeId, ids);
-    }
-
-    public void removeNodeIdOfDevice(String nodeId, List<String> ids) {
-        deviceDAO.removeNodeIdOfDevice(nodeId, ids);
-    }
 }

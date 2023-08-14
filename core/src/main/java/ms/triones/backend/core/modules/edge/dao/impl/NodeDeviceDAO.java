@@ -40,4 +40,10 @@ public class NodeDeviceDAO extends ServiceImpl<NodeDeviceMapper, NodeDevice> {
         queryWrapper.in(NodeDevice::getDeviceId, deviceIds);
         remove(queryWrapper);
     }
+
+    public NodeDevice getByDeviceId(String deviceId) {
+        LambdaQueryWrapper<NodeDevice> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(NodeDevice::getDeviceId, deviceId);
+        return getOne(queryWrapper);
+    }
 }

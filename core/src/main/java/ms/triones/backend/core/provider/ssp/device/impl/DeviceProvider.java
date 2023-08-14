@@ -22,12 +22,4 @@ public class DeviceProvider {
         List<Device> devices = deviceService.queryList(criteria);
         return DeviceConvertMapper.INSTANCE.toPDOList(devices);
     }
-
-    public void updateNodeIdOfDevice(String nodeId, List<String> ids) {
-        deviceService.updateNodeIdOfDevice(nodeId, ids);
-    }
-
-    public void removeNodeIdOfDevice(String nodeId, List<String> ids) {
-        deviceService.removeNodeIdOfDevice(nodeId, ids);
-    }
 }
