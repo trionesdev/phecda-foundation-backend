@@ -11,6 +11,7 @@ import ms.triones.backend.core.provider.ssp.edge.pdo.NodePDO;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Component
 public class NodeDeviceProvider {
@@ -20,5 +21,10 @@ public class NodeDeviceProvider {
     public NodeDevicePDO getByDeviceId(String deviceId) {
         NodeDevice nodeDevice = nodeDeviceService.getByDeviceId(deviceId);
         return NodeDeviceConvertMapper.INSTANCE.from(nodeDevice);
+    }
+
+    public List<NodeDevicePDO> listByNodeId(String nodeId) {
+        List<NodeDevice> nodeDevices = nodeDeviceService.listByNodeId(nodeId);
+        return NodeDeviceConvertMapper.INSTANCE.toPDOList(nodeDevices);
     }
 }

@@ -70,6 +70,14 @@ public class DeviceService {
     }
 
     public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
+        if (StringUtils.isNotBlank(criteria.getNodeId())) {
+            List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
+            criteria.setNodeId(null);
+            criteria.setIds(nodeDevicePDOS.stream()
+                    .map(NodeDevicePDO::getDeviceId)
+                    .collect(Collectors.toSet()));
+        }
+
         PageInfo<Device> pageInfo = deviceManager.queryPage(pageNum, pageSize, criteria);
         if (CollectionUtil.isEmpty(pageInfo.getRows())) {
             return PageUtils.empty();
@@ -208,6 +216,14 @@ public class DeviceService {
     }
 
     public List<Device> queryList(DeviceCriteria criteria) {
+        if (StringUtils.isNotBlank(criteria.getNodeId())) {
+            List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
+            criteria.setNodeId(null);
+            criteria.setIds(nodeDevicePDOS.stream()
+                    .map(NodeDevicePDO::getDeviceId)
+                    .collect(Collectors.toSet()));
+        }
+
         return deviceManager.queryList(criteria);
     }
 
