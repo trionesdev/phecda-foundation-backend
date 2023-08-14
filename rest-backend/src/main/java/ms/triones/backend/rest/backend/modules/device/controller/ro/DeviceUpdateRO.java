@@ -10,5 +10,4 @@ public class DeviceUpdateRO {
     private String id;
     @NotBlank
     private String name;
-    private String nodeId;
 }

@@ -53,4 +53,8 @@ public class NodeDeviceManager {
     public void remove(String nodeId, List<String> deviceIds) {
         nodeDeviceDAO.remove(nodeId, deviceIds);
     }
+
+    public NodeDevice getByDeviceId(String deviceId) {
+        return nodeDeviceDAO.getByDeviceId(deviceId);
+    }
 }

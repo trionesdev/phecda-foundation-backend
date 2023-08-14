@@ -4,14 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.triones.backend.core.modules.device.dao.entity.Device.Protocol;
 import ms.triones.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
 
 import java.util.List;
@@ -28,7 +26,6 @@ public class Device extends BaseLogicEntity {
     private String productId;
     private String name;
     private String remarkName;
-    private String nodeId;
     private String gatewayId;
     @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<Protocol> protocols;

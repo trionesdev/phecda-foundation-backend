@@ -62,4 +62,8 @@ public class NodeDeviceService {
     public void remove(String nodeId, List<String> deviceIds) {
         nodeDeviceManager.remove(nodeId, deviceIds);
     }
+
+    public NodeDevice getByDeviceId(String deviceId) {
+        return nodeDeviceManager.getByDeviceId(deviceId);
+    }
 }

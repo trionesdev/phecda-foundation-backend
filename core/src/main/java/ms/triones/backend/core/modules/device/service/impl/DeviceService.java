@@ -23,7 +23,9 @@ import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import ms.triones.backend.core.provider.ssp.asset.impl.AssetProvider;
+import ms.triones.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.triones.backend.core.provider.ssp.edge.impl.NodeProvider;
+import ms.triones.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
 import ms.triones.backend.core.provider.ssp.edge.pdo.NodePDO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +46,7 @@ public class DeviceService {
     private final ProductManager productManager;
     private final EdgeDeviceClient edgeDeviceClient;
     private final AssetProvider assetProvider;
+    private final NodeDeviceProvider nodeDeviceProvider;
     private final NodeProvider nodeProvider;
 
     public void createDevice(Device device) {
@@ -90,8 +93,9 @@ public class DeviceService {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
 
-        if (StrUtil.isBlank(device.getNodeId())) {
-            throw new BusinessException("NODE_NOT_CONFIG");
+        NodeDevicePDO nodeDevicePDO = nodeDeviceProvider.getByDeviceId(deviceId);
+        if (Objects.isNull(nodeDevicePDO)) {
+            return;
         }
 
         //region edge add device
@@ -106,7 +110,7 @@ public class DeviceService {
         }
         addDeviceRequest.setProtocols(protocols);
 
-        NodePDO node = nodeProvider.getById(device.getNodeId());
+        NodePDO node = nodeProvider.getById(nodeDevicePDO.getNodeId());
         if (Objects.isNull(node)) {
             throw new NotFoundException("NODE_NOT_FOUND");
         }
@@ -126,11 +130,12 @@ public class DeviceService {
         Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         RemoveDeviceRequest removeDeviceRequest = RemoveDeviceRequest.builder().deviceName(device.getName()).build();
 
-        if (StrUtil.isBlank(device.getNodeId())) {
-            throw new BusinessException("NODE_NOT_CONFIG");
+        NodeDevicePDO nodeDevicePDO = nodeDeviceProvider.getByDeviceId(deviceId);
+        if (Objects.isNull(nodeDevicePDO)) {
+            return;
         }
 
-        NodePDO node = nodeProvider.getById(device.getNodeId());
+        NodePDO node = nodeProvider.getById(nodeDevicePDO.getNodeId());
         if (Objects.isNull(node)) {
             throw new NotFoundException("NODE_NOT_FOUND");
         }
@@ -226,13 +231,5 @@ public class DeviceService {
 
     public Optional<Device> queryByName(String name) {
         return deviceManager.queryByName(name);
-    }
-
-    public void updateNodeIdOfDevice(String nodeId, List<String> ids) {
-        deviceManager.updateNodeIdOfDevice(nodeId, ids);
-    }
-
-    public void removeNodeIdOfDevice(String nodeId, List<String> ids) {
-        deviceManager.removeNodeIdOfDevice(nodeId, ids);
     }
 }
