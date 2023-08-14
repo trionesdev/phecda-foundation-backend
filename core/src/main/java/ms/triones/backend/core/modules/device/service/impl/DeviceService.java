@@ -2,6 +2,7 @@ package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.core.util.PageUtils;
@@ -72,10 +73,17 @@ public class DeviceService {
     public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
         if (StringUtils.isNotBlank(criteria.getNodeId())) {
             List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
-            criteria.setNodeId(null);
-            criteria.setIds(nodeDevicePDOS.stream()
+            Set<String> deviceIds = nodeDevicePDOS.stream()
                     .map(NodeDevicePDO::getDeviceId)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+            if (CollectionUtils.isEmpty(deviceIds)) {
+                criteria.setIds(nodeDevicePDOS.stream()
+                        .map(NodeDevicePDO::getDeviceId)
+                        .collect(Collectors.toSet()));
+            } else {
+                criteria.setIds(Lists.newArrayList(String.valueOf(Long.MIN_VALUE)));
+            }
+            criteria.setNodeId(null);
         }
 
         PageInfo<Device> pageInfo = deviceManager.queryPage(pageNum, pageSize, criteria);
@@ -218,10 +226,17 @@ public class DeviceService {
     public List<Device> queryList(DeviceCriteria criteria) {
         if (StringUtils.isNotBlank(criteria.getNodeId())) {
             List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
-            criteria.setNodeId(null);
-            criteria.setIds(nodeDevicePDOS.stream()
+            Set<String> deviceIds = nodeDevicePDOS.stream()
                     .map(NodeDevicePDO::getDeviceId)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+            if (CollectionUtils.isEmpty(deviceIds)) {
+                criteria.setIds(nodeDevicePDOS.stream()
+                        .map(NodeDevicePDO::getDeviceId)
+                        .collect(Collectors.toSet()));
+            } else {
+                criteria.setIds(Lists.newArrayList(String.valueOf(Long.MIN_VALUE)));
+            }
+            criteria.setNodeId(null);
         }
 
         return deviceManager.queryList(criteria);
