@@ -1,4 +1,4 @@
-package ms.triones.backend.core.mqtt;
+package ms.triones.backend.core.messageaccess.mqtt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
