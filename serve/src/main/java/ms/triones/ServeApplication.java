@@ -1,6 +1,6 @@
 package ms.triones;
 
-import com.moensun.csi.tencentcloud.cos.annotation.EnableTencentCloudCOSClients;
+import com.moensun.csi.minio.annotation.EnableMinioClients;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication(scanBasePackages = {"ms.triones", "ms.phecda"})
 @MapperScan(value = {"ms.triones.backend.core.modules.*.dao.mapper"})
-@EnableTencentCloudCOSClients
+@EnableMinioClients
 public class ServeApplication {
     public static void main(String[] args) {
         log.info("--app start--");
