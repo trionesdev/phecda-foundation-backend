@@ -1,4 +1,4 @@
-package ms.triones.backend.core.mqtt;
+package ms.triones.backend.core.messageaccess.mqtt;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
