@@ -76,10 +76,8 @@ public class DeviceService {
             Set<String> deviceIds = nodeDevicePDOS.stream()
                     .map(NodeDevicePDO::getDeviceId)
                     .collect(Collectors.toSet());
-            if (CollectionUtils.isEmpty(deviceIds)) {
-                criteria.setIds(nodeDevicePDOS.stream()
-                        .map(NodeDevicePDO::getDeviceId)
-                        .collect(Collectors.toSet()));
+            if (CollectionUtils.isNotEmpty(deviceIds)) {
+                criteria.setIds(deviceIds);
             } else {
                 criteria.setIds(Lists.newArrayList(String.valueOf(Long.MIN_VALUE)));
             }
@@ -229,10 +227,8 @@ public class DeviceService {
             Set<String> deviceIds = nodeDevicePDOS.stream()
                     .map(NodeDevicePDO::getDeviceId)
                     .collect(Collectors.toSet());
-            if (CollectionUtils.isEmpty(deviceIds)) {
-                criteria.setIds(nodeDevicePDOS.stream()
-                        .map(NodeDevicePDO::getDeviceId)
-                        .collect(Collectors.toSet()));
+            if (CollectionUtils.isNotEmpty(deviceIds)) {
+                criteria.setIds(deviceIds);
             } else {
                 criteria.setIds(Lists.newArrayList(String.valueOf(Long.MIN_VALUE)));
             }
