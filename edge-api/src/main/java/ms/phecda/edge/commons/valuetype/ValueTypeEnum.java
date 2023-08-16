@@ -11,7 +11,6 @@ public enum ValueTypeEnum {
     BOOL(ValueTypeBool.class, "布尔型"),
     STRING(ValueTypeString.class, "字符串"),
 
-
     STRUCT(ValueTypeStruct.class, "结构体"),
     ARRAY(ValueTypeArray.class, "数组");
 

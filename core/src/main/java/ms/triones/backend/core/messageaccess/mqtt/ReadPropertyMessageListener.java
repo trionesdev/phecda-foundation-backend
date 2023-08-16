@@ -1,6 +1,7 @@
 package ms.triones.backend.core.messageaccess.mqtt;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Queues;
 import lombok.extern.slf4j.Slf4j;
 import ms.triones.backend.core.messageaccess.event.DevicePropertyPostEvent;
 import ms.triones.backend.core.messageaccess.model.ReadPropertyMessage;
@@ -10,14 +11,45 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
 public class ReadPropertyMessageListener implements IMqttMessageListener {
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
+
+    private LinkedBlockingQueue<ReadPropertyMessage> messageQueue = Queues.newLinkedBlockingQueue(30000);
+    private Thread thread;
+    private AtomicBoolean stopFlag = new AtomicBoolean(false);
+
+    @PostConstruct
+    public void init() {
+        thread = new Thread(() -> {
+            while ((!stopFlag.get()) && (!Thread.interrupted())) {
+                try {
+                    ReadPropertyMessage message = messageQueue.take();
+                    if (Objects.nonNull(message)) {
+                        applicationEventPublisher.publishEvent(DevicePropertyPostEvent.build(message));
+                    }
+                } catch (Exception e) {
+                    log.error("handle ReadPropertyMessage error: ", e);
+                }
+            }
+        });
+        thread.setName("t-readPropertyMessage");
+        thread.start();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        stopFlag.set(true);
+    }
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -28,6 +60,9 @@ public class ReadPropertyMessageListener implements IMqttMessageListener {
             return;
         }
 
-        applicationEventPublisher.publishEvent(DevicePropertyPostEvent.build(phecdaMessage));
+        boolean res = messageQueue.offer(phecdaMessage);
+        if (!res) {
+            log.warn("can not offer message to queue, message will discard.");
+        }
     }
 }
