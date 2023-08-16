@@ -7,7 +7,8 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
-public class UpdateDeviceRequest extends BaseDeviceRequest{
+public class UpdateDeviceRequest extends BaseDeviceRequest {
+    private String productId;
     private String deviceName;
 
 }
