@@ -146,7 +146,7 @@ public class DeviceDataService {
                     break;
                 }
 
-                deviceDataBO.setTime(Instant.ofEpochMilli(rowRecord.getTimestamp() / 1000));
+                deviceDataBO.setTime(Instant.ofEpochMilli(rowRecord.getTimestamp()));
 
                 Field field = rowRecord.getFields().get(1);
                 deviceDataBO.setValue(IotDbUtils.fieldValue(field));
