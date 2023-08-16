@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public class RemoveDeviceRequest extends BaseDeviceRequest{
+    private String productId;
     private String deviceName;
 
 }

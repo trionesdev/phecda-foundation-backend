@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public class DeviceCmdRequest extends BaseDeviceRequest{
+    private String productId;
     private String deviceName;
     private String commandName;
     private Object commandValue;

@@ -1,17 +1,11 @@
 package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.core.util.PageUtils;
 import com.moensun.commons.exception.NotFoundException;
-import com.moensun.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.edge.device.EdgeDeviceClient;
-import ms.phecda.edge.device.req.AddDeviceRequest;
-import ms.phecda.edge.device.req.RemoveDeviceRequest;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
@@ -25,12 +19,14 @@ import ms.triones.backend.core.modules.device.service.bo.DeviceServiceDataBO;
 import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import ms.triones.backend.core.provider.ssp.asset.impl.AssetProvider;
 import ms.triones.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
-import ms.triones.backend.core.provider.ssp.edge.impl.NodeProvider;
 import ms.triones.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
-import ms.triones.backend.core.provider.ssp.edge.pdo.NodePDO;
+import ms.triones.backend.core.support.event.DeviceDisableEvent;
+import ms.triones.backend.core.support.event.DeviceEnableEvent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,10 +41,9 @@ import java.util.stream.Collectors;
 public class DeviceService {
     private final DeviceManager deviceManager;
     private final ProductManager productManager;
-    private final EdgeDeviceClient edgeDeviceClient;
     private final AssetProvider assetProvider;
     private final NodeDeviceProvider nodeDeviceProvider;
-    private final NodeProvider nodeProvider;
+    private final ApplicationEventPublisher eventPublisher;
 
     public void createDevice(Device device) {
         deviceManager.create(device);
@@ -103,36 +98,17 @@ public class DeviceService {
      *
      * @param deviceId
      */
+    @Transactional
     public void deviceOnline(String deviceId) {
-        Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-        Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        Device device = deviceManager.queryById(deviceId)
+                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
 
-        NodeDevicePDO nodeDevicePDO = nodeDeviceProvider.getByDeviceId(deviceId);
-        if (Objects.isNull(nodeDevicePDO)) {
-            return;
-        }
+        deviceManager.updateById(Device.builder()
+                .id(deviceId)
+                .enabled(true)
+                .build());
 
-        //region edge add device
-        AddDeviceRequest addDeviceRequest = AddDeviceRequest.builder()
-                .deviceName(device.getName())
-                .thingModelVersion(product.getThingModelVersion())
-                .build();
-        addDeviceRequest.setDriver(product.getDriverName());
-        Map<String, Object> protocols = Maps.newHashMap();
-        if (CollectionUtil.isNotEmpty(device.getProtocols())) {
-            device.getProtocols().forEach(t -> protocols.put(t.getName(), t.getValue()));
-        }
-        addDeviceRequest.setProtocols(protocols);
-
-        NodePDO node = nodeProvider.getById(nodeDevicePDO.getNodeId());
-        if (Objects.isNull(node)) {
-            throw new NotFoundException("NODE_NOT_FOUND");
-        }
-        addDeviceRequest.setNodeId(node.getIdentifier());
-
-        edgeDeviceClient.addDevice(addDeviceRequest);
-        //endregion
-        deviceManager.updateById(Device.builder().id(deviceId).enabled(true).build());
+        eventPublisher.publishEvent(DeviceEnableEvent.build(device));
     }
 
     /**
@@ -140,23 +116,17 @@ public class DeviceService {
      *
      * @param deviceId
      */
+    @Transactional
     public void deviceOffline(String deviceId) {
-        Device device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-        RemoveDeviceRequest removeDeviceRequest = RemoveDeviceRequest.builder().deviceName(device.getName()).build();
+        Device device = deviceManager.queryById(deviceId)
+                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
 
-        NodeDevicePDO nodeDevicePDO = nodeDeviceProvider.getByDeviceId(deviceId);
-        if (Objects.isNull(nodeDevicePDO)) {
-            return;
-        }
+        deviceManager.updateById(Device.builder()
+                .id(deviceId)
+                .enabled(false)
+                .build());
 
-        NodePDO node = nodeProvider.getById(nodeDevicePDO.getNodeId());
-        if (Objects.isNull(node)) {
-            throw new NotFoundException("NODE_NOT_FOUND");
-        }
-        removeDeviceRequest.setNodeId(node.getIdentifier());
-
-        edgeDeviceClient.removeDevice(removeDeviceRequest);
-        deviceManager.updateById(Device.builder().id(deviceId).enabled(false).build());
+        eventPublisher.publishEvent(DeviceDisableEvent.build(device));
     }
 
     public List<DevicePropertyDataBO> queryDeviceThingModelPropertiesData(String deviceId) {
