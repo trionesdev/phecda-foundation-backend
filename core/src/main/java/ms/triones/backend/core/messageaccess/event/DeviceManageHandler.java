@@ -76,6 +76,7 @@ public class DeviceManageHandler {
 
         //region edge add device
         AddDeviceRequest addDeviceRequest = AddDeviceRequest.builder()
+                .productId(device.getProductId())
                 .deviceName(device.getName())
                 .thingModelVersion(product.getThingModelVersion())
                 .build();

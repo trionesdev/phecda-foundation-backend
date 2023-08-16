@@ -31,6 +31,7 @@ public class ManageDeviceRequest {
     @NoArgsConstructor
     public static class Add {
         private String driver;
+        private String productId;
         private String deviceName;
         private String thingModelVersion;
         private Map<String,Object> protocols;
@@ -42,6 +43,7 @@ public class ManageDeviceRequest {
     @NoArgsConstructor
     public static class Update {
         private String driver;
+        private String productId;
         private String deviceName;
         private Map<String,Object> protocols;
     }
