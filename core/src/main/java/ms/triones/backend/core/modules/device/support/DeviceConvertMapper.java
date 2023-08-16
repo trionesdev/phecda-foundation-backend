@@ -41,4 +41,6 @@ public interface DeviceConvertMapper {
     DeviceServiceDataBO from(ThingModelService args);
 
     List<DevicePDO> toPDOList(List<Device> devices);
+
+    DevicePDO toPDO(Device device);
 }

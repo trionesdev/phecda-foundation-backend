@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DeviceProvider {
@@ -21,5 +22,10 @@ public class DeviceProvider {
         DeviceCriteria criteria = DeviceCriteria.builder().ids(ids).build();
         List<Device> devices = deviceService.queryList(criteria);
         return DeviceConvertMapper.INSTANCE.toPDOList(devices);
+    }
+
+    public DevicePDO queryByName(String name) {
+        Optional<Device> deviceOptional = deviceService.queryByName(name);
+        return DeviceConvertMapper.INSTANCE.toPDO(deviceOptional.orElse(null));
     }
 }
