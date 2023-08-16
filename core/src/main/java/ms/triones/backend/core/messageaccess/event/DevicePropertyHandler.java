@@ -75,7 +75,8 @@ public class DevicePropertyHandler {
             values.add(convertValue(valueType, reading.getValue()));
         }
 
-        deviceDataService.insertRecord(message.getDeviceName(), message.getTimestamp(), measurements, types, values);
+        deviceDataService.insertRecord(deviceOptional.get().getProductId(), message.getDeviceName(),
+                message.getTimestamp(), measurements, types, values);
     }
 
     private TSDataType convertType(ValueTypeEnum valueType) {

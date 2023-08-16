@@ -18,14 +18,14 @@ public class DeviceDataServiceTest extends BaseTest {
 
     @Test
     public void insert_test() {
-        deviceDataService.insertRecord("deveice1", Instant.now().toEpochMilli(),
+        deviceDataService.insertRecord("product1", "deveice1", Instant.now().toEpochMilli(),
                 Lists.newArrayList("status"), Lists.newArrayList(TSDataType.BOOLEAN), Lists.newArrayList(true));
         System.out.println("s");
     }
 
     @Test
     public void insert_test2() {
-        deviceDataService.insertRecord( "deveice1", Instant.now().toEpochMilli(),
+        deviceDataService.insertRecord( "product1", "deveice1", Instant.now().toEpochMilli(),
                 Lists.newArrayList("status","maxTemp"), Lists.newArrayList("true","25"));
         System.out.println("s");
     }

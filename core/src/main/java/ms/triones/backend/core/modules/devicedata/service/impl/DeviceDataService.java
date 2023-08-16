@@ -2,12 +2,14 @@ package ms.triones.backend.core.modules.devicedata.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.moensun.commons.core.page.PageInfo;
+import com.moensun.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.triones.backend.core.modules.devicedata.dao.criteria.DeviceDataCriteria;
 import ms.triones.backend.core.modules.devicedata.service.bo.DeviceDataBO;
 import ms.triones.backend.core.modules.devicedata.support.util.IotDbUtils;
 import ms.triones.backend.core.provider.ssp.device.impl.DeviceProvider;
+import ms.triones.backend.core.provider.ssp.device.pdo.DevicePDO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,25 +32,31 @@ import java.util.stream.Collectors;
 @Service
 public class DeviceDataService {
     private final SessionPool sessionPool;
+    private final DeviceProvider deviceProvider;
 
-    public void insertRecord(String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
+    public void insertRecord(String productId, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
         try {
-            sessionPool.insertRecord(path(deviceName), time, measurements, types, values);
+            sessionPool.insertRecord(path(productId, deviceName), time, measurements, types, values);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void insertRecord(String deviceName, long time, List<String> measurements, List<String> values) {
+    public void insertRecord(String productId, String deviceName, long time, List<String> measurements, List<String> values) {
         try {
-            sessionPool.insertRecord(path(deviceName), time, measurements, values);
+            sessionPool.insertRecord(path(productId, deviceName), time, measurements, values);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
     public List<Map<String, Object>> queryRawData(String deviceName,List<String> fields, long startTime, long endTime) {
-        String devicePath = path(deviceName);
+        DevicePDO devicePDO = deviceProvider.queryByName(deviceName);
+        if (Objects.isNull(devicePDO)) {
+            throw new NotFoundException("not found device");
+        }
+
+        String devicePath = path(devicePDO.getProductId(), deviceName);
         List<String> paths = fields.stream().map(field -> devicePath + "." + field).collect(Collectors.toList());
         try {
             SessionDataSetWrapper sessionDataSet = sessionPool.executeRawDataQuery(paths, startTime, endTime, 6000);
@@ -58,7 +67,12 @@ public class DeviceDataService {
     }
 
     public List<Map<String, Object>> queryLastData(String deviceName, List<String> fields) {
-        String devicePath = path(deviceName);
+        DevicePDO devicePDO = deviceProvider.queryByName(deviceName);
+        if (Objects.isNull(devicePDO)) {
+            throw new NotFoundException("not found device");
+        }
+
+        String devicePath = path(devicePDO.getProductId(), deviceName);
         List<String> paths = fields.stream().map(field -> devicePath + "." + field).collect(Collectors.toList());
         try {
             SessionDataSetWrapper sessionDataSet = sessionPool.executeLastDataQuery(paths);
@@ -68,20 +82,12 @@ public class DeviceDataService {
         }
     }
 
-    public List<Map<String, Object>> queryLastData(String deviceName) {
-        try (SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last * from " + path(deviceName))) {
-            return IotDbUtils.toList(sessionDataSet);
-        } catch (IoTDBConnectionException | StatementExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<Map<String, Object>> queryRawDataWithPagination(String nodeId, String deviceName, List<String> fields,
+    public List<Map<String, Object>> queryRawDataWithPagination(String productId, String deviceName, List<String> fields,
                                                                 long startTime, long endTime, int rowLimit, int rowOffset) {
         String selectExpr = StrUtil.join(",", fields);
         String whereCondition = "time >=" + startTime + " and time <= " + endTime;
         String sql = "select " + selectExpr +
-                " from " + path(deviceName) +
+                " from " + path(productId, deviceName) +
                 " where " + whereCondition +
                 " limit " + rowLimit +
                 " offset " + rowOffset;
@@ -93,8 +99,8 @@ public class DeviceDataService {
     }
 
 
-    private String path(String deviceName) {
-        return StrUtil.join(".", "root.phecda", deviceName);
+    private String path(String productId, String deviceName) {
+        return StrUtil.join(".", "root.phecda", "p" + productId, deviceName);
     }
 
 
@@ -116,10 +122,15 @@ public class DeviceDataService {
     private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DeviceDataCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(rawDataList)) {
+            DevicePDO devicePDO = deviceProvider.queryByName(criteria.getDeviceName());
+            if (Objects.isNull(devicePDO)) {
+                throw new NotFoundException("not found device");
+            }
+
             for (Map<String, Object> rwaData : rawDataList) {
                 String timeStr = String.valueOf(rwaData.get("Time")).substring(0, 13);
                 Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
-                String devicePath = path(criteria.getDeviceName() + "." + criteria.getField());
+                String devicePath = path(devicePDO.getProductId(), criteria.getDeviceName() + "." + criteria.getField());
 
                 DeviceDataBO deviceDataBO = DeviceDataBO.builder()
                         .time(time)
@@ -137,7 +148,13 @@ public class DeviceDataService {
 
     public DeviceDataBO getLatestData(String deviceName, String propertyIdentifier) {
         try {
-            SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier + " from " + path(deviceName));
+            DevicePDO devicePDO = deviceProvider.queryByName(deviceName);
+            if (Objects.isNull(devicePDO)) {
+                throw new NotFoundException("not found device");
+            }
+
+            SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier
+                    + " from " + path(devicePDO.getProductId(), deviceName));
 
             DeviceDataBO deviceDataBO = DeviceDataBO.builder().build();
             while (sessionDataSet.hasNext()) {
