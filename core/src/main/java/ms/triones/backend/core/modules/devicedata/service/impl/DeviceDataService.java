@@ -106,7 +106,7 @@ public class DeviceDataService {
 
     public List<DeviceDataBO> queryList(DeviceDataCriteria criteria) {
         List<Map<String, Object>> rawDataList = queryRawData(criteria.getDeviceName(), Lists.newArrayList(criteria.getField()),
-                criteria.getStartTime().toEpochMilli() * 1000, criteria.getEndTime().toEpochMilli() * 1000);
+                criteria.getStartTime().toEpochMilli(), criteria.getEndTime().toEpochMilli());
         return convertToBO(rawDataList, criteria);
     }
 
