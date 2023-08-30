@@ -137,8 +137,4 @@ public class DevicePropertyHandler {
 
         linkageSceneService.rulesFire(facts);
     }
-
-    public static void main(String[] args) {
-
-    }
 }
