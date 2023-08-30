@@ -20,15 +20,13 @@ public class LinkageSceneUtils {
             return null;
         }
 
-        if (Objects.isNull(linkageScene.getConditions())) {
+        if (Objects.isNull(linkageScene.getFilterCondition())) {
             return null;
         }
 
         List<String> otherConditionElGroups = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(linkageScene.getConditions())) {
-
             linkageScene.getConditions().forEach(otherConditionGroup -> {
-
                 if (CollectionUtil.isNotEmpty(otherConditionGroup)) {
                     List<String> otherConditionEls = Lists.newArrayList();
                     otherConditionGroup.forEach(otherCondition -> {
@@ -36,7 +34,6 @@ public class LinkageSceneUtils {
                     });
                     otherConditionElGroups.add(" ( " + StrUtil.join(" && ", otherConditionEls) + " ) ");
                 }
-
             });
         }
         StringBuilder whenEl = new StringBuilder(" ( " + linkageScene.getFilterCondition().toConditionEl() + " ) ");
