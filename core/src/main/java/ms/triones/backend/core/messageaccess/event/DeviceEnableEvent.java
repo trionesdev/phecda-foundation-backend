@@ -1,4 +1,4 @@
-package ms.triones.backend.core.support.event;
+package ms.triones.backend.core.messageaccess.event;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.core.ResolvableType;

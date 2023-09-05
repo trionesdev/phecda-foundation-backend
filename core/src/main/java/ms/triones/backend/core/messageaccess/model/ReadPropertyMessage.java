@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 public class ReadPropertyMessage {
     private String messageId;
+    private String productId;
     private String deviceName;
     private String thingModelVersion;
     private String identifier;

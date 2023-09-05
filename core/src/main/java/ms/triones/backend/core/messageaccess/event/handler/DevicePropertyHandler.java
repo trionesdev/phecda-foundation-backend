@@ -1,9 +1,10 @@
-package ms.triones.backend.core.messageaccess.event;
+package ms.triones.backend.core.messageaccess.event.handler;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.edge.commons.valuetype.ValueTypeEnum;
+import ms.triones.backend.core.messageaccess.event.DevicePropertyPostEvent;
 import ms.triones.backend.core.messageaccess.model.ReadPropertyMessage;
 import ms.triones.backend.core.messageaccess.model.ReadPropertyMessage.Reading;
 import ms.triones.backend.core.modules.device.dao.entity.Device;

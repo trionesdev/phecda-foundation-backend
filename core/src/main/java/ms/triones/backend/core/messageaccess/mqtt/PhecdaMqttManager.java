@@ -3,10 +3,13 @@ package ms.triones.backend.core.messageaccess.mqtt;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ms.triones.backend.core.messageaccess.mqtt.listener.DeviceEventMessageListener;
+import ms.triones.backend.core.messageaccess.mqtt.listener.ReadPropertyMessageListener;
+import ms.triones.backend.core.messageaccess.mqtt.listener.ServiceInvokeMessageReplyMessageListener;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.service.impl.DeviceService;
-import ms.triones.backend.core.support.event.DeviceDisableEvent;
-import ms.triones.backend.core.support.event.DeviceEnableEvent;
+import ms.triones.backend.core.messageaccess.event.DeviceDisableEvent;
+import ms.triones.backend.core.messageaccess.event.DeviceEnableEvent;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -18,9 +21,9 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class PhecdaMqttManager {
-    private static final String DEVICE_THING_PROPERTY_POST_TOPIC = "/phecda/{productId}/{deviceName}/thing/property/post";
-    private static final String DEVICE_THING_EVENT_POST_TOPIC = "/phecda/{productId}/{deviceName}/thing/event/{identifier}/post";
-    private static final String DEVICE_THING_SERVICE_REPLY_TOPIC = "/phecda/{productId}/{deviceName}/thing/service/{identifier}_reply";
+    private static final String DEVICE_THING_PROPERTY_POST_TOPIC = "phecda/{productId}/{deviceName}/thing/property/post";
+    private static final String DEVICE_THING_EVENT_POST_TOPIC = "phecda/{productId}/{deviceName}/thing/event/{identifier}/post";
+    private static final String DEVICE_THING_SERVICE_REPLY_TOPIC = "phecda/{productId}/{deviceName}/thing/service/{identifier}/reply";
 
     private final IMqttAsyncClient mqttAsyncClient;
     private final DeviceService deviceService;

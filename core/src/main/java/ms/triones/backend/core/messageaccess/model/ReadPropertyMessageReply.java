@@ -12,5 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class ReadPropertyMessageReply {
     private String messageId;
     private Long timestamp;
+    private String productId;
     private String deviceName;
 }
