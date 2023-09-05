@@ -12,5 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class DeviceEventMessageReply {
     private String messageId;
     private Long timestamp;
+    private String productId;
     private String deviceName;
 }

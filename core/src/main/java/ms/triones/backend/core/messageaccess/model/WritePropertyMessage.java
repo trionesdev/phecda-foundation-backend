@@ -12,5 +12,7 @@ import lombok.experimental.SuperBuilder;
 public class WritePropertyMessage {
     private String messageId;
     private Long timestamp;
+    private String productId;
     private String deviceName;
+    private String identifier;
 }
