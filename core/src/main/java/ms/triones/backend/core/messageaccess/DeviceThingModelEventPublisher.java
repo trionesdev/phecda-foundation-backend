@@ -1,5 +1,6 @@
 package ms.triones.backend.core.messageaccess;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
@@ -59,7 +60,7 @@ public class DeviceThingModelEventPublisher {
 
         try {
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(objectMapper.writeValueAsBytes(message));
+            mqttMessage.setPayload(JSONObject.toJSONBytes(message));
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
@@ -83,7 +84,7 @@ public class DeviceThingModelEventPublisher {
 
         try {
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(objectMapper.writeValueAsBytes(message));
+            mqttMessage.setPayload(JSONObject.toJSONBytes(message));
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
@@ -102,7 +103,7 @@ public class DeviceThingModelEventPublisher {
 
         try {
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(objectMapper.writeValueAsBytes(message));
+            mqttMessage.setPayload(JSONObject.toJSONBytes(message));
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service property set event fail: ", e);
@@ -121,7 +122,7 @@ public class DeviceThingModelEventPublisher {
 
         try {
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(objectMapper.writeValueAsBytes(message));
+            mqttMessage.setPayload(JSONObject.toJSONBytes(message));
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service property set event fail: ", e);
