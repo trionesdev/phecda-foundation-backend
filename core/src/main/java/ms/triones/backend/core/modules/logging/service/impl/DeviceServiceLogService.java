@@ -15,4 +15,8 @@ public class DeviceServiceLogService {
     public PageInfo<DeviceServiceLog> page(DeviceServiceLogCriteria criteria) {
         return deviceServiceLogManager.page(criteria);
     }
+
+    public void save(DeviceServiceLog entity) {
+        deviceServiceLogManager.save(entity);
+    }
 }

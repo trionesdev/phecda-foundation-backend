@@ -19,4 +19,8 @@ public class DeviceServiceLogManager {
 
         return MpPageUtils.of(page);
     }
+
+    public void save(DeviceServiceLog entity) {
+        deviceServiceLogDAO.save(entity);
+    }
 }
