@@ -52,12 +52,12 @@ public class PhecdaMqttManager {
         String eventPostTopic = DEVICE_THING_EVENT_POST_TOPIC
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName())
-                .replaceAll("\\{identifier}", "*");
+                .replaceAll("\\{identifier}", "+");
 
         String serviceReplyTopic = DEVICE_THING_SERVICE_REPLY_TOPIC
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName())
-                .replaceAll("\\{identifier}", "*");
+                .replaceAll("\\{identifier}", "+");
 
         mqttAsyncClient.subscribe(propertyPostTopic, 1, readPropertyMessageListener);
         mqttAsyncClient.subscribe(eventPostTopic, 1, deviceEventMessageListener);
@@ -76,12 +76,12 @@ public class PhecdaMqttManager {
         String eventPostTopic = DEVICE_THING_EVENT_POST_TOPIC
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName())
-                .replaceAll("\\{identifier}", "*");
+                .replaceAll("\\{identifier}", "+");
 
         String serviceReplyTopic = DEVICE_THING_SERVICE_REPLY_TOPIC
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName())
-                .replaceAll("\\{identifier}", "*");
+                .replaceAll("\\{identifier}", "+");
 
         List<String> topics = Lists.newArrayList(propertyPostTopic, eventPostTopic, serviceReplyTopic);
 
