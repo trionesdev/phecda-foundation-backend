@@ -2,10 +2,15 @@ package ms.triones.backend.core.modules.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.moensun.commons.core.page.PageInfo;
 import com.moensun.commons.core.util.PageUtils;
 import com.moensun.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import ms.triones.backend.core.messageaccess.DeviceThingModelEventPublisher;
+import ms.triones.backend.core.messageaccess.event.DeviceDisableEvent;
+import ms.triones.backend.core.messageaccess.event.DeviceEnableEvent;
+import ms.triones.backend.core.messageaccess.model.ServiceInvokeMessage;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
 import ms.triones.backend.core.modules.device.dao.entity.Product;
@@ -20,8 +25,6 @@ import ms.triones.backend.core.modules.device.support.DeviceConvertMapper;
 import ms.triones.backend.core.provider.ssp.asset.impl.AssetProvider;
 import ms.triones.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.triones.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
-import ms.triones.backend.core.messageaccess.event.DeviceDisableEvent;
-import ms.triones.backend.core.messageaccess.event.DeviceEnableEvent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,6 +47,7 @@ public class DeviceService {
     private final AssetProvider assetProvider;
     private final NodeDeviceProvider nodeDeviceProvider;
     private final ApplicationEventPublisher eventPublisher;
+    private final DeviceThingModelEventPublisher deviceThingModelEventPublisher;
 
     public void createDevice(Device device) {
         deviceManager.create(device);
@@ -228,5 +232,21 @@ public class DeviceService {
 
     public Optional<Device> queryByName(String name) {
         return deviceManager.queryByName(name);
+    }
+
+    public void startPushStreaming(String deviceId) {
+        Device device = deviceManager.queryById(deviceId)
+                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        Map<String, Object> params = Maps.newHashMap();
+        // TODO：url
+        params.put("pushUrl", "aaaaaaaaaa");
+        ServiceInvokeMessage message = ServiceInvokeMessage.builder()
+                .productId(device.getProductId())
+                .deviceName(device.getName())
+                .identifier("StartPushStreaming")
+                .timestamp(System.currentTimeMillis())
+                .params(params)
+                .build();
+        deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
     }
 }

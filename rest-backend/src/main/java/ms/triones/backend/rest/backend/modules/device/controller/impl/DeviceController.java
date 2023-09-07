@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.triones.backend.core.modules.device.dao.criteria.DeviceCriteria;
 import ms.triones.backend.core.modules.device.dao.entity.Device;
-import ms.triones.backend.core.modules.device.dao.entity.Product;
 import ms.triones.backend.core.modules.device.service.bo.DeviceEventDataBO;
 import ms.triones.backend.core.modules.device.service.bo.DeviceExtBO;
 import ms.triones.backend.core.modules.device.service.bo.DevicePropertyDataBO;
@@ -21,7 +20,15 @@ import ms.triones.backend.rest.backend.modules.device.controller.ro.DeviceUpdate
 import ms.triones.backend.rest.backend.modules.device.support.DeviceConstants;
 import ms.triones.backend.rest.backend.modules.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -174,5 +181,13 @@ public class DeviceController {
                 .id(productId)
                 .protocols(args.getProtocols())
                 .build());
+    }
+
+    @Operation(summary = "开始推流")
+    @GetMapping(value = "devices/{id}/streaming/start")
+    public void startDeviceStream(
+            @PathVariable(value = "id") String id
+    ) {
+            deviceService.startPushStreaming(id);
     }
 }
