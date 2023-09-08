@@ -185,9 +185,17 @@ public class DeviceController {
 
     @Operation(summary = "开始推流")
     @GetMapping(value = "devices/{id}/streaming/start")
-    public void startDeviceStream(
+    public String startDeviceStream(
             @PathVariable(value = "id") String id
     ) {
-            deviceService.startPushStreaming(id);
+        return deviceService.startPushStreaming(id);
+    }
+
+    @Operation(summary = "结束推流")
+    @GetMapping(value = "devices/{id}/streaming/stop")
+    public void stopDeviceStream(
+            @PathVariable(value = "id") String id
+    ) {
+        deviceService.stopPushStreaming(id);
     }
 }

@@ -27,6 +27,7 @@ import ms.triones.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.triones.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,18 @@ public class DeviceService {
     private final NodeDeviceProvider nodeDeviceProvider;
     private final ApplicationEventPublisher eventPublisher;
     private final DeviceThingModelEventPublisher deviceThingModelEventPublisher;
+
+    @Value("${streaming.media.host}")
+    private String streamingMediaHost = "127.0.0.1";
+    @Value("${streaming.media.rtsp.port}")
+    private Integer streamingMediaRtspPort = 554;
+    @Value("${streaming.media.http.port}")
+    private Integer streamingMediaHttpPort = 80;
+
+    private static final String RTSP_URL = "rtsp://{host}:{port}/{productId}/{deviceName}";
+    private static final String FLV_URL = "http://{host}:{port}/{productId}/{deviceName}.live.flv";
+
+
 
     public void createDevice(Device device) {
         deviceManager.create(device);
@@ -234,18 +247,39 @@ public class DeviceService {
         return deviceManager.queryByName(name);
     }
 
-    public void startPushStreaming(String deviceId) {
+    public String startPushStreaming(String deviceId) {
         Device device = deviceManager.queryById(deviceId)
                 .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+
         Map<String, Object> params = Maps.newHashMap();
-        // TODO：url
-        params.put("pushUrl", "aaaaaaaaaa");
+        String rtspUrl = RTSP_URL.replaceAll("\\{host}", streamingMediaHost)
+                .replaceAll("\\{port}", String.valueOf(streamingMediaRtspPort))
+                .replaceAll("\\{productId}", device.getProductId())
+                .replaceAll("\\{deviceName}", device.getName());
+        params.put("pushUrl", rtspUrl);
         ServiceInvokeMessage message = ServiceInvokeMessage.builder()
                 .productId(device.getProductId())
                 .deviceName(device.getName())
                 .identifier("StartPushStreaming")
                 .timestamp(System.currentTimeMillis())
                 .params(params)
+                .build();
+        deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
+        return FLV_URL.replaceAll("\\{host}", streamingMediaHost)
+                .replaceAll("\\{port}", String.valueOf(streamingMediaHttpPort))
+                .replaceAll("\\{productId}", device.getProductId())
+                .replaceAll("\\{deviceName}", device.getName());
+    }
+
+    public void stopPushStreaming(String deviceId) {
+        Device device = deviceManager.queryById(deviceId)
+                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+
+        ServiceInvokeMessage message = ServiceInvokeMessage.builder()
+                .productId(device.getProductId())
+                .deviceName(device.getName())
+                .identifier("StopPushStreaming")
+                .timestamp(System.currentTimeMillis())
                 .build();
         deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
     }
