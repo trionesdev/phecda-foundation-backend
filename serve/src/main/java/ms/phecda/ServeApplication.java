@@ -1,0 +1,19 @@
+package ms.phecda;
+
+import com.moensun.csi.minio.annotation.EnableMinioClients;
+import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@Slf4j
+@SpringBootApplication
+@MapperScan(value = {"ms.phecda.backend.core.modules.*.dao.mapper"})
+@EnableMinioClients
+public class ServeApplication {
+    public static void main(String[] args) {
+        log.info("--app start--");
+        SpringApplication.run(ServeApplication.class, args);
+        log.info("--app end--");
+    }
+}

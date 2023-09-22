@@ -3,12 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>triones-backend</artifactId>
-        <groupId>ms.triones.backend</groupId>
+        <artifactId>phecda-backend</artifactId>
+        <groupId>ms.phecda.backend</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
     <name>Infrastructure</name>
+    <groupId>ms.phecda</groupId>
     <artifactId>infrastructure</artifactId>
 
     <dependencies>
@@ -84,7 +86,7 @@
 
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>edgex</artifactId>
+            <artifactId>edge-edgex</artifactId>
         </dependency>
     </dependencies>
 </project>

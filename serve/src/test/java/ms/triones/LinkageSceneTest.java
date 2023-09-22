@@ -1,9 +1,9 @@
 package ms.triones;
 
 import com.google.common.collect.Lists;
-import ms.triones.backend.core.messageaccess.event.DevicePropertyPostEvent;
-import ms.triones.backend.core.messageaccess.model.ReadPropertyMessage;
-import ms.triones.backend.core.messageaccess.model.ReadPropertyMessage.Reading;
+import ms.phecda.backend.core.messageaccess.event.DevicePropertyPostEvent;
+import ms.phecda.backend.core.messageaccess.model.ReadPropertyMessage;
+import ms.phecda.backend.core.messageaccess.model.ReadPropertyMessage.Reading;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
