@@ -1,4 +1,4 @@
-package ms.phecda.edge.base.device.req;
+package ms.phecda.edge.base.device.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
