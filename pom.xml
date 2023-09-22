@@ -15,12 +15,11 @@
         <module>rest-backend</module>
         <module>serve</module>
         <module>infrastructure</module>
-        <module>edgex</module>
-        <module>edge-api</module>
+        <module>edge</module>
     </modules>
 
-    <artifactId>triones-backend</artifactId>
-    <groupId>ms.triones.backend</groupId>
+    <artifactId>phecda-backend</artifactId>
+    <groupId>ms.phecda.backend</groupId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -35,6 +34,20 @@
 
     <dependencyManagement>
         <dependencies>
+<!--            <dependency>-->
+<!--                <groupId>ms.phecda</groupId>-->
+<!--                <artifactId>edge</artifactId>-->
+<!--                <version>1.0-SNAPSHOT</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>edge-edgex</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.moensun.mqtt</groupId>
                 <artifactId>mqtt-spring-boot-starters</artifactId>
@@ -42,27 +55,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
             <dependency>
                 <groupId>com.moensun.iotdb</groupId>
                 <artifactId>iotdb-spring-boot-starter</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>com.moensun.csi</groupId>
-                <artifactId>tencentcloud-spring-boot-starter</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
 
-            <dependency>
-                <groupId>ms.phecda</groupId>
-                <artifactId>edge-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ms.phecda</groupId>
-                <artifactId>edgex</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

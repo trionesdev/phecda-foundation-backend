@@ -1,6 +1,8 @@
+server:
+  port: 8200
 spring:
   application:
-    name: belt-backend
+    name: phecda-backend
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
@@ -58,3 +60,4 @@ ms:
       resource-paths: i18n/error
   security:
     exclude-matchers: /**
+
