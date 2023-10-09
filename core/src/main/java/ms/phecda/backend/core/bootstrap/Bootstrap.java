@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.bootstrap;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.modules.linkage.service.impl.LinkageSceneService;
+import ms.phecda.backend.core.domains.linkage.service.impl.LinkageSceneService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

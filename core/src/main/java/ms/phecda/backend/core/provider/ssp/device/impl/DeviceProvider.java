@@ -1,9 +1,9 @@
 package ms.phecda.backend.core.provider.ssp.device.impl;
 
-import ms.phecda.backend.core.modules.device.dao.criteria.DeviceCriteria;
-import ms.phecda.backend.core.modules.device.dao.entity.Device;
-import ms.phecda.backend.core.modules.device.service.impl.DeviceService;
-import ms.phecda.backend.core.modules.device.support.DeviceConvertMapper;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
+import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
