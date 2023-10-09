@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-@MapperScan(value = {"ms.phecda.backend.core.modules.*.dao.mapper"})
+@MapperScan(value = {"ms.phecda.backend.core.domains.*.dao.mapper"})
 @EnableMinioClients
 public class ServeApplication {
     public static void main(String[] args) {

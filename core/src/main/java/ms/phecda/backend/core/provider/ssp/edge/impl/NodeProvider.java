@@ -1,9 +1,9 @@
 package ms.phecda.backend.core.provider.ssp.edge.impl;
 
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodePDO;
-import ms.phecda.backend.core.modules.edge.dao.entity.Node;
-import ms.phecda.backend.core.modules.edge.service.impl.NodeService;
-import ms.phecda.backend.core.modules.edge.support.NodeConvertMapper;
+import ms.phecda.backend.core.domains.edge.dao.entity.Node;
+import ms.phecda.backend.core.domains.edge.service.impl.NodeService;
+import ms.phecda.backend.core.domains.edge.support.NodeConvertMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
