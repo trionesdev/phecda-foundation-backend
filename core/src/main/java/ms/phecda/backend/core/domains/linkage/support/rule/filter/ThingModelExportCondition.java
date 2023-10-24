@@ -43,10 +43,10 @@ public class ThingModelExportCondition extends FilterCondition {
                 case LE:
                     conditions.add(property + " <= " + param(getParams().get(0)));
                     break;
-                case BETWEEN:
+                case RANGE_CLOSED:
                     conditions.add(param(getParams().get(0)) + "< " + property + " < " + param(getParams().get(1)));
                     break;
-                case BETWEEN_EQ:
+                case RANGE_OPEN:
                     conditions.add(param(getParams().get(0)) + "<= " + property + " <= " + param(getParams().get(1)));
                     break;
                 case EQ:
@@ -66,8 +66,8 @@ public class ThingModelExportCondition extends FilterCondition {
         GE("大于等于"),
         LT("小于"),
         LE("小于等于"),
-        BETWEEN("闭区间(a,b)"),
-        BETWEEN_EQ("开区间[a,b]");
+        RANGE_CLOSED("闭区间(a,b)"),
+        RANGE_OPEN("开区间[a,b]");
 
         @Getter
         private final String label;
