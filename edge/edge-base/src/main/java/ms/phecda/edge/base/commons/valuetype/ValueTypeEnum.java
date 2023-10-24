@@ -3,6 +3,7 @@ package ms.phecda.edge.base.commons.valuetype;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public enum ValueTypeEnum {
     INT(ValueTypeInt.class, "整数型"),
@@ -14,10 +15,8 @@ public enum ValueTypeEnum {
     STRUCT(ValueTypeStruct.class, "结构体"),
     ARRAY(ValueTypeArray.class, "数组");
 
-    @Getter
     private final Class<? extends ValueType> clazz;
 
-    @Getter
     private final String label;
 
 }

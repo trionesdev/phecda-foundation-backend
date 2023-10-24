@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ActionsTypeHandler;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ConditionsTypeHandler;
+import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ScenesTypeHandler;
+import ms.phecda.backend.core.domains.linkage.support.rule.Scene;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.Action;
 import ms.phecda.backend.core.domains.linkage.support.rule.filter.FilterCondition;
 import ms.phecda.backend.core.domains.linkage.support.rule.othercondition.OtherCondition;
@@ -38,6 +40,12 @@ public class LinkageScene extends BaseLogicEntity {
 
     @TableField(typeHandler = ActionsTypeHandler.class)
     private List<Action> actions;
+
+    @TableField(typeHandler = ScenesTypeHandler.class)
+    private List<Scene> scenes;
+
     @TableField(value = "is_enabled")
     private Boolean enabled;
+
+
 }

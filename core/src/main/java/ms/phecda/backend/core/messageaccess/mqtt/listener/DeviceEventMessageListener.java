@@ -7,10 +7,11 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class DeviceEventMessageListener implements IMqttMessageListener  {
+public class DeviceEventMessageListener implements IMqttMessageListener {
+
+
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        log.debug("receice message, topic: {}, message: {}", topic, message);
-        //todo
+
     }
 }
