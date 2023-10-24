@@ -4,12 +4,21 @@ import com.google.common.collect.Lists;
 import ms.phecda.BaseTest;
 import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
 import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.RuleActionFactory;
+import ms.phecda.backend.core.domains.linkage.support.rule.OperatorEnum;
+import ms.phecda.backend.core.domains.linkage.support.rule.Scene;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.Action;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.filter.ThingModelExportCondition;
 import ms.phecda.backend.core.domains.linkage.support.rule.othercondition.OtherCondition;
 import ms.phecda.backend.core.domains.linkage.support.rule.othercondition.ThingModelPropertyCondition;
+import ms.phecda.backend.core.domains.linkage.support.rule.statecondition.ConditionTypeEnum;
+import ms.phecda.backend.core.domains.linkage.support.rule.statecondition.StateCondition;
+import ms.phecda.backend.core.domains.linkage.support.rule.statecondition.ThingPropertyValueCondition;
+import ms.phecda.backend.core.domains.linkage.support.rule.trigger.EventTrigger;
+import ms.phecda.backend.core.domains.linkage.support.rule.trigger.ThingPropertyReportTrigger;
+import ms.phecda.backend.core.domains.linkage.support.rule.trigger.TriggerTypeEnum;
 import ms.phecda.backend.core.domains.linkage.support.util.LinkageSceneUtils;
+import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;
@@ -42,10 +51,43 @@ public class LinkageServiceTests extends BaseTest {
         Action action = AlarmAction.builder().type(Action.TypeEnum.ALARM).deviceName("ssss").build();
 
         LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
-                .filterCondition(ThingModelExportCondition.builder()
-                        .product("ppp").deviceName("a001")
-                        .property("temperature").operator(ThingModelExportCondition.OperatorEnum.GT).params(Lists.newArrayList(20))
-                        .build())
+                .scenes(Lists.newArrayList(
+                        Scene.builder()
+                                .eventTrigger( ThingPropertyReportTrigger.builder()
+                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
+                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+                                                .product("ppp")
+                                                .deviceName("a001")
+                                                .property("humidity")
+                                                .build())
+                                        .filter(EventTrigger.EventFilter.builder()
+                                                .operator(OperatorEnum.GT)
+                                                .valueType(ValueTypeEnum.INT)
+                                                .args(Lists.newArrayList("20"))
+                                                .build())
+                                        .build())
+                                .conditions(Lists.newArrayList(
+                                        Scene.OperatorCondition.builder()
+                                                .children(Lists.newArrayList(
+                                                        ThingPropertyValueCondition.builder()
+                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
+                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
+                                                                        .product("ppp")
+                                                                        .deviceName("a001")
+                                                                        .build())
+                                                                .condition(StateCondition.Condition.builder()
+                                                                        .valuePath("temperature")
+                                                                        .operator(OperatorEnum.GT)
+                                                                        .valueType(ValueTypeEnum.INT)
+                                                                        .args(Lists.newArrayList("20"))
+                                                                        .build())
+                                                                .build()
+                                                ))
+                                                .build()
+                                ))
+                                .build()
+                ))
                 .conditions(r)
                 .actions(Lists.newArrayList(action))
                 .enabled(true)

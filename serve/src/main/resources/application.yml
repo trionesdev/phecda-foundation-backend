@@ -20,6 +20,9 @@ spring:
       max-request-size: 50MB
   messages:
     basename: i18n/validation
+  cache:
+    type: redis
+
   redis:
     redisson:
       config: |
@@ -43,6 +46,7 @@ spring:
         nettyThreads: 32
         codec: !<org.redisson.codec.MarshallingCodec> {}
         transportMode: "NIO"
+
 
 mybatis-plus:
   configuration:
