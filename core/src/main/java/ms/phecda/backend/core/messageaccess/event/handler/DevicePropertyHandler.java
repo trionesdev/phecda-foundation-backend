@@ -41,46 +41,50 @@ public class DevicePropertyHandler {
             return;
         }
 
-        Optional<Device> deviceOptional = deviceService.queryByName(message.getDeviceName());
-        if (!deviceOptional.isPresent()) {
-            log.warn("device {} not exist", message.getDeviceName());
-            return;
-        }
-        Optional<ProductThingModelVersion> thingModelVersionOptional = productService
-                .queryThingModel(deviceOptional.get().getProductId(), message.getThingModelVersion());
-        if (!thingModelVersionOptional.isPresent()) {
-            log.warn("thingModel of device {} not exist", message.getDeviceName());
-            return;
-        }
-        List<ThingModelProperty> properties = thingModelVersionOptional.get().getThingModel().getProperties();
-        Map<String, ValueTypeEnum> identifierAndTypeMap = properties.stream()
-                .collect(Collectors.toMap(ThingModelProperty::getIdentifier, ThingModelProperty::getValueType));
-        if (identifierAndTypeMap == null || identifierAndTypeMap.size() == 0) {
-            log.warn("property of thingModel of device {} not exist", message.getDeviceName());
-            return;
-        }
-
-        List<TSDataType> types = Lists.newArrayList();
-        List<String> measurements = Lists.newArrayList();
-        List<Object> values = Lists.newArrayList();
-        for (Reading reading : message.getReadings()) {
-            ValueTypeEnum valueType = identifierAndTypeMap.get(reading.getIdentifier());
-            TSDataType tsDataType = convertType(valueType);
-            if (Objects.isNull(tsDataType)) {
-                log.warn("can not convert dataType {} of device {} not exist", valueType, message.getDeviceName());
-                continue;
+        try {
+            Optional<Device> deviceOptional = deviceService.queryByName(message.getDeviceName());
+            if (!deviceOptional.isPresent()) {
+                log.warn("device {} not exist", message.getDeviceName());
+                return;
+            }
+            Optional<ProductThingModelVersion> thingModelVersionOptional = productService
+                    .queryThingModel(deviceOptional.get().getProductId(), message.getThingModelVersion());
+            if (!thingModelVersionOptional.isPresent()) {
+                log.warn("thingModel of device {} not exist", message.getDeviceName());
+                return;
+            }
+            List<ThingModelProperty> properties = thingModelVersionOptional.get().getThingModel().getProperties();
+            Map<String, ValueTypeEnum> identifierAndTypeMap = properties.stream()
+                    .collect(Collectors.toMap(ThingModelProperty::getIdentifier, ThingModelProperty::getValueType));
+            if (identifierAndTypeMap == null || identifierAndTypeMap.size() == 0) {
+                log.warn("property of thingModel of device {} not exist", message.getDeviceName());
+                return;
             }
 
-            types.add(tsDataType);
-            measurements.add(reading.getIdentifier());
-            values.add(convertValue(valueType, reading.getValue()));
-        }
+            List<TSDataType> types = Lists.newArrayList();
+            List<String> measurements = Lists.newArrayList();
+            List<Object> values = Lists.newArrayList();
+            for (Reading reading : message.getReadings()) {
+                ValueTypeEnum valueType = identifierAndTypeMap.get(reading.getIdentifier());
+                TSDataType tsDataType = convertIoTDBType(valueType);
+                if (Objects.isNull(tsDataType)) {
+                    log.warn("can not convert dataType {} of device {} not exist", valueType, message.getDeviceName());
+                    continue;
+                }
 
-        deviceDataService.insertRecord(deviceOptional.get().getProductId(), message.getDeviceName(),
-                message.getTimestamp(), measurements, types, values);
+                types.add(tsDataType);
+                measurements.add(reading.getIdentifier());
+                values.add(convertValue(valueType, reading.getValue()));
+            }
+
+            deviceDataService.insertRecord(deviceOptional.get().getProductId(), message.getDeviceName(),
+                    message.getTimestamp(), measurements, types, values);
+        } catch (Exception e) {
+            log.error("save device data fail: ", e);
+        }
     }
 
-    private TSDataType convertType(ValueTypeEnum valueType) {
+    private TSDataType convertIoTDBType(ValueTypeEnum valueType) {
         if (ValueTypeEnum.INT.equals(valueType)) {
             return TSDataType.INT32;
         }
@@ -123,19 +127,23 @@ public class DevicePropertyHandler {
             return;
         }
 
-        Optional<Device> deviceOptional = deviceService.queryByName(message.getDeviceName());
-        if (!deviceOptional.isPresent()) {
-            return;
-        }
-        Device device = deviceOptional.get();
+        try {
+            Optional<Device> deviceOptional = deviceService.queryByName(message.getDeviceName());
+            if (!deviceOptional.isPresent()) {
+                return;
+            }
+            Device device = deviceOptional.get();
 
-        Facts facts = new Facts();
-        facts.put("product", device.getProductId());
-        facts.put("deviceName", message.getDeviceName());
-        for (Reading reading : message.getReadings()) {
-            facts.put(reading.getIdentifier(), reading.getValue());
-        }
+            Facts facts = new Facts();
+            facts.put("product", device.getProductId());
+            facts.put("deviceName", message.getDeviceName());
+            for (Reading reading : message.getReadings()) {
+                facts.put(reading.getIdentifier(), reading.getValue());
+            }
 
-        linkageSceneService.rulesFire(facts);
+            linkageSceneService.rulesFire(facts);
+        } catch (Exception e) {
+            log.error("rules fire fail: ", e);
+        }
     }
 }

@@ -16,11 +16,14 @@
         <module>serve</module>
         <module>infrastructure</module>
         <module>edge</module>
+        <module>rest-ssp-sdk</module>
+        <module>rest-ssp</module>
     </modules>
 
     <artifactId>phecda-backend</artifactId>
-    <groupId>ms.phecda.backend</groupId>
+    <groupId>ms.phecda</groupId>
     <version>1.0-SNAPSHOT</version>
+    <name>PhecdaBackend</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,20 +37,6 @@
 
     <dependencyManagement>
         <dependencies>
-<!--            <dependency>-->
-<!--                <groupId>ms.phecda</groupId>-->
-<!--                <artifactId>edge</artifactId>-->
-<!--                <version>1.0-SNAPSHOT</version>-->
-<!--                <type>pom</type>-->
-<!--                <scope>import</scope>-->
-<!--            </dependency>-->
-
-            <dependency>
-                <groupId>ms.phecda</groupId>
-                <artifactId>edge-edgex</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.moensun.mqtt</groupId>
                 <artifactId>mqtt-spring-boot-starters</artifactId>
@@ -56,13 +45,43 @@
                 <scope>import</scope>
             </dependency>
 
-
             <dependency>
                 <groupId>com.moensun.iotdb</groupId>
                 <artifactId>iotdb-spring-boot-starter</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>edge-edgex</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>rest-backend</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>rest-ssp-sdk</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>rest-ssp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -118,8 +137,29 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>moensun</id>
+            <url>https://nexus.moensun.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>moensun</id>
+            <url>https://nexus.moensun.com/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 
     <repositories>
         <repository>
@@ -151,5 +191,4 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
 </project>
