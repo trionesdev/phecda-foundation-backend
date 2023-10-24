@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
 
+import java.io.Serializable;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "phecda_device_device", autoResultMap = true)
-public class Device extends BaseLogicEntity {
+public class Device extends BaseLogicEntity  {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     private String productId;

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.messageaccess.mqtt.listener.DeviceEventMessageListener;
-import ms.phecda.backend.core.messageaccess.mqtt.listener.ReadPropertyMessageListener;
+import ms.phecda.backend.core.messageaccess.mqtt.listener.ReportPropertyMessageListener;
 import ms.phecda.backend.core.messageaccess.mqtt.listener.ServiceInvokeMessageReplyMessageListener;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
@@ -17,22 +17,24 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 @RequiredArgsConstructor
 @Slf4j
 @Component
 public class PhecdaMqttManager {
-    private static final String DEVICE_THING_PROPERTY_POST_TOPIC = "phecda/{productId}/{deviceName}/thing/property/post";
-    private static final String DEVICE_THING_EVENT_POST_TOPIC = "phecda/{productId}/{deviceName}/thing/event/{identifier}/post";
-    private static final String DEVICE_THING_SERVICE_REPLY_TOPIC = "phecda/{productId}/{deviceName}/thing/service/{identifier}/reply";
+    private static final String DEVICE_THING_PROPERTY_POST_TOPIC = "$share/$queue/phecda/{productId}/{deviceName}/thing/property/post";
+    private static final String DEVICE_THING_EVENT_POST_TOPIC = "$share/$queue/phecda/{productId}/{deviceName}/thing/event/{identifier}/post";
+    private static final String DEVICE_THING_SERVICE_REPLY_TOPIC = "$share/$queue/phecda/{productId}/{deviceName}/thing/service/{identifier}/reply";
 
     private final IMqttAsyncClient mqttAsyncClient;
     private final DeviceService deviceService;
-    private final ReadPropertyMessageListener readPropertyMessageListener;
+    private final ReportPropertyMessageListener reportPropertyMessageListener;
     private final DeviceEventMessageListener deviceEventMessageListener;
     private final ServiceInvokeMessageReplyMessageListener serviceInvokeMessageReplyMessageListener;
 
     /**
      * 项目启动初始化的时候调用，初始化订阅所有已启用设备的topic
+     *
      * @throws Exception
      */
     public void init() throws Exception {
@@ -59,9 +61,9 @@ public class PhecdaMqttManager {
                 .replaceAll("\\{deviceName}", device.getName())
                 .replaceAll("\\{identifier}", "+");
 
-        mqttAsyncClient.subscribe(propertyPostTopic, 1, readPropertyMessageListener);
-        mqttAsyncClient.subscribe(eventPostTopic, 1, deviceEventMessageListener);
-        mqttAsyncClient.subscribe(serviceReplyTopic, 1, serviceInvokeMessageReplyMessageListener);
+//    mqttAsyncClient.subscribe(propertyPostTopic,1,new ReportPropertyMessageListener());
+//        mqttAsyncClient.subscribe(eventPostTopic, 1, deviceEventMessageListener);
+//        mqttAsyncClient.subscribe(serviceReplyTopic, 1, serviceInvokeMessageReplyMessageListener);
 
         log.info("device[{}] subscribe topic: {}", device.getName(), propertyPostTopic);
         log.info("device[{}] subscribe topic: {}", device.getName(), eventPostTopic);

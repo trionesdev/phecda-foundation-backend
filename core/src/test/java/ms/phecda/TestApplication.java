@@ -1,4 +1,4 @@
-package ms.phecda.backend;
+package ms.phecda;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -6,8 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
-@SpringBootApplication(scanBasePackages = {"ms.triones", "ms.phecda"})
-@MapperScan(value = {"ms.triones.backend.core.modules.*.dao.mapper"})
+@SpringBootApplication
+@MapperScan(value = {"ms.phecda.backend.core.domains.*.dao.mapper"})
 //@EnableFeignClients
 public class TestApplication {
     public static void main(String[] args) {

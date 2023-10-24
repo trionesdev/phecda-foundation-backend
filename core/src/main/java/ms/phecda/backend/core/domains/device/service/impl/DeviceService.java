@@ -27,6 +27,7 @@ import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,6 @@ public class DeviceService {
 
     private static final String RTSP_URL = "rtsp://{host}:{port}/{productId}/{deviceName}";
     private static final String FLV_URL = "http://{host}:{port}/{productId}/{deviceName}.live.flv";
-
 
 
     public void createDevice(Device device) {
@@ -226,6 +226,11 @@ public class DeviceService {
 
     public Optional<Device> queryByName(String name) {
         return deviceManager.queryByName(name);
+    }
+
+    @Cacheable(value = {"device"}, key = "'name:'+#name")
+    public Device queryByNameCache(String name) {
+        return deviceManager.queryByName(name).orElse(null);
     }
 
     public String startPushStreaming(String deviceId) {
