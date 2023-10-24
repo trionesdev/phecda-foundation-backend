@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>phecda-backend</artifactId>
-        <groupId>ms.phecda.backend</groupId>
+        <groupId>ms.phecda</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Core</name>
     <artifactId>core</artifactId>
+    <groupId>ms.phecda</groupId>
 
     <dependencies>
         <dependency>
@@ -71,7 +72,6 @@
         <dependency>
             <groupId>ms.phecda</groupId>
             <artifactId>infrastructure</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
