@@ -27,15 +27,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
 
+import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.DEVICE_THING_SERVICE;
+import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.DEVICE_THING_SERVICE_PROPERTY_SET;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class DeviceThingModelEventPublisher {
-    private static final String DEVICE_THING_PROPERTY_POST_REPLY = "phecda/{productId}/{deviceName}/thing/property/post_reply";
-    private static final String DEVICE_THING_SERVICE_PROPERTY_SET = "phecda/{productId}/{deviceName}/thing/service/property/set";
-    private static final String DEVICE_THING_EVENT_POST_REPLY = "phecda/{productId}/{deviceName}/thing/event/{identifier}/post_reply";
-    private static final String DEVICE_THING_SERVICE = "phecda/{productId}/{deviceName}/thing/service/{identifier}";
-
     private static final Map<String, Object> messageCache = Maps.newConcurrentMap();
 
     private final IMqttAsyncClient mqttAsyncClient;
