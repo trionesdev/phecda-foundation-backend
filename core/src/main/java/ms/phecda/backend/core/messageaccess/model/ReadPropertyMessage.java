@@ -23,6 +23,7 @@ public class ReadPropertyMessage {
     @Data
     public static class Reading {
         private String identifier;
+        private String valueType;
         private Object value;
     }
 }
