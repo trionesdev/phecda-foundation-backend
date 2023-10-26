@@ -45,7 +45,7 @@ public class ReportPropertyEventHandler implements EventHandler<ReportPropertyEv
      * @param message
      */
     public void redirect(ReadPropertyMessage message) {
-        kafkaTemplate.send("default-topic", productId(message), JSON.toJSONString(message));
+        kafkaTemplate.send("device-thing-property", productId(message), JSON.toJSONString(message));
     }
 
     /**
