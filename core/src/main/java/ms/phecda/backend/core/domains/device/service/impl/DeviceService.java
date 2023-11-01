@@ -46,12 +46,12 @@ public class DeviceService {
 
     @Value("${streaming.media.host}")
     private String streamingMediaHost = "127.0.0.1";
-    @Value("${streaming.media.rtsp.port}")
-    private Integer streamingMediaRtspPort = 554;
+    @Value("${streaming.media.rtmp.port}")
+    private Integer streamingMediaRtmpPort = 1935;
     @Value("${streaming.media.http.port}")
     private Integer streamingMediaHttpPort = 80;
 
-    private static final String RTSP_URL = "rtsp://{host}:{port}/{productId}/{deviceName}";
+    private static final String RTMP_URL = "rtmp://{host}:{port}/{productId}/{deviceName}";
     private static final String FLV_URL = "http://{host}:{port}/{productId}/{deviceName}.live.flv";
 
 
@@ -238,11 +238,11 @@ public class DeviceService {
                 .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
 
         Map<String, Object> params = Maps.newHashMap();
-        String rtspUrl = RTSP_URL.replaceAll("\\{host}", streamingMediaHost)
-                .replaceAll("\\{port}", String.valueOf(streamingMediaRtspPort))
+        String rtmpUrl = RTMP_URL.replaceAll("\\{host}", streamingMediaHost)
+                .replaceAll("\\{port}", String.valueOf(streamingMediaRtmpPort))
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName());
-        params.put("pushUrl", rtspUrl);
+        params.put("pushUrl", rtmpUrl);
         ServiceInvokeMessage message = ServiceInvokeMessage.builder()
                 .productId(device.getProductId())
                 .deviceName(device.getName())
