@@ -1,6 +1,7 @@
 package ms.phecda.backend.core.messageaccess;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
@@ -13,13 +14,16 @@ import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessage;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
 import ms.phecda.backend.core.messageaccess.model.WritePropertyMessage;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ThreadUtils;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,13 +39,14 @@ import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.DEVIC
 @Component
 public class DeviceThingModelEventPublisher {
     private static final Map<String, Object> messageCache = Maps.newConcurrentMap();
+    private static final Map<String, Object> serviceReplyCache = Maps.newConcurrentMap();
 
     private final IMqttAsyncClient mqttAsyncClient;
     private final ObjectMapper objectMapper;
     private final DeviceServiceLogService deviceServiceLogService;
 
     // 同步
-    public void syncPublishServiceEvent(ServiceInvokeMessage message) {
+    public ServiceInvokeMessageReply syncPublishServiceEvent(ServiceInvokeMessage message) {
         String topic = DEVICE_THING_SERVICE
                 .replaceAll("\\{productId}", message.getProductId())
                 .replaceAll("\\{deviceName}", message.getDeviceName())
@@ -61,7 +66,24 @@ public class DeviceThingModelEventPublisher {
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
+            return null;
         }
+
+        try {
+            int waitTime = 0;
+            while (waitTime <= 5) {
+                ServiceInvokeMessageReply messageReply = (ServiceInvokeMessageReply) serviceReplyCache.remove(message.getMessageId());
+                if (Objects.nonNull(messageReply)) {
+                    return messageReply;
+                }
+                ThreadUtils.sleep(Duration.ofSeconds(1));
+                waitTime++;
+            }
+        } catch (Exception e) {
+            log.error("wait service reply fail: ", e);
+        }
+
+        return null;
     }
 
     // 异步
@@ -171,6 +193,8 @@ public class DeviceThingModelEventPublisher {
             return;
         }
 
+        serviceReplyCache.put(source.getMessageId(), source);
+
         log.info("request message: {}, response message: {}", message, source);
 
         DeviceServiceLog log = DeviceServiceLog.builder()
@@ -178,10 +202,15 @@ public class DeviceThingModelEventPublisher {
                 .deviceName(message.getDeviceName())
                 .serviceIdentifier(message.getIdentifier())
                 .serviceName(null)
-                .inputData(objectMapper.convertValue(message.getParams(), JsonNode.class))
-                .outputData(objectMapper.convertValue(source.getParams(), JsonNode.class))
                 .time(Instant.ofEpochMilli(message.getTimestamp()))
                 .build();
+        if (!CollectionUtils.isEmpty(message.getParams())) {
+            log.setInputData(objectMapper.convertValue(message.getParams(), JsonNode.class));
+        }
+        if (!CollectionUtils.isEmpty(source.getParams())) {
+            log.setOutputData(objectMapper.convertValue(source.getParams(), JsonNode.class));
+        }
+
         deviceServiceLogService.save(log);
     }
 }
