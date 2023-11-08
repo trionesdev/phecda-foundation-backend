@@ -20,19 +20,13 @@ public class ServiceInvokeMessageReplyMessageListener implements IMqttMessageLis
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+        byte[] payload = message.getPayload();
+        ServiceInvokeMessageReply phecdaMessage = JSON
+                .parseObject(new String(payload), ServiceInvokeMessageReply.class);
+        if (Objects.isNull(phecdaMessage)) {
+            return;
+        }
 
+        eventPublisher.publishEvent(ServiceInvokeReplyEvent.build(phecdaMessage));
     }
-
-//    @Override
-//    public void messageArrived(String topic, MqttMessage message) throws Exception {
-//        byte[] payload = message.getPayload();
-//        ServiceInvokeMessageReply phecdaMessage = JSON
-//                .parseObject(new String(payload), ServiceInvokeMessageReply.class);
-//        if (Objects.isNull(phecdaMessage)) {
-//            return;
-//        }
-//
-//        eventPublisher.publishEvent(ServiceInvokeReplyEvent.build(phecdaMessage));
-//    }
-
 }
