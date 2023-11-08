@@ -36,4 +36,12 @@ public class TopicConstants {
     public static final String DEVICE_THING_PROPERTY_POST_WILDCARD_TOPIC = DEVICE_THING_PROPERTY_POST_TOPIC
             .replaceAll("\\{productId}", "+")
             .replaceAll("\\{deviceName}", "+");
+
+    /**
+     * （设备端）上报属性通配符TOPIC
+     */
+    public static final String DEVICE_THING_SERVICE_REPLY_WILDCARD_TOPIC = DEVICE_THING_SERVICE_REPLY_TOPIC
+            .replaceAll("\\{productId}", "+")
+            .replaceAll("\\{deviceName}", "+")
+            .replaceAll("\\{identifier}", "+");
 }
