@@ -22,6 +22,7 @@ import ms.phecda.backend.core.messageaccess.DeviceThingModelEventPublisher;
 import ms.phecda.backend.core.messageaccess.event.DeviceDisableEvent;
 import ms.phecda.backend.core.messageaccess.event.DeviceEnableEvent;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessage;
+import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
 import ms.phecda.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
 import org.apache.commons.collections4.CollectionUtils;
@@ -268,5 +269,19 @@ public class DeviceService {
                 .timestamp(System.currentTimeMillis())
                 .build();
         deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
+    }
+
+    public ServiceInvokeMessageReply callDeviceService(String deviceName, String identifier, Map<String, Object> params) {
+        Optional<Device> deviceOptional = queryByName(deviceName);
+        Device device = deviceOptional.orElseThrow();
+
+        ServiceInvokeMessage message = ServiceInvokeMessage.builder()
+                .productId(device.getProductId())
+                .deviceName(deviceName)
+                .identifier(identifier)
+                .timestamp(System.currentTimeMillis())
+                .params(params)
+                .build();
+        return deviceThingModelEventPublisher.syncPublishServiceEvent(message);
     }
 }
