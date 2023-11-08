@@ -71,7 +71,7 @@ public class DeviceThingModelEventPublisher {
 
         try {
             int waitTime = 0;
-            while (waitTime <= 5) {
+            while (waitTime <= 10) {
                 ServiceInvokeMessageReply messageReply = (ServiceInvokeMessageReply) serviceReplyCache.remove(message.getMessageId());
                 if (Objects.nonNull(messageReply)) {
                     return messageReply;
