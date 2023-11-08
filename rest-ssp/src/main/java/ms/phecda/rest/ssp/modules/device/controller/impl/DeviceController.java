@@ -4,14 +4,18 @@ import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
+import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
 import ms.phecda.rest.ssp.modules.device.support.RestDeviceConvertMapper;
 import ms.phecda.rest.ssp.sdk.device.DeviceRest;
+import ms.phecda.rest.ssp.sdk.device.rep.CallDeviceServiceRep;
 import ms.phecda.rest.ssp.sdk.device.rep.DeviceRep;
+import ms.phecda.rest.ssp.sdk.device.req.CallDeviceServiceReq;
 import ms.phecda.rest.ssp.sdk.device.req.QueryDeviceReq;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static ms.phecda.rest.ssp.support.RestConstants.CONTEXT_PATH;
@@ -46,5 +50,14 @@ public class DeviceController implements DeviceRest {
     @Override
     public void stopPushStreaming(String id) {
         deviceService.stopPushStreaming(id);
+    }
+
+    @Override
+    public CallDeviceServiceRep callDeviceService(CallDeviceServiceReq req) {
+        ServiceInvokeMessageReply messageReply = deviceService.callDeviceService(req.getDeviceName(), req.getIdentifier(), req.getParams());
+        if (Objects.isNull(messageReply)) {
+            return null;
+        }
+        return CallDeviceServiceRep.builder().params(messageReply.getParams()).build();
     }
 }
