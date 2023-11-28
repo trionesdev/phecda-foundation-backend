@@ -16,7 +16,6 @@ import java.time.Instant;
 public class DeviceDataCriteria {
     private Instant startTime;
     private Instant endTime;
-    private String assetSn;
     private String deviceName;
     private String field;
     private String nodeId;

@@ -50,7 +50,7 @@ public class DeviceController {
     @PutMapping(value = "devices")
     public void updateDevice(@Validated @RequestBody DeviceUpdateRO args) {
         Device device = DeviceRestConvertMapper.INSTANT.from(args);
-        deviceService.createDevice(device);
+        deviceService.updateById(device);
     }
 
     @Operation(summary = "根据ID删除设备")
