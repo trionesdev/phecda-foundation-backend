@@ -9,5 +9,5 @@ public class DeviceUpdateRO {
     @NotBlank
     private String id;
     @NotBlank
-    private String name;
+    private String remarkName;
 }
