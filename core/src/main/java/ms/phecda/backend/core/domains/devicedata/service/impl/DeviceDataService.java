@@ -136,7 +136,6 @@ public class DeviceDataService {
                         .time(time)
                         .value(rwaData.get(devicePath))
                         .field(criteria.getField())
-                        .assetSn(criteria.getAssetSn())
                         .deviceName(criteria.getDeviceName())
                         .build();
                 deviceDataBOS.add(deviceDataBO);
