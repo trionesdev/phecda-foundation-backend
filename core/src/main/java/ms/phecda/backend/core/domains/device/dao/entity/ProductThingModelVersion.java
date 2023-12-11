@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @TableName(value = "phecda_device_product_thing_model_version",autoResultMap = true)
 public class ProductThingModelVersion extends BaseLogicEntity {
     @TableId(type = IdType.ASSIGN_ID)

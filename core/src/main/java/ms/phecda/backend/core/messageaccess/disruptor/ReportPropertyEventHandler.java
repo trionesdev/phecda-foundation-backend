@@ -19,41 +19,31 @@ import ms.phecda.backend.core.messageaccess.model.ReadPropertyMessage;
 import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.jeasy.rules.api.Facts;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class ReportPropertyEventHandler implements EventHandler<ReportPropertyEvent> {
-    private final KafkaTemplate<String, String> kafkaTemplate;
+//    private final KafkaTemplate<String, String> kafkaTemplate;
     private final LinkageSceneService linkageSceneService;
     private final ProductService productService;
     private final DeviceService deviceService;
     private final DeviceDataService deviceDataService;
 
+
     @Override
     public void onEvent(ReportPropertyEvent event, long l, boolean b) {
         log.info("{} {}", JSON.toJSONString(event.getMessage()), l);
-        redirect(event.getMessage());
         ruleFire(event.getMessage());
         saveMessage(event.getMessage());
     }
 
-    /**
-     * 转发
-     *
-     * @param message
-     */
-    public void redirect(ReadPropertyMessage message) {
-        kafkaTemplate.send("default-topic", productId(message), JSON.toJSONString(message));
-    }
 
     /**
      * 触发联动规则
@@ -78,7 +68,7 @@ public class ReportPropertyEventHandler implements EventHandler<ReportPropertyEv
     public void saveMessage(ReadPropertyMessage message) {
         try {
             ProductThingModelVersion thingModelVersion = productService
-                    .queryThingModel(productId(message), message.getThingModelVersion()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+                    .queryThingModelCache(productId(message), message.getThingModelVersion()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
             List<ThingModelProperty> properties = thingModelVersion.getThingModel().getProperties();
             Map<String, ValueTypeEnum> identifierAndTypeMap = properties.stream()
                     .collect(Collectors.toMap(ThingModelProperty::getIdentifier, ThingModelProperty::getValueType));
@@ -108,9 +98,9 @@ public class ReportPropertyEventHandler implements EventHandler<ReportPropertyEv
     }
 
     private String productId(ReadPropertyMessage message) {
-//        if (StrUtil.isNotBlank(message.getProductId())) {
-//            return message.getProductId();
-//        }
+        if (StrUtil.isNotBlank(message.getProductId())) {
+            return message.getProductId();
+        }
         Device device = deviceService.queryByNameCache(message.getDeviceName());
         if (Objects.isNull(device)){
             throw new NotFoundException("DEVICE_NOT_FOUND");

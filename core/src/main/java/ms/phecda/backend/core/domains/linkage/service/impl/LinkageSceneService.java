@@ -92,7 +92,9 @@ public class LinkageSceneService {
      */
     public void rulesFire(Facts facts) {
         if (CollectionUtil.isEmpty(linkageRules)){
-            log.info("[LinkageSceneService] no rules");
+            if (log.isInfoEnabled()){
+                log.info("[LinkageSceneService] no rules");
+            }
             return;
         }
         rulesEngine.fire(linkageRules, facts);

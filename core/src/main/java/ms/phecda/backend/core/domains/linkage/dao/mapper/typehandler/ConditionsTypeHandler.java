@@ -6,6 +6,7 @@ import ms.phecda.backend.core.domains.linkage.support.rule.othercondition.OtherC
 
 import java.util.List;
 
+@Deprecated
 public class ConditionsTypeHandler extends SpecificTypeHandler<List<List<OtherCondition>>> {
 
     @Override

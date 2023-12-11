@@ -27,8 +27,7 @@ public class PhecdaMqtt {
 
     public void subscribe() {
         try {
-            mqttAsyncClient.subscribe(DEVICE_THING_PROPERTY_POST_WILDCARD_TOPIC, 1, reportPropertyMessageListener);
-            mqttAsyncClient.subscribe(DEVICE_THING_SERVICE_REPLY_WILDCARD_TOPIC, 1, serviceInvokeMessageReplyMessageListener);
+            mqttAsyncClient.subscribe(DEVICE_THING_PROPERTY_POST_TOPIC, 1);
         } catch (MqttException e) {
             throw new RuntimeException(e);
         }

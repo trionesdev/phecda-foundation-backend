@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@Deprecated
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder

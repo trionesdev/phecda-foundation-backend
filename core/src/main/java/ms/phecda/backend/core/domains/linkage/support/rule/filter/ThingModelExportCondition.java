@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+@Deprecated
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
