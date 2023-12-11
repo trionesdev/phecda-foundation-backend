@@ -88,7 +88,6 @@ public class LinkageServiceTests extends BaseTest {
                                 ))
                                 .build()
                 ))
-                .conditions(r)
                 .actions(Lists.newArrayList(action))
                 .enabled(true)
                 .build();

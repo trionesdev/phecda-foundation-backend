@@ -27,7 +27,7 @@ import java.util.Map;
 public class EasyRuleTest {
 
     @Test
-    public void rule_test(){
+    public void rule_test() {
         String condition = "name contains(\"张\")";
         String condition2 = " (age < 9) ||  (age > 10 && age <= 20)";
         String condition3 = " 30 <= age <= 40";
@@ -44,15 +44,15 @@ public class EasyRuleTest {
         rules.register(rule3);
         //匹配规则的事实
         Facts facts = new Facts();
-        facts.put("name","张");
-        facts.put("age","35");
+        facts.put("name", "张");
+        facts.put("age", "35");
 
-        rulesEngine.fire(rules,facts);
+        rulesEngine.fire(rules, facts);
 
     }
 
     @Test
-    public void rule_builder_test(){
+    public void rule_builder_test() {
         //规则引擎
         RulesEngine rulesEngine = new DefaultRulesEngine();
         Rules rules = new Rules();
@@ -65,16 +65,16 @@ public class EasyRuleTest {
         rules.register(rule);
         //匹配规则的事实
         Facts facts = new Facts();
-        facts.put("name","张");
-        facts.put("age","11");
+        facts.put("name", "张");
+        facts.put("age", "11");
 
-        rulesEngine.fire(rules,facts);
+        rulesEngine.fire(rules, facts);
 
     }
 
 
     @Test
-    public void rule_builder_test2(){
+    public void rule_builder_test2() {
         //规则引擎
         RulesEngine rulesEngine = new DefaultRulesEngine();
         Rules rules = new Rules();
@@ -90,21 +90,21 @@ public class EasyRuleTest {
         rules.register(rule2);
         //匹配规则的事实
         Facts facts = new Facts();
-        facts.put("name","张");
-        facts.put("age","11");
-        facts.put("child",true);
+        facts.put("name", "张");
+        facts.put("age", "11");
+        facts.put("child", true);
 
-        rulesEngine.fire(rules,facts);
+        rulesEngine.fire(rules, facts);
 
     }
 
 
     @Test
-    public void rule_tests(){
+    public void rule_tests() {
         LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
                 .scenes(Lists.newArrayList(
                         Scene.builder()
-                                .eventTrigger( ThingPropertyReportTrigger.builder()
+                                .eventTrigger(ThingPropertyReportTrigger.builder()
                                         .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
                                         .identifier(ThingPropertyReportTrigger.Identifier.builder()
                                                 .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
@@ -157,11 +157,11 @@ public class EasyRuleTest {
         facts.put("temperature", 10);
         facts.put("humidity", "25");
 
-        rulesEngine.fire(rules,facts);
+        rulesEngine.fire(rules, facts);
     }
 
     @Test
-    public void rule_builder_test_3(){
+    public void rule_builder_test_3() {
         //规则引擎
         RulesEngine rulesEngine = new DefaultRulesEngine();
         Rules rules = new Rules();
@@ -170,14 +170,22 @@ public class EasyRuleTest {
         rules.register(rule);
         //匹配规则的事实
         Facts facts = new Facts();
-        Map<String,Object> map = new HashMap<>();
-        map.put("a",10);
-        facts.put("name","张");
-        facts.put("age","11");
-        facts.put("obj",map);
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", 10);
+        facts.put("name", "张");
+        facts.put("age", "11");
+        facts.put("obj", map);
 
-        rulesEngine.fire(rules,facts);
+        rulesEngine.fire(rules, facts);
 
+    }
+
+    @Test
+    public void test() {
+        String s = "phecda/${productId}/${deviceName}/thing/property/post"
+                .replaceAll("\\$\\{productId\\}", "productId")
+                .replaceAll("\\$\\{deviceName\\}", "deviceName");
+        System.out.println(s);
     }
 
 }

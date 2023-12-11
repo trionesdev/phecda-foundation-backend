@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.linkage.support.rule.RuleCondition;
 
+@Deprecated
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder

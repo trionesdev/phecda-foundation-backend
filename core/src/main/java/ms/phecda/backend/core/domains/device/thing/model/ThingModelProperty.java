@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.domains.device.thing.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ThingModelProperty extends ThingModelAbility {
     private ValueTypeEnum valueType;
     private ValueType valueSpec;

@@ -15,9 +15,9 @@ public class SwaggerConfiguration {
     @Bean
     public GroupedOpenApi backendApi() {
         return GroupedOpenApi.builder()
-                .group("TrionesBackendAPI")
+                .group("PhecdaBackendAPI")
                 .pathsToMatch("/api/**")
-                .packagesToScan("ms.triones.backend.rest.backend")
+                .packagesToScan("ms.phecda.backend.rest.backend")
                 .addOpenApiCustomiser(authorizationOpenApiCustomiser())
                 .build();
     }
