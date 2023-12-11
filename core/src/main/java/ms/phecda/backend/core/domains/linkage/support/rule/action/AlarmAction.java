@@ -17,4 +17,9 @@ public class AlarmAction extends Action{
     private String product;
     private String deviceName;
     private Instant time;
+
+    @Override
+    public TypeEnum getType() {
+        return TypeEnum.ALARM;
+    }
 }

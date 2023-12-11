@@ -11,10 +11,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationAction extends Action {
+public class MessageAction extends Action {
     private ContactsType contactsType;
     private String channel;
     private String template;
+
+    @Override
+    public TypeEnum getType() {
+        return TypeEnum.MESSAGE;
+    }
 
     public enum ContactsType {
         CONTACTS,
