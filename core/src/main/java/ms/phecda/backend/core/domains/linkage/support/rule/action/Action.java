@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 @JsonSubTypes(
         {
                 @JsonSubTypes.Type(value = AlarmAction.class, name = "ALARM"),
-                @JsonSubTypes.Type(value = NotificationAction.class, name = "NOTIFICATION"),
+                @JsonSubTypes.Type(value = MessageAction.class, name = "MESSAGE"),
         }
 )
 public abstract class Action {
@@ -30,6 +30,6 @@ public abstract class Action {
 
     public enum TypeEnum {
         ALARM,
-        NOTIFICATION
+        MESSAGE
     }
 }

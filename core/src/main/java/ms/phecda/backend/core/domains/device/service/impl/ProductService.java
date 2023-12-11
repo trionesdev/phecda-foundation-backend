@@ -19,6 +19,7 @@ import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
 import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -177,6 +178,10 @@ public class ProductService {
         productThingModelDraftManager.publish(productId);
     }
 
+    @Cacheable(value = "product", key = "#productId+':'+#version")
+    public Optional<ProductThingModelVersion> queryThingModelCache(String productId, String version) {
+        return queryThingModel(productId, version);
+    }
 
     public Optional<ProductThingModelVersion> queryThingModel(String productId, String version) {
         if (StrUtil.isBlank(version)) {
