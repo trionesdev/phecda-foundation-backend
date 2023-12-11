@@ -19,6 +19,12 @@ public class PhecdaMqtt {
     private final ReportPropertyMessageListener reportPropertyMessageListener;
     private final ServiceInvokeMessageReplyMessageListener serviceInvokeMessageReplyMessageListener;
 
+    private static final String SHARE_PREFIX = "";
+    private static final String DEVICE_THING_PROPERTY_POST_TOPIC = SHARE_PREFIX + "phecda/+/+/thing/property/post";
+    private static final String DEVICE_THING_EVENT_POST_TOPIC = SHARE_PREFIX + "phecda/+/+/thing/event/+/post";
+    private static final String DEVICE_THING_SERVICE_REPLY_TOPIC = SHARE_PREFIX + "phecda/{productId}/{deviceName}/thing/service/{identifier}/reply";
+
+
     public void subscribe() {
         try {
             mqttAsyncClient.subscribe(DEVICE_THING_PROPERTY_POST_WILDCARD_TOPIC, 1, reportPropertyMessageListener);
