@@ -9,9 +9,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ReadPropertyMessageReply {
-    private String messageId;
-    private Long timestamp;
-    private String productId;
-    private String deviceName;
+public class ReadPropertyMessageReply extends BaseDeviceMessage {
+    private Integer code;
+    private String message;
 }

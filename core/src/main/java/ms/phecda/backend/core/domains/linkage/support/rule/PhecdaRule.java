@@ -11,6 +11,9 @@ import org.mvel2.ParserContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 public class PhecdaRule extends BasicRule {
     private Condition condition = Condition.FALSE;
@@ -99,6 +102,15 @@ public class PhecdaRule extends BasicRule {
 
     @Override
     public void execute(Facts facts) throws Exception {
+        Map<String, Class> inputs = parserContext.getInputs();
+        if (Objects.nonNull(inputs)) {
+            for (Entry<String, Class> entry : inputs.entrySet()) {
+                if (Objects.isNull(facts.getFact(entry.getKey()))) {
+                    facts.put(entry.getKey(), "nil");
+                }
+            }
+        }
+
         for (Action action : actions) {
             action.execute(facts);
         }

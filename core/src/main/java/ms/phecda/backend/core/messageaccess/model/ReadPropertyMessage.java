@@ -11,19 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ReadPropertyMessage {
-    private String messageId;
-    private String productId;
-    private String deviceName;
-    private String thingModelVersion;
-    private String identifier;
-    private Long timestamp;
-    private List<Reading> readings;
+public class ReadPropertyMessage extends BaseDeviceMessage {
+    private List<Reading> params;
 
     @Data
     public static class Reading {
         private String identifier;
         private String valueType;
         private Object value;
+        private Long timestamp;
     }
 }
