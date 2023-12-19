@@ -21,7 +21,8 @@ public class DisruptorConfiguration {
     public RingBuffer<ReportPropertyEvent> reportPropertyMessageRingBuffer() {
         int bufferSize = 1024;
         ReportPropertyEventFactory factory = new ReportPropertyEventFactory();
-        Disruptor<ReportPropertyEvent> disruptor = new Disruptor<>(factory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        Disruptor<ReportPropertyEvent> disruptor = new Disruptor<>(factory, bufferSize,
+                DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(reportPropertyEventHandler);
         disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
         return disruptor.start();

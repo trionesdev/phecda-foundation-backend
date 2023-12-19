@@ -32,13 +32,6 @@ import java.util.List;
 public class AlarmLogController {
     private final AlarmLogService alarmLogService;
 
-//    @Operation(summary = "新建报警记录")
-//    @PostMapping(value = "alarm-logs")
-//    public void createAlarmLog(@Validated @RequestBody AlarmLogRO args) {
-//        AlarmLog AlarmLog = AlarmRestConvertMapper.INSTANCE.from(args);
-//        alarmLogService.create(AlarmLog);
-//    }
-
     @Operation(summary = "根据ID修改报警记录")
     @PutMapping(value = "alarm-logs/{id}")
     public void updateAlarmLogById(

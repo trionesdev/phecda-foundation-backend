@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class WritePropertyMessageReply {
-    private String messageId;
-    private Long timestamp;
-    private String productId;
-    private String deviceName;
+public class WritePropertyMessageReply extends BaseDeviceMessage {
+    private Map<String, Object> params;
+    private Integer code;
+    private String message;
 }

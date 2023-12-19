@@ -9,9 +9,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class DeviceEventMessageReply {
-    private String messageId;
-    private Long timestamp;
-    private String productId;
-    private String deviceName;
+public class DeviceEventMessageReply extends BaseDeviceMessage {
+    private String identifier;
+    private Integer code;
+    private String message;
 }
