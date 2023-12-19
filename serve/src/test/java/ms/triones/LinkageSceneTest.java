@@ -23,10 +23,8 @@ public class LinkageSceneTest {
 
         ReadPropertyMessage message = ReadPropertyMessage.builder()
                 .deviceName("BaslerCameraJavaDevice01")
-                .identifier("particleTotal")
-                .thingModelVersion("1692054881446723585")
                 .timestamp(System.currentTimeMillis())
-                .readings(Lists.newArrayList(reading))
+                .params(Lists.newArrayList(reading))
                 .build();
 
         eventPublisher.publishEvent(DevicePropertyPostEvent.build(message));
