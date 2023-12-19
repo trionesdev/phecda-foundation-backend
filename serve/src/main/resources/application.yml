@@ -22,7 +22,9 @@ spring:
     basename: i18n/validation
   cache:
     type: redis
-
+    redis:
+      key-prefix: "phecda:"
+      use-key-prefix: true
   redis:
     redisson:
       config: |
@@ -46,7 +48,6 @@ spring:
         nettyThreads: 32
         codec: !<org.redisson.codec.MarshallingCodec> {}
         transportMode: "NIO"
-
 
 mybatis-plus:
   configuration:

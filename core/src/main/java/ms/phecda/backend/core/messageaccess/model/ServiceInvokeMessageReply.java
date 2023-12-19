@@ -11,11 +11,9 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ServiceInvokeMessageReply {
-    private String messageId;
-    private Long timestamp;
-    private String productId;
-    private String deviceName;
+public class ServiceInvokeMessageReply extends BaseDeviceMessage {
     private String identifier;
     private Map<String, Object> params;
+    private Integer code;
+    private String message;
 }
