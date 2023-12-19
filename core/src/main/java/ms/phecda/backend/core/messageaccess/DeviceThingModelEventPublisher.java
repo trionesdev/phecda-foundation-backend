@@ -1,6 +1,5 @@
 package ms.phecda.backend.core.messageaccess;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.logging.dao.entity.DeviceServiceLog;
 import ms.phecda.backend.core.domains.logging.service.impl.DeviceServiceLogService;
+import ms.phecda.backend.core.messageaccess.constant.MessageType;
 import ms.phecda.backend.core.messageaccess.event.ServiceInvokeReplyEvent;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessage;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
-import ms.phecda.backend.core.messageaccess.model.WritePropertyMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ThreadUtils;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.DEVICE_THING_SERVICE;
-import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.DEVICE_THING_SERVICE_PROPERTY_SET;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,8 +59,14 @@ public class DeviceThingModelEventPublisher {
         }
 
         try {
+            JSONObject payload = new JSONObject();
+            payload.put("messageId", message.getMessageId());
+            payload.put("timestamp", message.getTimestamp());
+            payload.put("params", message.getParams());
+            payload.put("messageType", MessageType.INVOKE_SERVICE.name());
+
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(JSON.toJSONBytes(message));
+            mqttMessage.setPayload(payload.toJSONBBytes());
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
@@ -102,49 +106,17 @@ public class DeviceThingModelEventPublisher {
         }
 
         try {
+            JSONObject payload = new JSONObject();
+            payload.put("messageId", message.getMessageId());
+            payload.put("timestamp", message.getTimestamp());
+            payload.put("params", message.getParams());
+            payload.put("messageType", MessageType.INVOKE_SERVICE.name());
+
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(JSON.toJSONBytes(message));
+            mqttMessage.setPayload(payload.toJSONBBytes());
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
-        }
-    }
-
-    // 同步
-    public void syncPublishServicePropertySetEvent(WritePropertyMessage message) {
-        String topic = DEVICE_THING_SERVICE_PROPERTY_SET
-                .replaceAll("\\{productId}", message.getProductId())
-                .replaceAll("\\{deviceName}", message.getDeviceName());
-
-        if (StringUtils.isBlank(message.getMessageId())) {
-            message.setMessageId(UUID.randomUUID().toString());
-        }
-
-        try {
-            MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(JSON.toJSONBytes(message));
-            mqttAsyncClient.publish(topic, mqttMessage);
-        } catch (Exception e) {
-            log.error("publish service property set event fail: ", e);
-        }
-    }
-
-    //异步
-    public void asyncPublishServicePropertySetEvent(WritePropertyMessage message) {
-        String topic = DEVICE_THING_SERVICE_PROPERTY_SET
-                .replaceAll("\\{productId}", message.getProductId())
-                .replaceAll("\\{deviceName}", message.getDeviceName());
-
-        if (StringUtils.isBlank(message.getMessageId())) {
-            message.setMessageId(UUID.randomUUID().toString());
-        }
-
-        try {
-            MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(JSON.toJSONBytes(message));
-            mqttAsyncClient.publish(topic, mqttMessage);
-        } catch (Exception e) {
-            log.error("publish service property set event fail: ", e);
         }
     }
 
