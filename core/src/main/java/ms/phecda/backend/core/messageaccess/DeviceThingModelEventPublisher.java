@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.messageaccess;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,14 +60,14 @@ public class DeviceThingModelEventPublisher {
         }
 
         try {
-            JSONObject payload = new JSONObject();
+            Map<String, Object> payload = Maps.newHashMap();
             payload.put("messageId", message.getMessageId());
             payload.put("timestamp", message.getTimestamp());
             payload.put("params", message.getParams());
             payload.put("messageType", MessageType.INVOKE_SERVICE.name());
 
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(payload.toJSONBBytes());
+            mqttMessage.setPayload(JSON.toJSONBytes(payload));
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
@@ -106,14 +107,14 @@ public class DeviceThingModelEventPublisher {
         }
 
         try {
-            JSONObject payload = new JSONObject();
+            Map<String, Object> payload = Maps.newHashMap();
             payload.put("messageId", message.getMessageId());
             payload.put("timestamp", message.getTimestamp());
             payload.put("params", message.getParams());
             payload.put("messageType", MessageType.INVOKE_SERVICE.name());
 
             MqttMessage mqttMessage = new MqttMessage();
-            mqttMessage.setPayload(payload.toJSONBBytes());
+            mqttMessage.setPayload(JSON.toJSONBytes(payload));
             mqttAsyncClient.publish(topic, mqttMessage);
         } catch (Exception e) {
             log.error("publish service event fail: ", e);
