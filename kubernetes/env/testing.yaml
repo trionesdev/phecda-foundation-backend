@@ -11,19 +11,19 @@ image:
   tag: ""
   envs:
     - name: spring.profiles.active
-      value: "dev"
+      value: "testing"
   livenessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 50
-    timeoutSeconds: 50
+    initialDelaySeconds: 100
+    timeoutSeconds: 100
   readinessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 50
-    timeoutSeconds: 50
+    initialDelaySeconds: 100
+    timeoutSeconds: 100
 
 imagePullSecrets: []
 nameOverride: ""
@@ -63,7 +63,7 @@ ingress:
      kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: dubhe-foundation-backend.moensun.cn
+    - host: testing.phecda-backend.jscoe.cn
       paths:
         - path: /
           pathType: ImplementationSpecific
