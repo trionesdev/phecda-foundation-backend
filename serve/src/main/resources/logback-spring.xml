@@ -49,7 +49,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="test">
+    <springProfile name="testing">
         <logger name="dao" level="DEBUG" />
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
