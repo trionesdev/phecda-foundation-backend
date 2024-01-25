@@ -12,6 +12,8 @@ image:
   envs:
     - name: spring.profiles.active
       value: "testing"
+    - name: server.port
+      value: "8080"
   livenessProbe:
     httpGet:
       path: /actuator/health
