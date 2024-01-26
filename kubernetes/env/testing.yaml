@@ -12,16 +12,18 @@ image:
   envs:
     - name: spring.profiles.active
       value: "testing"
+    - name: server.port
+      value: "8080"
   livenessProbe:
     httpGet:
-      path: /health
-      port: 8200
+      path: /actuator/health
+      port: 8080
     initialDelaySeconds: 60
     timeoutSeconds: 60
   readinessProbe:
     httpGet:
-      path: /health
-      port: 8200
+      path: /actuator/health
+      port: 8080
     initialDelaySeconds: 60
     timeoutSeconds: 60
 
@@ -54,7 +56,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8200
+  targetPort: 8080
 
 ingress:
   enabled: true
