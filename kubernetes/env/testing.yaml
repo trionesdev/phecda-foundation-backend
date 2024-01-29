@@ -18,14 +18,14 @@ image:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 100
-    timeoutSeconds: 100
+    initialDelaySeconds: 60
+    timeoutSeconds: 60
   readinessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 100
-    timeoutSeconds: 100
+    initialDelaySeconds: 60
+    timeoutSeconds: 60
 
 imagePullSecrets: []
 nameOverride: ""
