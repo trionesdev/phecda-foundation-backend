@@ -234,10 +234,28 @@ public class DeviceService {
         return deviceManager.queryByName(name).orElse(null);
     }
 
-    public String startPushStreaming(String deviceId) {
-        Device device = deviceManager.queryById(deviceId)
-                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+    public String startPushStreamingByName(String name) {
+        Optional<Device> deviceOptional = deviceManager.queryByName(name);
+        return deviceOptional.map(this::startPushStreaming).orElse(null);
 
+    }
+
+    public void stopPushStreamingByName(String name) {
+        Optional<Device> deviceOptional = deviceManager.queryByName(name);
+        deviceOptional.ifPresent(this::stopPushStreaming);
+    }
+
+    public String startPushStreaming(String id) {
+        Optional<Device> deviceOptional = deviceManager.queryById(id);
+        return deviceOptional.map(this::startPushStreaming).orElse(null);
+    }
+
+    public void stopPushStreaming(String id) {
+        Optional<Device> deviceOptional = deviceManager.queryById(id);
+        deviceOptional.ifPresent(this::stopPushStreaming);
+    }
+
+    public String startPushStreaming(Device device) {
         Map<String, Object> params = Maps.newHashMap();
         String rtmpUrl = RTMP_URL.replaceAll("\\{host}", streamingMediaHost)
                 .replaceAll("\\{port}", String.valueOf(streamingMediaRtmpPort))
@@ -258,10 +276,7 @@ public class DeviceService {
                 .replaceAll("\\{deviceName}", device.getName());
     }
 
-    public void stopPushStreaming(String deviceId) {
-        Device device = deviceManager.queryById(deviceId)
-                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-
+    public void stopPushStreaming(Device device) {
         ServiceInvokeMessage message = ServiceInvokeMessage.builder()
                 .productId(device.getProductId())
                 .deviceName(device.getName())
