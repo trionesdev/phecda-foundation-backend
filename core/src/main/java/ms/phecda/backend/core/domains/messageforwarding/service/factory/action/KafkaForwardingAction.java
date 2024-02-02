@@ -14,6 +14,8 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -73,6 +75,8 @@ public class KafkaForwardingAction extends AbsForwardingAction {
         if (Objects.isNull(kafkaTemplate)) {
             log.error("[KafkaForwardingAction] kafka instance not found ,sink id :{}", action.getId());
         }
-        kafkaTemplate.send(action.getTopic(), new String(data));
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(action.getTopic(), new String(data));
+        future.addCallback(result -> log.info("success send kafka message: {}", result),
+                result -> log.error("fail send kafka message: ", result));
     }
 }
