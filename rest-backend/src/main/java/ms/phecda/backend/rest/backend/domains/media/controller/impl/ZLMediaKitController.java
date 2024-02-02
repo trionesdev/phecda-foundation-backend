@@ -35,8 +35,8 @@ public class ZLMediaKitController {
 
     @PostMapping(value = "/on_stream_not_found")
     public OnStreamNotFoundVO streamNotFound(@RequestBody OnStreamNotFoundRO ro) {
-        log.info("[ZLMediaKit] on_stream_not_found: {}", ro);
-        deviceService.startPushStreamingByName(ro.getStream());
+//        log.info("[ZLMediaKit] on_stream_not_found: {}", ro);
+//        deviceService.startPushStreamingByName(ro.getStream());
         return OnStreamNotFoundVO.builder()
                 .code(0)
                 .msg("success")
