@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.dict.service.impl;
 
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.exception.MSException;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.exception.TrionesException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.dict.dao.criteria.DictionaryCriteria;
 import ms.phecda.backend.core.domains.dict.dao.entity.Dictionary;
@@ -37,7 +37,7 @@ public class DictionaryService {
         List<Dictionary> dictionaries = queryList(DictionaryCriteria.builder().code(entity.getCode()).build());
 
         if (!CollectionUtils.isEmpty(dictionaries)) {
-            throw new MSException(String.format("编码：{%s}已存在", entity.getCode()));
+            throw new TrionesException(String.format("编码：{%s}已存在", entity.getCode()));
         }
         dictionaryManager.create(entity);
     }
@@ -49,7 +49,7 @@ public class DictionaryService {
     public void update(Dictionary entity) {
         List<Dictionary> dictionaries = queryList(DictionaryCriteria.builder().code(entity.getCode()).build());
         if (Objects.nonNull(dictionaries)) {
-            throw new MSException(String.format("编码：{%s}已存在", entity.getCode()));
+            throw new TrionesException(String.format("编码：{%s}已存在", entity.getCode()));
         }
         dictionaryManager.updateById(entity);
     }

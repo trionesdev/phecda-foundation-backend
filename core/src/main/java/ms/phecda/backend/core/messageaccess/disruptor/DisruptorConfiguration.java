@@ -8,6 +8,9 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ms.phecda.backend.core.messageaccess.disruptor.propertiespost.PropertiesPostEvent;
+import ms.phecda.backend.core.messageaccess.disruptor.propertiespost.PropertiesPostEventFactory;
+import ms.phecda.backend.core.messageaccess.disruptor.propertiespost.PropertiesPostEventHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,17 +18,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Configuration
 public class DisruptorConfiguration {
-    private final ReportPropertyEventHandler reportPropertyEventHandler;
+    private final PropertiesPostEventHandler propertiesPostEventHandler;
 
     @Bean
-    public RingBuffer<ReportPropertyEvent> reportPropertyMessageRingBuffer() {
+    public Disruptor<PropertiesPostEvent> reportPropertyMessageRingBuffer() {
         int bufferSize = 1024;
-        ReportPropertyEventFactory factory = new ReportPropertyEventFactory();
-        Disruptor<ReportPropertyEvent> disruptor = new Disruptor<>(factory, bufferSize,
+        PropertiesPostEventFactory factory = new PropertiesPostEventFactory();
+        Disruptor<PropertiesPostEvent> disruptor = new Disruptor<>(factory, bufferSize,
                 DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith(reportPropertyEventHandler);
+        disruptor.handleEventsWith(propertiesPostEventHandler);
         disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
-        return disruptor.start();
+        disruptor.start();
+        return disruptor;
     }
 
 

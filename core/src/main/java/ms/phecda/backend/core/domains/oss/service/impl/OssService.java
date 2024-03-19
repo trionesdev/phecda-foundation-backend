@@ -1,11 +1,8 @@
 package ms.phecda.backend.core.domains.oss.service.impl;
 
 
-import com.moensun.commons.core.util.FilePathUtils;
-import com.moensun.csi.api.oss.request.OssPutObjectRequest;
-import com.moensun.csi.api.oss.response.OssPutObjectResponse;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.provider.cloud.oss.OssProvider;
+import ms.phecda.backend.core.provider.cloud.oss.impl.OssProvider;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -16,13 +13,7 @@ public class OssService {
     private final OssProvider ossProvider;
 
     public String putFileObject(String scene, String fileName, InputStream inputStream) {
-        String objectName = FilePathUtils.pathResolve(scene, FilePathUtils.randomFilename(fileName));
-        OssPutObjectRequest request = OssPutObjectRequest.builder()
-                .objectName(objectName)
-                .inputStream(inputStream)
-                .build();
-        OssPutObjectResponse response = ossProvider.putObject(request);
-        return response.getUrl();
+        return ossProvider.putFileObject(scene, fileName, inputStream);
     }
 
 }

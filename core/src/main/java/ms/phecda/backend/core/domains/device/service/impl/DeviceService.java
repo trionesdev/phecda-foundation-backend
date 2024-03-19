@@ -1,32 +1,44 @@
 package ms.phecda.backend.core.domains.device.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.core.util.PageUtils;
-import com.moensun.commons.exception.NotFoundException;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.util.PageUtils;
+import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.manager.dto.ServiceSendDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
+import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
 import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
+import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
+import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
+import ms.phecda.backend.core.domains.device.thing.model.ThingModelService.CallType;
 import ms.phecda.backend.core.messageaccess.DeviceThingModelEventPublisher;
 import ms.phecda.backend.core.messageaccess.event.DeviceDisableEvent;
 import ms.phecda.backend.core.messageaccess.event.DeviceEnableEvent;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessage;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
+import ms.phecda.backend.core.messageaccess.mqtt.PhecdaMqtt;
 import ms.phecda.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
+import ms.phecda.backend.core.provider.ssp.gatweay.impl.GatewayProvider;
+import ms.phecda.backend.core.provider.ssp.gatweay.pdo.CommandSendPDO;
+import ms.phecda.backend.core.support.util.TopicUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
@@ -34,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -44,6 +57,8 @@ public class DeviceService {
     private final NodeDeviceProvider nodeDeviceProvider;
     private final ApplicationEventPublisher eventPublisher;
     private final DeviceThingModelEventPublisher deviceThingModelEventPublisher;
+    private final PhecdaMqtt phecdaMqtt;
+    private final GatewayProvider gatewayProvider;
 
     @Value("${streaming.media.host}")
     private String streamingMediaHost = "127.0.0.1";
@@ -229,32 +244,37 @@ public class DeviceService {
         return deviceManager.queryByName(name);
     }
 
-    @Cacheable(value = {"device"}, key = "'name:'+#name")
+    @Cacheable(value = {"devices"}, key = "'name:'+#name")
     public Device queryByNameCache(String name) {
         return deviceManager.queryByName(name).orElse(null);
     }
 
+    @Deprecated
     public String startPushStreamingByName(String name) {
         Optional<Device> deviceOptional = deviceManager.queryByName(name);
         return deviceOptional.map(this::startPushStreaming).orElse(null);
 
     }
 
+    @Deprecated
     public void stopPushStreamingByName(String name) {
         Optional<Device> deviceOptional = deviceManager.queryByName(name);
         deviceOptional.ifPresent(this::stopPushStreaming);
     }
 
+    @Deprecated
     public String startPushStreaming(String id) {
         Optional<Device> deviceOptional = deviceManager.queryById(id);
         return deviceOptional.map(this::startPushStreaming).orElse(null);
     }
 
+    @Deprecated
     public void stopPushStreaming(String id) {
         Optional<Device> deviceOptional = deviceManager.queryById(id);
         deviceOptional.ifPresent(this::stopPushStreaming);
     }
 
+    @Deprecated
     public String startPushStreaming(Device device) {
         Map<String, Object> params = Maps.newHashMap();
         String rtmpUrl = RTMP_URL.replaceAll("\\{host}", streamingMediaHost)
@@ -276,6 +296,7 @@ public class DeviceService {
                 .replaceAll("\\{deviceName}", device.getName());
     }
 
+    @Deprecated
     public void stopPushStreaming(Device device) {
         ServiceInvokeMessage message = ServiceInvokeMessage.builder()
                 .productId(device.getProductId())
@@ -286,6 +307,7 @@ public class DeviceService {
         deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
     }
 
+    @Deprecated
     public ServiceInvokeMessageReply callDeviceService(String deviceName, String identifier, Map<String, Object> params) {
         Optional<Device> deviceOptional = queryByName(deviceName);
         Device device = deviceOptional.orElseThrow();
@@ -299,4 +321,60 @@ public class DeviceService {
                 .build();
         return deviceThingModelEventPublisher.syncPublishServiceEvent(message);
     }
+
+    public Map<String, Object> sendService(String id, SendServiceArgBO args) {
+        Device device = deviceManager.queryById(id).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
+        ThingModelService service = thingModel.getServices().stream()
+                .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
+        ServiceSendDTO dto = ServiceSendDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .method(service.getIdentifier())
+                .productKey(product.getKey())
+                .deviceName(device.getName())
+                .params(args.getParams())
+                .body(args.getBody())
+                .build();
+        return sendService(product.getAccessChannel(), service.getCallType(), dto);
+    }
+
+
+    public Map<String, Object> sendService(AccessChannelEnum accessChannel, CallType callType, ServiceSendDTO dto) {
+        switch (accessChannel) {
+            case MQTT:
+                String sendTopic = TopicUtils.serviceSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
+                if (CallType.ASYNC.equals(callType)) {
+                    phecdaMqtt.publish(sendTopic, JSON.toJSONBytes(dto));
+                } else if (CallType.SYNC.equals(callType)) {
+                    String replayTopic = TopicUtils.serviceReplyTopic(dto.getId());
+                    MqttMessage replayMessage = phecdaMqtt.publishAsync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
+                    return JSON.parseObject(replayMessage.getPayload());
+                }
+                break;
+            case GATEWAY:
+                CommandSendPDO command = CommandSendPDO.builder()
+                        .id(dto.getId())
+                        .method(dto.getMethod())
+                        .productKey(dto.getProductKey())
+                        .deviceName(dto.getDeviceName())
+                        .commandName(dto.getCommandName())
+                        .params(dto.getParams())
+                        .body(dto.getBody())
+                        .version(dto.getVersion())
+                        .build();
+                if (CallType.ASYNC.equals(callType)) {
+                    CompletableFuture.supplyAsync(() -> gatewayProvider.sendCommand(command));
+                } else if (CallType.SYNC.equals(callType)) {
+                    return gatewayProvider.sendCommand(command);
+                }
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
+
 }

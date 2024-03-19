@@ -4,13 +4,18 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
 import ms.phecda.backend.core.messageaccess.constant.MessageType;
-import ms.phecda.backend.core.messageaccess.disruptor.ReportPropertyEventProducer;
-import ms.phecda.backend.core.messageaccess.event.ServiceInvokeReplyEvent;
+import ms.phecda.backend.core.messageaccess.disruptor.propertiespost.PropertiesPostEventProducer;
+import ms.phecda.backend.core.messageaccess.disruptor.propertiespost.PropertiesPostMessage;
 import ms.phecda.backend.core.messageaccess.model.BaseDeviceMessage;
-import ms.phecda.backend.core.messageaccess.model.ReadPropertyMessage;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
+import ms.phecda.backend.core.bootstrap.message.process.MessageProcess;
+import ms.phecda.backend.core.messageaccess.mqtt.model.MqttPropertiesPostMessage;
+import ms.phecda.backend.core.support.util.MqttTopicUtils;
+import ms.phecda.backend.core.support.util.TopicUtils;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -21,7 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static ms.phecda.backend.core.messageaccess.constant.MessageType.INVOKE_SERVICE_REPLY;
-import static ms.phecda.backend.core.messageaccess.constant.MessageType.POST_PROPERTY;
+import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.DEVICE_THING_PROPERTY_POST_WILDCARD_TOPIC;
 import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.TOPIC_BASE_PREFIX;
 
 
@@ -29,10 +34,13 @@ import static ms.phecda.backend.core.messageaccess.constant.TopicConstants.TOPIC
 @RequiredArgsConstructor
 @Component
 public class PhecdaMqttCallback implements MqttCallbackExtended {
+    private final PhecdaMqttProperties mqttProperties;
     private final PhecdaMqtt phecdaMqtt;
+    private final MessageProcess messageProcess;
+    private final DeviceService deviceService;
     private final ForwardingActionFactory forwardingActionFactory;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final ReportPropertyEventProducer reportPropertyEventProducer;
+    private final PropertiesPostEventProducer propertiesPostEventProducer;
 
 
     @Override
@@ -50,22 +58,37 @@ public class PhecdaMqttCallback implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) {
-        try {
-            Optional<? extends BaseDeviceMessage> messageOptional = convertMessage(topic, message);
-
-            messageOptional.ifPresent(i -> {
-                if (Objects.equals(i.getMessageType(), INVOKE_SERVICE_REPLY)) {
-                    applicationEventPublisher.publishEvent(ServiceInvokeReplyEvent.build(i));
-                }
-                if (Objects.equals(i.getMessageType(), POST_PROPERTY)) {
-                    reportPropertyEventProducer.sender((ReadPropertyMessage) i);
-                }
-
-                forwardingActionFactory.messageForwarding(topic, JSONObject.toJSONString(i).getBytes());
-            });
-        } catch (Exception e) {
-            log.error("handle device post message fail, topic: {}, message: {}, reason: ", topic, message, e);
+        String propertyPostTopic = TopicUtils.join(mqttProperties.getTopicPrefix(), TopicUtils.propertyPostTopic(null, null));
+        if (MqttTopicUtils.isMatched(propertyPostTopic, topic)) { // 设备上报属性消息
+            MqttPropertiesPostMessage mqttMessage = JSON.parseObject(message.getPayload(), MqttPropertiesPostMessage.class);
+            Device device = deviceService.queryByNameCache(mqttMessage.getDeviceName());
+            if (Objects.isNull(device)) {
+                log.warn("[MessageProcess#propertiesPost] device {} not found ", mqttMessage.getDeviceName());
+                return;
+            }
+            PropertiesPostMessage propertiesPostMessage = mqttMessage.toProcessMessage();
+            propertiesPostMessage.setProductId(device.getProductId());
+            propertiesPostMessage.setDeviceId(device.getId());
+            messageProcess.propertiesPost(TopicUtils.removePrefix(topic, mqttProperties.getTopicPrefix()), propertiesPostMessage);
         }
+
+
+//        try {
+//            Optional<? extends BaseDeviceMessage> messageOptional = convertMessage(topic, message);
+//
+//            messageOptional.ifPresent(i -> {
+//                if (Objects.equals(i.getMessageType(), INVOKE_SERVICE_REPLY)) {
+//                    applicationEventPublisher.publishEvent(ServiceInvokeReplyEvent.build(i));
+//                }
+//                if (Objects.equals(i.getMessageType(), POST_PROPERTY)) {
+//                    reportPropertyEventProducer.sender((ReadPropertyMessage) i);
+//                }
+//
+//                forwardingActionFactory.messageForwarding(topic, JSONObject.toJSONString(i).getBytes());
+//            });
+//        } catch (Exception e) {
+//            log.error("handle device post message fail, topic: {}, message: {}, reason: ", topic, message, e);
+//        }
     }
 
     private Optional<? extends BaseDeviceMessage> convertMessage(String topic, MqttMessage message) {
@@ -108,4 +131,5 @@ public class PhecdaMqttCallback implements MqttCallbackExtended {
     public void deliveryComplete(IMqttDeliveryToken token) {
 
     }
+
 }

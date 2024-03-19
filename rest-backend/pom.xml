@@ -8,9 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>RestBackend</name>
+    <name>Phecda:Be:RestBackend</name>
     <artifactId>rest-backend</artifactId>
-    <groupId>ms.phecda</groupId>
+
 
     <dependencies>
         <dependency>

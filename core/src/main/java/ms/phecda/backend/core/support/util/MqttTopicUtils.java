@@ -15,12 +15,7 @@
  */
 package ms.phecda.backend.core.support.util;
 
-import org.eclipse.paho.client.mqttv3.MqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.eclipse.paho.client.mqttv3.internal.ClientComms;
-import org.eclipse.paho.client.mqttv3.internal.wire.MqttPublish;
+
 import org.eclipse.paho.client.mqttv3.util.Strings;
 
 import java.io.UnsupportedEncodingException;

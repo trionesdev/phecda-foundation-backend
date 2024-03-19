@@ -2,7 +2,7 @@ package ms.phecda.backend.core.domains.devicedata.support.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.pool.SessionDataSetWrapper;

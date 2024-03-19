@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.dict.service.impl;
 
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.exception.MSException;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.exception.TrionesException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.dict.dao.criteria.DictionaryCriteria;
 import ms.phecda.backend.core.domains.dict.dao.criteria.DictionaryTypeCriteria;
@@ -46,7 +46,7 @@ public class DictionaryTypeService {
         List<Dictionary> dictionaries = dictionaryManager.queryList(DictionaryCriteria.builder().typeCodes(codes).build());
         Set<String> codeSet = dictionaries.stream().map(Dictionary::getTypeCode).collect(Collectors.toSet());
         if (CollectionUtils.isNotEmpty(codeSet)) {
-            throw new MSException("编号[" + StringUtils.join(codeSet.toArray(), ",") + "]已分配,不能删除");
+            throw new TrionesException("编号[" + StringUtils.join(codeSet.toArray(), ",") + "]已分配,不能删除");
         }
         dictionaryTypeManager.deleteByIds(ids);
     }
@@ -78,7 +78,7 @@ public class DictionaryTypeService {
         }
 
         if (!Objects.equals(dictionaryTypeOpt.get().getId(), entity.getId())) {
-            throw new MSException("编号[" + entity.getCode() + "]已被使用");
+            throw new TrionesException("编号[" + entity.getCode() + "]已被使用");
         }
     }
 }

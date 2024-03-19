@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,8 +29,8 @@ public class MessageSinkManager {
         messageSinkDAO.updateById(record);
     }
 
-    public MessageSink findById(String id) {
-        return messageSinkDAO.getById(id);
+    public Optional<MessageSink> findById(String id) {
+        return Optional.ofNullable(messageSinkDAO.getById(id));
     }
 
     public List<MessageSink> findList() {

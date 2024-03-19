@@ -1,4 +1,4 @@
-package ms.phecda.edgex.node;
+package ms.phecda.edge.edgex.node;
 
 public class EdgexNodeClient {
 }

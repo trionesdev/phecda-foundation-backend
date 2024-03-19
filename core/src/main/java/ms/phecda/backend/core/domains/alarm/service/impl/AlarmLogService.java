@@ -1,6 +1,6 @@
 package ms.phecda.backend.core.domains.alarm.service.impl;
 
-import com.moensun.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.alarm.dao.criteria.AlarmLogCriteria;
 import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmLog;

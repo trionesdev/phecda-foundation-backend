@@ -48,7 +48,7 @@ public class MessageSinkController {
     @Operation(summary = "根据ID获取数据目的")
     @GetMapping(value = "sinks/{id}")
     public MessageSink querySinkById(@PathVariable(value = "id") String id) {
-        return messageSinkService.findById(id);
+        return messageSinkService.findById(id).orElse(null);
     }
 
     @Operation(summary = "获取数据目的列表")

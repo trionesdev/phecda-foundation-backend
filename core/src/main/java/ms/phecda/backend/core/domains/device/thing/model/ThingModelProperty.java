@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.edge.base.commons.valuetype.ValueType;
-import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueType;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 
 import java.util.List;
 

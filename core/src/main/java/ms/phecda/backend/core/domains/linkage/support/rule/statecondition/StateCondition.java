@@ -12,9 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.linkage.support.rule.OperatorEnum;
-import ms.phecda.backend.core.domains.linkage.support.rule.trigger.EventTrigger;
 import ms.phecda.backend.core.domains.linkage.support.util.RuleUtils;
-import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 
 import java.util.List;
 import java.util.Objects;

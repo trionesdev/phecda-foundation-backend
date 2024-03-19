@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.dict.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.moensun.commons.mybatisplus.entity.BaseLogicEntity;
+import com.trionesdev.commons.mybatisplus.entity.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
