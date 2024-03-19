@@ -1,7 +1,7 @@
 package ms.phecda.backend.rest.backend.domains.device.controller.impl;
 
 import cn.hutool.core.util.BooleanUtil;
-import com.moensun.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

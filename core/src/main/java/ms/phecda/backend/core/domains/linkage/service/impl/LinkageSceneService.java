@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.linkage.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.moensun.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.linkage.dao.criteria.LinkageSceneCriteria;

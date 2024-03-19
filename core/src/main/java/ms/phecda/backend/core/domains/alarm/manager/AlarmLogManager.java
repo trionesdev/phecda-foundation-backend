@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.alarm.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.moensun.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmLog;
 import ms.phecda.backend.core.domains.alarm.dao.entity.enums.DealStatuEnums;

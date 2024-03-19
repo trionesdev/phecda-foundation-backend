@@ -2,15 +2,15 @@ package ms.phecda.backend.core.domains.device.manager.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.moensun.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import org.springframework.stereotype.Service;
@@ -56,6 +56,10 @@ public class ProductManager {
 
     public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return productDAO.selectPage(pageNum, pageSize, criteria);
+    }
+
+    public Optional<Product> findByKey(String key) {
+        return Optional.ofNullable(productDAO.selectByKey(key));
     }
 
     public Optional<ThingModel> findThingModel(String productId) {

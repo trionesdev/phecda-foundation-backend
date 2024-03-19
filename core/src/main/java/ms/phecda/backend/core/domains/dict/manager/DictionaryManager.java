@@ -1,6 +1,6 @@
 package ms.phecda.backend.core.domains.dict.manager;
 
-import com.moensun.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.dict.dao.entity.Dictionary;
 import ms.phecda.backend.core.domains.dict.dao.impl.DictionaryDAO;

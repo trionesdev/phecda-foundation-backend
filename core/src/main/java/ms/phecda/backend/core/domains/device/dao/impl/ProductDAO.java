@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.mybatisplus.util.MpPageUtils;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
@@ -48,5 +48,9 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
         updateWrapper.set(Product::getStatus, status);
         updateWrapper.eq(Product::getId, id);
         update(updateWrapper);
+    }
+
+    public Product selectByKey(String key) {
+        return baseMapper.selectOne(Wrappers.<Product>lambdaQuery().eq(Product::getKey, key).last("limit 1"));
     }
 }

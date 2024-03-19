@@ -45,6 +45,7 @@ public class DeviceThingModelEventPublisher {
     private final DeviceServiceLogService deviceServiceLogService;
 
     // 同步
+    @Deprecated
     public ServiceInvokeMessageReply syncPublishServiceEvent(ServiceInvokeMessage message) {
         String topic = DEVICE_THING_SERVICE
                 .replaceAll("\\{productId}", message.getProductId())
@@ -92,6 +93,7 @@ public class DeviceThingModelEventPublisher {
     }
 
     // 异步
+    @Deprecated
     public void asyncPublishServiceEvent(ServiceInvokeMessage message) {
         String topic = DEVICE_THING_SERVICE
                 .replaceAll("\\{productId}", message.getProductId())

@@ -7,11 +7,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>ms.phecda</groupId>
     <artifactId>rest-ssp</artifactId>
     <packaging>jar</packaging>
 
-    <name>RestSsp</name>
+    <name>Phecda:Be:RestSsp</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
@@ -21,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>rest-ssp-sdk</artifactId>
+            <artifactId>phecda-rest-ssp-sdk</artifactId>
         </dependency>
     </dependencies>
 </project>

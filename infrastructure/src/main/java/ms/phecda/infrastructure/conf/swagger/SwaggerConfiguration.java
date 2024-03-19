@@ -22,15 +22,15 @@ public class SwaggerConfiguration {
                 .build();
     }
 
-//    @Bean
-//    public GroupedOpenApi bossApi() {
-//        return GroupedOpenApi.builder()
-//                .group("Triones Boss API")
-//                .pathsToMatch("/boss-api/**")
-//                .packagesToScan("net.ithere.rest.boss")
-//                .addOpenApiCustomiser(authorizationOpenApiCustomiser())
-//                .build();
-//    }
+    @Bean
+    public GroupedOpenApi sspApi() {
+        return GroupedOpenApi.builder()
+                .group("Phecda SSP API")
+                .pathsToMatch("/ssp-api/**")
+                .packagesToScan("ms.phecda.backend.rest.ssp")
+                .addOpenApiCustomiser(authorizationOpenApiCustomiser())
+                .build();
+    }
 
     public OpenApiCustomiser authorizationOpenApiCustomiser() {
         return openApi -> openApi.schemaRequirement("AUTHORIZATION", new SecurityScheme().type(SecurityScheme.Type.APIKEY)

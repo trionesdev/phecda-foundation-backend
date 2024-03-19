@@ -1,9 +1,10 @@
 package ms.phecda.backend.core.domains.device.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.exception.spring.ex.BusinessException;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
@@ -18,7 +19,7 @@ import ms.phecda.backend.core.domains.device.thing.model.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
-import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,9 @@ public class ProductService {
     }
 
     public void createProduct(Product product) {
+        if (StrUtil.isBlank(product.getKey())) {
+            product.setKey(generateProductKey());
+        }
         productManager.create(product);
     }
 
@@ -56,6 +60,10 @@ public class ProductService {
 
     public Optional<Product> queryProductById(String id) {
         return productManager.queryById(id);
+    }
+
+    public Optional<Product> findProductByKey(String key) {
+        return productManager.findByKey(key);
     }
 
     public List<Product> queryList(ProductCriteria criteria) {
@@ -202,5 +210,13 @@ public class ProductService {
 
     public void revokePublishProduct(String productId) {
         productManager.revokePublish(productId);
+    }
+
+    public String generateProductKey() {
+        String key = RandomUtil.randomString(10);
+        while (productManager.findByKey(key).isEmpty()) {
+            key = RandomUtil.randomString(10);
+        }
+        return key;
     }
 }

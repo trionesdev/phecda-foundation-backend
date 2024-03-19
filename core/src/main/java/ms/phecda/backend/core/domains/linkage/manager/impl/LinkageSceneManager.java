@@ -1,8 +1,8 @@
 package ms.phecda.backend.core.domains.linkage.manager.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.mybatisplus.util.MpPageUtils;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;

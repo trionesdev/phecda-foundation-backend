@@ -8,10 +8,10 @@
     </parent>
 
     <groupId>ms.phecda</groupId>
-    <artifactId>rest-ssp-sdk</artifactId>
+    <artifactId>phecda-rest-ssp-sdk</artifactId>
     <packaging>jar</packaging>
 
-    <name>RestSspSdk</name>
+    <name>Phecda:Be:RestSspSdk</name>
 
     <dependencies>
         <dependency>

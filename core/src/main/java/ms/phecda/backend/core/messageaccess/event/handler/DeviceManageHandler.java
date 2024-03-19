@@ -2,7 +2,7 @@ package ms.phecda.backend.core.messageaccess.event.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Maps;
-import com.moensun.commons.exception.NotFoundException;
+import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.messageaccess.event.DeviceDisableEvent;

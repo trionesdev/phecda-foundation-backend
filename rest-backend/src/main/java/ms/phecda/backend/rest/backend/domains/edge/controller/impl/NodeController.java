@@ -1,7 +1,7 @@
 package ms.phecda.backend.rest.backend.domains.edge.controller.impl;
 
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.mybatisplus.util.MpPageUtils;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

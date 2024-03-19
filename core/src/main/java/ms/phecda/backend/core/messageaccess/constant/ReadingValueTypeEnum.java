@@ -2,7 +2,7 @@ package ms.phecda.backend.core.messageaccess.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.edge.base.commons.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 
 import java.util.Objects;
 

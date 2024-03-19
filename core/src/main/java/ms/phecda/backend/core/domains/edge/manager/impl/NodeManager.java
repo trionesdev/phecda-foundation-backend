@@ -1,8 +1,8 @@
 package ms.phecda.backend.core.domains.edge.manager.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.moensun.commons.core.page.PageInfo;
-import com.moensun.commons.mybatisplus.util.MpPageUtils;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.edge.dao.entity.Node;
 import ms.phecda.backend.core.domains.edge.dao.impl.NodeDAO;

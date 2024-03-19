@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.messageforwarding.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.moensun.commons.exception.spring.ex.BusinessException;
+import com.trionesdev.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.RuleSink;
@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -30,9 +31,11 @@ public class MessageSinkService {
         if (CollectionUtil.isNotEmpty(ruleSinks)) {
             throw new BusinessException("MESSAGE_SINK_USED");
         }
-        MessageSink messageSinkSnap = messageSinkManager.findById(id);
-        messageSinkManager.deleteById(id);
-        applicationEventPublisher.publishEvent(new MessageSinkChangeEvent(this, messageSinkSnap));
+        messageSinkManager.findById(id).ifPresent(messageSinkSnap -> {
+            messageSinkManager.deleteById(id);
+            applicationEventPublisher.publishEvent(new MessageSinkChangeEvent(this, messageSinkSnap));
+        });
+
     }
 
     public void updateById(MessageSink record) {
@@ -40,7 +43,7 @@ public class MessageSinkService {
         applicationEventPublisher.publishEvent(new MessageSinkChangeEvent(this, record));
     }
 
-    public MessageSink findById(String id) {
+    public Optional<MessageSink> findById(String id) {
         return messageSinkManager.findById(id);
     }
 

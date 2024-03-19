@@ -1,4 +1,4 @@
-package ms.phecda.edgex.device.req;
+package ms.phecda.edge.edgex.device.model;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

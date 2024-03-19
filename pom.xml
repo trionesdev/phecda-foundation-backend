@@ -6,7 +6,7 @@
     <parent>
         <groupId>ms.triones</groupId>
         <artifactId>triones-spring-boot-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <packaging>pom</packaging>
@@ -23,7 +23,7 @@
     <artifactId>phecda-backend</artifactId>
     <groupId>ms.phecda</groupId>
     <version>1.0-SNAPSHOT</version>
-    <name>PhecdaBackend</name>
+    <name>Phecda:Backend</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,16 +38,21 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.moensun.mqtt</groupId>
-                <artifactId>mqtt-spring-boot-starters</artifactId>
+                <groupId>com.trionesdev.mqtt</groupId>
+                <artifactId>triones-mqtt-spring-boot-starters</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
             <dependency>
-                <groupId>com.moensun.iotdb</groupId>
-                <artifactId>iotdb-spring-boot-starter</artifactId>
+                <groupId>com.trionesdev.iotdb</groupId>
+                <artifactId>triones-iotdb-spring-boot-starter</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trionesdev.phecda.gateway</groupId>
+                <artifactId>phecda-gateway-rest-ssp-sdk</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
 
@@ -80,7 +85,7 @@
             </dependency>
             <dependency>
                 <groupId>ms.phecda</groupId>
-                <artifactId>rest-ssp-sdk</artifactId>
+                <artifactId>phecda-rest-ssp-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

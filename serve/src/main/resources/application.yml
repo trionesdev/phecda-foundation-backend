@@ -25,6 +25,11 @@ spring:
     redis:
       key-prefix: "phecda:"
       use-key-prefix: true
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      group-id: ${spring.application.name}
   redis:
     redisson:
       config: |
@@ -49,6 +54,8 @@ spring:
         codec: !<org.redisson.codec.MarshallingCodec> {}
         transportMode: "NIO"
 
+
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -59,10 +66,9 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-ms:
-  spring:
-    exception:
-      resource-paths: i18n/error
+triones:
+  exception:
+    resource-paths: i18n/error
   security:
     exclude-matchers: /**
 

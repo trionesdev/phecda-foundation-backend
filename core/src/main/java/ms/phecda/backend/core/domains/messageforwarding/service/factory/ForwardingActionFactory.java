@@ -44,7 +44,7 @@ public class ForwardingActionFactory {
     }
 
     public void syncMessageForwardingRules(){
-        log.info("[ForwardingActionFactory] message forwarding rules update");
+        log.info("[ForwardingActionFactory#syncMessageForwardingRules] message forwarding rules update");
         messageForwardingRules.addAll(messageForwardingRuleManager.activeForwardingList());
     }
 

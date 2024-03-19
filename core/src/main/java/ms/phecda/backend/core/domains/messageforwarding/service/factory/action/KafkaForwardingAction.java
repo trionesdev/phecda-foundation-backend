@@ -28,13 +28,13 @@ import java.util.Objects;
 @ForwardingActionComponent
 public class KafkaForwardingAction extends AbsForwardingAction {
     private final MessageSinkManager messageSinkManager;
-    private final Map<String, KafkaTemplate<String, String>> kafkaTemplateMap = new HashMap<>();
+    private final Map<String, KafkaTemplate<String, Object>> kafkaTemplateMap = new HashMap<>();
 
-    public void put(String key, KafkaTemplate<String, String> kafkaTemplate) {
+    public void put(String key, KafkaTemplate<String, Object> kafkaTemplate) {
         kafkaTemplateMap.put(key, kafkaTemplate);
     }
 
-    public KafkaTemplate<String, String> get(String key) {
+    public KafkaTemplate<String, Object> get(String key) {
         return kafkaTemplateMap.get(key);
     }
 
@@ -52,30 +52,30 @@ public class KafkaForwardingAction extends AbsForwardingAction {
                 try {
                     kafkaTemplateMap.put(t.getId(), createTemplate((KafkaSinkAction) t.getAction()));
                 } catch (Exception ex) {
-                    log.error("[KafkaForwardingAction] kafka create fail action id: {}", t.getId(), ex);
+                    log.error("[KafkaForwardingAction#kafkaSync] kafka create fail action id: {}", t.getId(), ex);
                 }
             });
         }
     }
 
 
-    public KafkaTemplate<String, String> createTemplate(KafkaSinkAction sinkAction) {
+    public KafkaTemplate<String, Object> createTemplate(KafkaSinkAction sinkAction) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, sinkAction.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        ProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(props);
+        ProducerFactory<String, Object> producerFactory = new DefaultKafkaProducerFactory<>(props);
         return new KafkaTemplate<>(producerFactory);
     }
 
     @Override
     public void write(SinkAction sinkAction, byte[] data) {
         KafkaSinkAction action = (KafkaSinkAction) sinkAction;
-        KafkaTemplate<String, String> kafkaTemplate = kafkaTemplateMap.get(action.getId());
+        KafkaTemplate<String, Object> kafkaTemplate = kafkaTemplateMap.get(action.getId());
         if (Objects.isNull(kafkaTemplate)) {
             log.error("[KafkaForwardingAction] kafka instance not found ,sink id :{}", action.getId());
         }
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(action.getTopic(), new String(data));
+        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(action.getTopic(), data);
         future.addCallback(result -> log.info("success send kafka message: {}", result),
                 result -> log.error("fail send kafka message: ", result));
     }
