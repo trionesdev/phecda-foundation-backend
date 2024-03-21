@@ -1,9 +1,7 @@
 package ms.phecda.backend.rest.ssp.sdk.device;
 
-import ms.phecda.backend.rest.ssp.sdk.device.rep.CallDeviceServiceRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.DeviceRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.SendServiceReqSO;
-import ms.phecda.backend.rest.ssp.sdk.device.req.CallDeviceServiceReq;
 import ms.phecda.backend.rest.ssp.sdk.device.req.QueryDeviceReq;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,13 +26,15 @@ public interface DeviceRest {
     @GetMapping(value = DEVICE_URI + "devices/{id}/streaming/stop")
     void stopPushStreaming(@PathVariable(value = "id") String id);
 
-    @PostMapping(value = DEVICE_URI + "devices/service/call")
-    CallDeviceServiceRep callDeviceService(@RequestBody CallDeviceServiceReq req);
-
-
     @PostMapping(value = DEVICE_URI + "devices/{id}/service/send")
     Map<String, Object> serviceSend(
             @PathVariable(value = "id") String id,
+            @RequestBody SendServiceReqSO args
+    );
+
+    @PostMapping(value = DEVICE_URI + "devices/name/{name}/service/send")
+    Map<String, Object> serviceSendByDeviceName(
+            @PathVariable(value = "name") String name,
             @RequestBody SendServiceReqSO args
     );
 }

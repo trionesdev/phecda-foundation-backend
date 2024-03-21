@@ -5,13 +5,10 @@ import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
-import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
 import ms.phecda.backend.rest.ssp.modules.device.support.RestDeviceConvertMapper;
 import ms.phecda.backend.rest.ssp.sdk.device.DeviceRest;
-import ms.phecda.backend.rest.ssp.sdk.device.rep.CallDeviceServiceRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.DeviceRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.SendServiceReqSO;
-import ms.phecda.backend.rest.ssp.sdk.device.req.CallDeviceServiceReq;
 import ms.phecda.backend.rest.ssp.sdk.device.req.QueryDeviceReq;
 import ms.phecda.backend.rest.ssp.support.RestConstants;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -56,16 +52,6 @@ public class DeviceController implements DeviceRest {
         deviceService.stopPushStreaming(id);
     }
 
-    @Deprecated
-    @Override
-    public CallDeviceServiceRep callDeviceService(CallDeviceServiceReq req) {
-        ServiceInvokeMessageReply messageReply = deviceService.callDeviceService(req.getDeviceName(), req.getIdentifier(), req.getParams());
-        if (Objects.isNull(messageReply)) {
-            return null;
-        }
-        return CallDeviceServiceRep.builder().params(messageReply.getParams()).build();
-    }
-
     @Override
     public Map<String, Object> serviceSend(String id, SendServiceReqSO args) {
         SendServiceArgBO argsBO = SendServiceArgBO.builder()
@@ -74,5 +60,15 @@ public class DeviceController implements DeviceRest {
                 .body(args.getBody())
                 .build();
         return deviceService.sendService(id, argsBO);
+    }
+
+    @Override
+    public Map<String, Object> serviceSendByDeviceName(String name, SendServiceReqSO args) {
+        SendServiceArgBO argsBO = SendServiceArgBO.builder()
+                .identifier(args.getIdentifier())
+                .params(args.getParams())
+                .body(args.getBody())
+                .build();
+        return deviceService.sendServiceWithDeviceName(name, argsBO);
     }
 }
