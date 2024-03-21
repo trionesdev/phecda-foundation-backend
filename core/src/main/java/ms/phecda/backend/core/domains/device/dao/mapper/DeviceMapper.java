@@ -5,8 +5,6 @@ import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.Map;
-
 public interface DeviceMapper extends BaseMapper<Device> {
 
     @Select("select count(0),\n" +
