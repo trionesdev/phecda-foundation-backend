@@ -20,6 +20,7 @@ import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
+import ms.phecda.backend.core.domains.device.service.bo.DeviceStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
 import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
@@ -69,6 +70,10 @@ public class DeviceService {
 
     private static final String RTMP_URL = "rtmp://{host}:{port}/{productId}/{deviceName}";
     private static final String FLV_URL = "http://{host}:{port}/{productId}/{deviceName}.live.flv";
+
+    public DeviceStatisticsBO statistics(){
+        return DeviceStatisticsBO.builder().build();
+    }
 
 
     public void createDevice(Device device) {

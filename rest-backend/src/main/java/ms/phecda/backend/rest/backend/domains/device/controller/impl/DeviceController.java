@@ -11,6 +11,7 @@ import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
+import ms.phecda.backend.core.domains.device.service.bo.DeviceStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceCreateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceEnabledRO;
@@ -38,6 +39,12 @@ import java.util.List;
 @RequestMapping(value = DeviceConstants.DEVICE_URI)
 public class DeviceController {
     private final DeviceService deviceService;
+
+    @Operation(summary = "设备统计")
+    @GetMapping(value = "devices/statistics")
+    public DeviceStatisticsBO statistics() {
+        return deviceService.statistics();
+    }
 
     @Operation(summary = "新建设备")
     @PostMapping(value = "devices")

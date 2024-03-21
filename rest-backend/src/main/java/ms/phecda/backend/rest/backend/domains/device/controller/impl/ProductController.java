@@ -9,6 +9,7 @@ import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
+import ms.phecda.backend.core.domains.device.service.bo.ProductStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
@@ -31,6 +32,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+
+    @Operation(summary = "产品统计")
+    @GetMapping(value = "products/statistics")
+    public ProductStatisticsBO statistics() {
+        return productService.statistics();
+    }
 
     @Operation(summary = "值类型选项")
     @GetMapping(value = "value-type/options")
