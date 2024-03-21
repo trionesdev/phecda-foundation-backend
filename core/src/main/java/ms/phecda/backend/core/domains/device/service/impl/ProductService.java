@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
+import ms.phecda.backend.core.domains.device.service.bo.ProductStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
@@ -41,6 +42,10 @@ public class ProductService {
             options.add(ValueTypeOption.builder().label(valueType.getLabel()).value(valueType.name()).build());
         }
         return options;
+    }
+
+    public ProductStatisticsBO statistics() {
+        return ProductStatisticsBO.builder().build();
     }
 
     public void createProduct(Product product) {
