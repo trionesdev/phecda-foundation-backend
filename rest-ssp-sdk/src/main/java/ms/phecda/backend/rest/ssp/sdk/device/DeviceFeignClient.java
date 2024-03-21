@@ -7,5 +7,5 @@ import org.springframework.cloud.openfeign.FeignClient;
         url = "${dubhe.phecda.ssp.url:}",
         path = "${dubhe.phecda.ssp.path:ssp-api/phecda}"
 )
-public interface DeviceFeignClient extends DeviceRest {
+public interface DeviceFeignClient extends DeviceRest, ProductRest {
 }

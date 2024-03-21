@@ -25,11 +25,6 @@ import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService.CallType;
-import ms.phecda.backend.core.messageaccess.DeviceThingModelEventPublisher;
-import ms.phecda.backend.core.messageaccess.event.DeviceDisableEvent;
-import ms.phecda.backend.core.messageaccess.event.DeviceEnableEvent;
-import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessage;
-import ms.phecda.backend.core.messageaccess.model.ServiceInvokeMessageReply;
 import ms.phecda.backend.core.messageaccess.mqtt.PhecdaMqtt;
 import ms.phecda.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
@@ -41,11 +36,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -55,8 +55,6 @@ public class DeviceService {
     private final DeviceManager deviceManager;
     private final ProductManager productManager;
     private final NodeDeviceProvider nodeDeviceProvider;
-    private final ApplicationEventPublisher eventPublisher;
-    private final DeviceThingModelEventPublisher deviceThingModelEventPublisher;
     private final PhecdaMqtt phecdaMqtt;
     private final GatewayProvider gatewayProvider;
 
@@ -133,8 +131,6 @@ public class DeviceService {
                 .id(deviceId)
                 .enabled(true)
                 .build());
-
-        eventPublisher.publishEvent(DeviceEnableEvent.build(device));
     }
 
     /**
@@ -151,8 +147,6 @@ public class DeviceService {
                 .id(deviceId)
                 .enabled(false)
                 .build());
-
-        eventPublisher.publishEvent(DeviceDisableEvent.build(device));
     }
 
     public List<DevicePropertyDataBO> queryDeviceThingModelPropertiesData(String deviceId) {
@@ -249,77 +243,56 @@ public class DeviceService {
         return deviceManager.queryByName(name).orElse(null);
     }
 
-    @Deprecated
     public String startPushStreamingByName(String name) {
         Optional<Device> deviceOptional = deviceManager.queryByName(name);
         return deviceOptional.map(this::startPushStreaming).orElse(null);
-
     }
 
-    @Deprecated
     public void stopPushStreamingByName(String name) {
         Optional<Device> deviceOptional = deviceManager.queryByName(name);
         deviceOptional.ifPresent(this::stopPushStreaming);
     }
 
-    @Deprecated
     public String startPushStreaming(String id) {
         Optional<Device> deviceOptional = deviceManager.queryById(id);
         return deviceOptional.map(this::startPushStreaming).orElse(null);
     }
 
-    @Deprecated
     public void stopPushStreaming(String id) {
         Optional<Device> deviceOptional = deviceManager.queryById(id);
         deviceOptional.ifPresent(this::stopPushStreaming);
     }
 
-    @Deprecated
     public String startPushStreaming(Device device) {
         Map<String, Object> params = Maps.newHashMap();
         String rtmpUrl = RTMP_URL.replaceAll("\\{host}", streamingMediaHost)
                 .replaceAll("\\{port}", String.valueOf(streamingMediaRtmpPort))
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName());
-        params.put("pushUrl", rtmpUrl);
-        ServiceInvokeMessage message = ServiceInvokeMessage.builder()
-                .productId(device.getProductId())
-                .deviceName(device.getName())
+
+        Map<String, Object> body = Maps.newHashMap();
+        body.put("pushUrl", rtmpUrl);
+        SendServiceArgBO args = SendServiceArgBO.builder()
                 .identifier("StartPushStreaming")
-                .timestamp(System.currentTimeMillis())
-                .params(params)
+                .body(body)
                 .build();
-        deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
+        sendService(device.getId(), args);
         return FLV_URL.replaceAll("\\{host}", streamingMediaHost)
                 .replaceAll("\\{port}", String.valueOf(streamingMediaHttpPort))
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName());
     }
 
-    @Deprecated
     public void stopPushStreaming(Device device) {
-        ServiceInvokeMessage message = ServiceInvokeMessage.builder()
-                .productId(device.getProductId())
-                .deviceName(device.getName())
+        SendServiceArgBO args = SendServiceArgBO.builder()
                 .identifier("StopPushStreaming")
-                .timestamp(System.currentTimeMillis())
                 .build();
-        deviceThingModelEventPublisher.asyncPublishServiceEvent(message);
+        sendService(device.getId(), args);
     }
 
-    @Deprecated
-    public ServiceInvokeMessageReply callDeviceService(String deviceName, String identifier, Map<String, Object> params) {
-        Optional<Device> deviceOptional = queryByName(deviceName);
-        Device device = deviceOptional.orElseThrow();
-
-        ServiceInvokeMessage message = ServiceInvokeMessage.builder()
-                .productId(device.getProductId())
-                .deviceName(deviceName)
-                .identifier(identifier)
-                .timestamp(System.currentTimeMillis())
-                .params(params)
-                .build();
-        return deviceThingModelEventPublisher.syncPublishServiceEvent(message);
+    public Map<String, Object> sendServiceWithDeviceName(String deviceName, SendServiceArgBO args) {
+        Device device = deviceManager.queryByName(deviceName).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        return sendService(device.getId(), args);
     }
 
     public Map<String, Object> sendService(String id, SendServiceArgBO args) {
