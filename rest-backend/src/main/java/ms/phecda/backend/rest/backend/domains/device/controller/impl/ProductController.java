@@ -5,23 +5,31 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
-import ms.phecda.backend.core.domains.device.service.bo.ProductStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
+import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductCreateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductProtocolPropertiesUpdateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductThingModelUpsertRO;
-import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductUpdateRO;
 import ms.phecda.backend.rest.backend.domains.device.support.DeviceConstants;
 import ms.phecda.backend.rest.backend.domains.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -35,8 +43,8 @@ public class ProductController {
 
     @Operation(summary = "产品统计")
     @GetMapping(value = "products/statistics")
-    public ProductStatisticsBO statistics() {
-        return productService.statistics();
+    public ProductStatisticsDVO statistics() {
+        return productService.queryStatistics();
     }
 
     @Operation(summary = "值类型选项")
