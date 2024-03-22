@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
@@ -27,6 +28,10 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
             queryWrapper.like(StringUtils.isNotBlank(criteria.getName()), Product::getName, criteria.getName());
         }
         return queryWrapper;
+    }
+
+    public ProductStatisticsDVO selectStatistics() {
+        return baseMapper.selectStatusStatistics();
     }
 
     public List<Product> selectList(ProductCriteria criteria) {
