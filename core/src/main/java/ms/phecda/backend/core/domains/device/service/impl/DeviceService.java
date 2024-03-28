@@ -71,7 +71,7 @@ public class DeviceService {
     private static final String RTMP_URL = "rtmp://{host}:{port}/{productId}/{deviceName}";
     private static final String FLV_URL = "http://{host}:{port}/{productId}/{deviceName}.live.flv";
 
-    public DeviceStatisticsBO statistics(){
+    public DeviceStatisticsBO statistics() {
         return DeviceStatisticsBO.builder().build();
     }
 
@@ -354,7 +354,7 @@ public class DeviceService {
                 if (CallType.ASYNC.equals(callType)) {
                     phecdaMqtt.publish(sendTopic, JSON.toJSONBytes(dto));
                 } else if (CallType.SYNC.equals(callType)) {
-                    String replayTopic = TopicUtils.serviceReplyTopic(dto.getId());
+                    String replayTopic = TopicUtils.serviceSyncReplyTopic(dto.getId());
                     MqttMessage replayMessage = phecdaMqtt.publishAsync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
                     return JSON.parseObject(replayMessage.getPayload());
                 }

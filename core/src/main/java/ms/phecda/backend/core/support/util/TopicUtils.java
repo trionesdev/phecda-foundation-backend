@@ -28,8 +28,12 @@ public class TopicUtils {
         return TOPIC_PREFIX + Optional.ofNullable(productKey).orElse("+") + "/" + Optional.ofNullable(deviceName).orElse("+") + "/thing/service/" + commandName;
     }
 
-    public static String serviceReplyTopic(String messageId) {
-        return TOPIC_PREFIX + "/thing/service/" + messageId + "/reply";
+    public static String serviceAsyncReplyTopic(String messageId) {
+        return TOPIC_PREFIX + "/thing/service/" + messageId + "/reply/async";
+    }
+
+    public static String serviceSyncReplyTopic(String messageId) {
+        return TOPIC_PREFIX + "/thing/service/" + messageId + "/reply/sync";
     }
 
     public static String join(String... paths) {
