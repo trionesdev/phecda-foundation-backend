@@ -29,11 +29,11 @@ public class TopicUtils {
     }
 
     public static String serviceAsyncReplyTopic(String messageId) {
-        return TOPIC_PREFIX + "/thing/service/" + messageId + "/reply/async";
+        return TOPIC_PREFIX + "thing/service/" + messageId + "/reply/async";
     }
 
     public static String serviceSyncReplyTopic(String messageId) {
-        return TOPIC_PREFIX + "/thing/service/" + messageId + "/reply/sync";
+        return TOPIC_PREFIX + "thing/service/" + messageId + "/reply/sync";
     }
 
     public static String join(String... paths) {
