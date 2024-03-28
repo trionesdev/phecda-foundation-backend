@@ -6,20 +6,21 @@ import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
+import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
-import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
-import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,10 @@ public class ProductService {
             options.add(ValueTypeOption.builder().label(valueType.getLabel()).value(valueType.name()).build());
         }
         return options;
+    }
+
+    public ProductStatisticsDVO queryStatistics() {
+        return productManager.queryStatistics();
     }
 
     public void createProduct(Product product) {

@@ -33,6 +33,7 @@ public class DeviceDAO extends ServiceImpl<DeviceMapper, Device> {
         return queryWrapper.orderByDesc(Device::getCreatedAt);
     }
 
+
     public PageInfo<Device> selectPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
         return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
     }

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
@@ -25,6 +26,10 @@ import java.util.Optional;
 public class ProductManager {
     private final ProductDAO productDAO;
     private final ProductThingModelVersionDAO productThingModelVersionDAO;
+
+    public ProductStatisticsDVO queryStatistics(){
+        return productDAO.selectStatistics();
+    }
 
     public void create(Product product) {
         productDAO.save(product);

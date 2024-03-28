@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.trionesdev.commons.mybatisplus.entity.BaseLogicEntity;
+import com.trionesdev.commons.mybatisplus.typehandlers.CollectionTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.alarm.dao.entity.enums.AlarmLevelEnum;
 import ms.phecda.backend.core.domains.alarm.dao.entity.enums.DealStatuEnums;
 import ms.phecda.backend.core.domains.alarm.dao.entity.enums.ImageTypeEnum;
-import ms.phecda.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
 
 import java.time.Instant;
 import java.util.List;
@@ -26,10 +26,10 @@ import java.util.List;
  * @author jscoe
  * @since 2023-07-11
  */
+@EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @SuperBuilder
 @TableName(value = "alarm_alarm_log", autoResultMap = true)
 public class AlarmLog extends BaseLogicEntity {
@@ -93,12 +93,12 @@ public class AlarmLog extends BaseLogicEntity {
     }
 
     @NoArgsConstructor
-    public static class ImageInfoListTypeHandler extends SpecialListTypeHandler {
+    public static class ImageInfoListTypeHandler extends CollectionTypeHandler<ImageInfo> {
+
 
         @Override
-        public Class<ImageInfo> specialType() {
+        protected Class<ImageInfo> specificType() {
             return ImageInfo.class;
         }
-
     }
 }
