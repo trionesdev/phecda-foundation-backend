@@ -11,13 +11,11 @@
     </parent>
     <packaging>pom</packaging>
     <modules>
-        <module>core</module>
-        <module>rest-backend</module>
         <module>serve</module>
         <module>infrastructure</module>
         <module>edge</module>
-        <module>rest-ssp-sdk</module>
-        <module>rest-ssp</module>
+        <module>domain</module>
+        <module>interface</module>
     </modules>
 
     <artifactId>phecda-backend</artifactId>
@@ -75,12 +73,12 @@
             </dependency>
             <dependency>
                 <groupId>ms.phecda</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>domain-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ms.phecda</groupId>
-                <artifactId>rest-backend</artifactId>
+                <artifactId>rest-backend-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -90,7 +88,7 @@
             </dependency>
             <dependency>
                 <groupId>ms.phecda</groupId>
-                <artifactId>rest-ssp</artifactId>
+                <artifactId>rest-ssp-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

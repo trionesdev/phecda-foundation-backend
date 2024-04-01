@@ -3,11 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ms.phecda</groupId>
-        <artifactId>phecda-backend</artifactId>
+        <artifactId>interface</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>rest-ssp</artifactId>
+    <artifactId>rest-ssp-core</artifactId>
     <packaging>jar</packaging>
 
     <name>Phecda:Be:RestSsp</name>
@@ -16,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>domain-core</artifactId>
         </dependency>
         <dependency>
             <groupId>ms.phecda</groupId>
