@@ -15,11 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>rest-backend</artifactId>
+            <artifactId>rest-backend-core</artifactId>
         </dependency>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>rest-ssp</artifactId>
+            <artifactId>rest-ssp-core</artifactId>
         </dependency>
     </dependencies>
 
