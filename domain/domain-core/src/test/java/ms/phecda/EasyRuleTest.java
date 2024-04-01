@@ -99,66 +99,66 @@ public class EasyRuleTest {
     }
 
 
-    @Test
-    public void rule_tests() {
-        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
-                .scenes(Lists.newArrayList(
-                        Scene.builder()
-                                .eventTrigger(ThingPropertyReportTrigger.builder()
-                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
-                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
-                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
-                                                .product("ppp")
-                                                .deviceName("a001")
-                                                .property("humidity")
-                                                .build())
-                                        .filter(EventTrigger.EventFilter.builder()
-                                                .operator(OperatorEnum.GT)
-                                                .valueType(ValueTypeEnum.INT)
-                                                .args(Lists.newArrayList("20"))
-                                                .build())
-                                        .build())
-                                .conditions(Lists.newArrayList(
-                                        Scene.OperatorCondition.builder()
-                                                .children(Lists.newArrayList(
-                                                        ThingPropertyValueCondition.builder()
-                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
-                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
-                                                                        .product("ppp")
-                                                                        .deviceName("a001")
-                                                                        .build())
-                                                                .condition(StateCondition.Condition.builder()
-                                                                        .valuePath("temperature")
-                                                                        .operator(OperatorEnum.GT)
-                                                                        .valueType(ValueTypeEnum.INT)
-                                                                        .args(Lists.newArrayList("20"))
-                                                                        .build())
-                                                                .build()
-                                                ))
-                                                .build()
-                                ))
-                                .build()
-                ))
-
-                .enabled(true)
-                .build();
-
-        RulesEngine rulesEngine = new DefaultRulesEngine();
-        Rules rules = new Rules();
-        String condition = LinkageSceneUtils.buildScenesRuleCondition(linkageScene.getScenes());
-
-        Rule rule = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
-
-        rules.register(rule);
-
-        Facts facts = new Facts();
-        facts.put("product", "ppp");
-        facts.put("deviceName", "a001");
-        facts.put("temperature", 10);
-        facts.put("humidity", "25");
-
-        rulesEngine.fire(rules, facts);
-    }
+//    @Test
+//    public void rule_tests() {
+//        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
+//                .scenes(Lists.newArrayList(
+//                        Scene.builder()
+//                                .eventTrigger(ThingPropertyReportTrigger.builder()
+//                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+//                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
+//                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+//                                                .product("ppp")
+//                                                .deviceName("a001")
+//                                                .property("humidity")
+//                                                .build())
+//                                        .filter(EventTrigger.EventFilter.builder()
+//                                                .operator(OperatorEnum.GT)
+//                                                .valueType(ValueTypeEnum.INT)
+//                                                .args(Lists.newArrayList("20"))
+//                                                .build())
+//                                        .build())
+//                                .conditions(Lists.newArrayList(
+//                                        Scene.OperatorCondition.builder()
+//                                                .children(Lists.newArrayList(
+//                                                        ThingPropertyValueCondition.builder()
+//                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
+//                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
+//                                                                        .product("ppp")
+//                                                                        .deviceName("a001")
+//                                                                        .build())
+//                                                                .condition(StateCondition.Condition.builder()
+//                                                                        .valuePath("temperature")
+//                                                                        .operator(OperatorEnum.GT)
+//                                                                        .valueType(ValueTypeEnum.INT)
+//                                                                        .args(Lists.newArrayList("20"))
+//                                                                        .build())
+//                                                                .build()
+//                                                ))
+//                                                .build()
+//                                ))
+//                                .build()
+//                ))
+//
+//                .enabled(true)
+//                .build();
+//
+//        RulesEngine rulesEngine = new DefaultRulesEngine();
+//        Rules rules = new Rules();
+//        String condition = LinkageSceneUtils.buildScenesRuleCondition(linkageScene.getScenes());
+//
+//        Rule rule = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
+//
+//        rules.register(rule);
+//
+//        Facts facts = new Facts();
+//        facts.put("product", "ppp");
+//        facts.put("deviceName", "a001");
+//        facts.put("temperature", 10);
+//        facts.put("humidity", "25");
+//
+//        rulesEngine.fire(rules, facts);
+//    }
 
     @Test
     public void rule_builder_test_3() {

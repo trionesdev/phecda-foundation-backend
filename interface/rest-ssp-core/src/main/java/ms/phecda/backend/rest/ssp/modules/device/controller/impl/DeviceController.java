@@ -1,22 +1,22 @@
 package ms.phecda.backend.rest.ssp.modules.device.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceCriteriaBO;
 import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
+import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
 import ms.phecda.backend.rest.ssp.modules.device.support.RestDeviceConvertMapper;
 import ms.phecda.backend.rest.ssp.sdk.device.DeviceRest;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.DeviceRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.SendServiceReqSO;
+import ms.phecda.backend.rest.ssp.sdk.device.rep.ServiceInvokeReplyRep;
 import ms.phecda.backend.rest.ssp.sdk.device.req.QueryDeviceReq;
 import ms.phecda.backend.rest.ssp.support.RestConstants;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -54,22 +54,24 @@ public class DeviceController implements DeviceRest {
     }
 
     @Override
-    public Map<String, Object> serviceSend(String id, SendServiceReqSO args) {
+    public ServiceInvokeReplyRep serviceSend(String id, SendServiceReqSO args) {
         SendServiceArgBO argsBO = SendServiceArgBO.builder()
                 .identifier(args.getIdentifier())
                 .params(args.getParams())
                 .body(args.getBody())
                 .build();
-        return deviceService.sendService(id, argsBO);
+        ServiceInvokeReplyMessage serviceInvokeReplyMessage = deviceService.sendService(id, argsBO);
+        return RestDeviceConvertMapper.INSTANCE.from(serviceInvokeReplyMessage);
     }
 
     @Override
-    public Map<String, Object> serviceSendByDeviceName(String name, SendServiceReqSO args) {
+    public ServiceInvokeReplyRep serviceSendByDeviceName(String name, SendServiceReqSO args) {
         SendServiceArgBO argsBO = SendServiceArgBO.builder()
                 .identifier(args.getIdentifier())
                 .params(args.getParams())
                 .body(args.getBody())
                 .build();
-        return deviceService.sendServiceWithDeviceName(name, argsBO);
+        ServiceInvokeReplyMessage serviceInvokeReplyMessage = deviceService.sendServiceWithDeviceName(name, argsBO);
+        return RestDeviceConvertMapper.INSTANCE.from(serviceInvokeReplyMessage);
     }
 }
