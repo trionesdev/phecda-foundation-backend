@@ -16,12 +16,7 @@ import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.manager.dto.ServiceSendDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
-import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceStatisticsBO;
-import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
+import ms.phecda.backend.core.domains.device.service.bo.*;
 import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
@@ -94,7 +89,11 @@ public class DeviceService {
         });
     }
 
-    public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
+    public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteriaBO criteria) {
+        if (StringUtils.isNotBlank(criteria.getProductKey())) {
+            Product product = productManager.findByKey(criteria.getProductKey()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+            criteria.setProductId(product.getId());
+        }
         if (StringUtils.isNotBlank(criteria.getNodeId())) {
             List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
             Set<String> deviceIds = nodeDevicePDOS.stream()
@@ -204,7 +203,11 @@ public class DeviceService {
                         .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
-    public List<Device> queryList(DeviceCriteria criteria) {
+    public List<Device> queryList(DeviceCriteriaBO criteria) {
+        if (StringUtils.isNotBlank(criteria.getProductKey())) {
+            Product product = productManager.findByKey(criteria.getProductKey()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+            criteria.setProductId(product.getId());
+        }
         if (StringUtils.isNotBlank(criteria.getNodeId())) {
             List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
             Set<String> deviceIds = nodeDevicePDOS.stream()
@@ -310,6 +313,7 @@ public class DeviceService {
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
         ServiceSendDTO dto = ServiceSendDTO.builder()
                 .id(UUID.randomUUID().toString())
+                .sync(service.getCallType().equals(CallType.SYNC))
                 .method(service.getIdentifier())
                 .productKey(product.getKey())
                 .deviceName(device.getName())

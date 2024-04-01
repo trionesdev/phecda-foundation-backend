@@ -6,14 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trionesdev.commons.mybatisplus.entity.BaseLogicEntity;
+import com.trionesdev.commons.mybatisplus.typehandlers.CollectionTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.infrastructure.conf.mybatisplus.SpecialListTypeHandler;
 
-import java.io.Serializable;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -43,9 +42,9 @@ public class Device extends BaseLogicEntity  {
         private String value;
     }
 
-    public static class ProtocolListTypeHandler extends SpecialListTypeHandler<Protocol> {
+    public static class ProtocolListTypeHandler extends CollectionTypeHandler<Protocol> {
         @Override
-        public Class<Protocol> specialType() {
+        protected Class<Protocol> specificType() {
             return Protocol.class;
         }
     }

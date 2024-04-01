@@ -1,6 +1,5 @@
 package ms.phecda.backend.core.domains.device.dao.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dao.mapper.ProductThingModelVersionMapper;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public class ProductThingModelVersionDAO extends ServiceImpl<ProductThingModelVersionMapper, ProductThingModelVersion> {
 
     public ProductThingModelVersion selectByProductVersion(String productId, String version) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<ProductThingModelVersion>().eq(ProductThingModelVersion::getId, version).eq(ProductThingModelVersion::getProductId, productId));
+        return lambdaQuery().eq(ProductThingModelVersion::getId, version).eq(ProductThingModelVersion::getProductId, productId).one();
     }
 
 }

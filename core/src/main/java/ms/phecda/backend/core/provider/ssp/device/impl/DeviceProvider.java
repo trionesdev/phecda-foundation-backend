@@ -1,25 +1,44 @@
 package ms.phecda.backend.core.provider.ssp.device.impl;
 
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.service.bo.DeviceCriteriaBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
+import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
+import ms.phecda.backend.core.provider.ssp.device.DeviceProviderConvert;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
-import org.springframework.context.annotation.Lazy;
+import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
+import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Component
 public class DeviceProvider {
-    @Lazy
-    @Resource
-    private DeviceService deviceService;
+    private final DeviceProviderConvert deviceProviderConvert;
+    private final ProductService productService;
+
+    private final DeviceService deviceService;
+
+    public ProductPDO findProductByKey(String key) {
+        Product product = productService.findProductByKey(key).orElse(null);
+        return deviceProviderConvert.from(product);
+    }
+
+    public List<ThingModelPropertyPDO> findThingModelProperties(String productId, String version) {
+        return productService.queryThingModelCache(productId, version).map(thingModelVersion -> {
+            return deviceProviderConvert.thisModelPropertiesPDOFromModel(thingModelVersion.getThingModel().getProperties());
+        }).orElse(Collections.emptyList());
+    }
 
     public List<DevicePDO> listById(List<String> ids) {
-        DeviceCriteria criteria = DeviceCriteria.builder().ids(ids).build();
+        DeviceCriteriaBO criteria = DeviceCriteriaBO.builder().ids(ids).build();
         List<Device> devices = deviceService.queryList(criteria);
         return DeviceConvertMapper.INSTANCE.toPDOList(devices);
     }

@@ -11,7 +11,8 @@ import javax.annotation.PostConstruct;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+//@Component
+@Deprecated
 public class PhecdaMqttApplicationRunner {
     private final MqttConnectOptions mqttConnectOptions;
     private final IMqttAsyncClient mqttAsyncClient;

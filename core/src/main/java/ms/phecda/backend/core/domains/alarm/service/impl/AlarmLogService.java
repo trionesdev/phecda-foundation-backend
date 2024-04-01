@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * @since 2023-07-11
  */
 
+@Deprecated
 @RequiredArgsConstructor
 @Service
 public class AlarmLogService {

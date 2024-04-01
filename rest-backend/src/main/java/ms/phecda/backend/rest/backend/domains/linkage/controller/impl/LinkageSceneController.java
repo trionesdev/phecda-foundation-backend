@@ -26,8 +26,14 @@ public class LinkageSceneController {
 
     @Operation(summary = "场景分页查询")
     @GetMapping(value = "scenes/page")
-    public PageInfo<LinkageScene> page(@Validated LinkageSceneQuery args) {
+    public PageInfo<LinkageScene> page(
+            @RequestParam(value = "pageSize") Integer pageSize,
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @Validated LinkageSceneQuery args
+    ) {
         LinkageSceneCriteria criteria = LinkageRestConvertMapper.INSTANCE.from(args);
+        criteria.setPageNum(pageNum);
+        criteria.setPageSize(pageSize);
         return linkageSceneService.page(criteria);
     }
 

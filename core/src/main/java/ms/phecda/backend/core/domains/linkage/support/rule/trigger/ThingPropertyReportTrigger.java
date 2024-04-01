@@ -26,8 +26,8 @@ public class ThingPropertyReportTrigger extends EventTrigger {
         ThingPropertyReportTrigger.Identifier identifier = (ThingPropertyReportTrigger.Identifier) getIdentifier();
         List<String> rules = Lists.newArrayList();
         if (Objects.nonNull(identifier)) {
-            if (StrUtil.isNotBlank(identifier.getProduct())) {
-                rules.add(" product == " + RuleUtils.param(identifier.getProduct(), true));
+            if (StrUtil.isNotBlank(identifier.getProductKey())) {
+                rules.add(" productKey == " + RuleUtils.param(identifier.getProductKey(), true));
             }
             if (StrUtil.isNotBlank(identifier.getDeviceName())) {
                 rules.add(" deviceName == " + RuleUtils.param(identifier.getDeviceName(), true));
@@ -47,7 +47,7 @@ public class ThingPropertyReportTrigger extends EventTrigger {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Identifier extends EventTrigger.Identifier {
-        private String product;
+        private String productKey;
         private String deviceName;
         private String property;
     }

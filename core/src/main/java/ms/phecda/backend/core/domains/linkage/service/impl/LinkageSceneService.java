@@ -48,6 +48,12 @@ public class LinkageSceneService {
     }
 
     public void updateSceneById(LinkageScene scene) {
+        linkageSceneManager.queryById(scene.getId()).ifPresent(t -> {
+            if (t.getEnabled()) {
+                unregisterRule(t.getId());
+            }
+        });
+        scene.setEnabled(false);
         linkageSceneManager.updateById(scene);
     }
 
@@ -73,6 +79,7 @@ public class LinkageSceneService {
     }
 
     public void registerRule(String id) {
+        //TODO upgrade to broadcast message
         linkageSceneManager.queryById(id).ifPresent(t -> {
             Rule rule = LinkageSceneUtils.createRule(t, ruleActionFactory);
             if (Objects.nonNull(rule)) {
@@ -91,8 +98,8 @@ public class LinkageSceneService {
      * @param facts
      */
     public void rulesFire(Facts facts) {
-        if (CollectionUtil.isEmpty(linkageRules)){
-            if (log.isInfoEnabled()){
+        if (CollectionUtil.isEmpty(linkageRules)) {
+            if (log.isInfoEnabled()) {
                 log.info("[LinkageSceneService] no rules");
             }
             return;
