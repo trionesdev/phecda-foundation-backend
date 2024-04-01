@@ -20,18 +20,20 @@ public class LinkageSceneUtils {
         StringBuilder ruleSb = new StringBuilder();
         ruleSb.append(scene.getEventTrigger().toRuleEl());
         List<String> operatorRules = Lists.newArrayList();
-        scene.getConditions().forEach(c -> {
-            List<String> stateRules = Lists.newArrayList();
-            c.getChildren().forEach(cc -> {
-                if (StrUtil.isNotBlank(cc.conditionEl())) {
-                    stateRules.add(" ( " + cc.conditionEl() + " ) ");
+        if (CollectionUtil.isNotEmpty(scene.getConditions())) {
+            scene.getConditions().forEach(c -> {
+                List<String> stateRules = Lists.newArrayList();
+                c.getChildren().forEach(cc -> {
+                    if (StrUtil.isNotBlank(cc.conditionEl())) {
+                        stateRules.add(" ( " + cc.conditionEl() + " ) ");
+                    }
+                });
+                String stateRuleStr = StrUtil.join(" && ", stateRules);
+                if (StrUtil.isNotBlank(stateRuleStr)) {
+                    operatorRules.add(stateRuleStr);
                 }
             });
-            String stateRuleStr = StrUtil.join(" && ", stateRules);
-            if (StrUtil.isNotBlank(stateRuleStr)) {
-                operatorRules.add(stateRuleStr);
-            }
-        });
+        }
         String operatorRulesStr = StrUtil.join(" || ", operatorRules);
         if (StrUtil.isNotBlank(operatorRulesStr)) {
             ruleSb.append(" && ( ").append(operatorRulesStr).append(" ) ");
@@ -39,7 +41,10 @@ public class LinkageSceneUtils {
         return ruleSb.toString();
     }
 
-    public static  String buildScenesRuleCondition(List<Scene> scenes){
+    public static String buildScenesRuleCondition(List<Scene> scenes) {
+        if (CollectionUtil.isEmpty(scenes)) {
+            return null;
+        }
         List<String> sceneTriggerConditions = Lists.newArrayList();
         scenes.forEach(t -> {
             String sceneCondition = buildSceneRuleCondition(t);
@@ -47,26 +52,26 @@ public class LinkageSceneUtils {
                 sceneTriggerConditions.add(" ( " + sceneCondition + " ) ");
             }
         });
-       return StrUtil.join("||", sceneTriggerConditions);
+        return StrUtil.join("||", sceneTriggerConditions);
     }
 
     public static Rule createRule(LinkageScene linkageScene, RuleActionFactory factory) {
         if (!BooleanUtil.isTrue(linkageScene.getEnabled())) {
             return null;
         }
-        if (CollectionUtil.isEmpty(linkageScene.getScenes())){
+        if (CollectionUtil.isEmpty(linkageScene.getScenes())) {
             return null;
         }
 
         return new PhecdaRule().name(linkageScene.getId())
                 .when(buildScenesRuleCondition(linkageScene.getScenes()))
                 .then(facts -> {
-            if (CollectionUtil.isNotEmpty(linkageScene.getActions())) {
-                linkageScene.getActions().forEach(action -> {
-                    factory.getAction(action.getType()).execute(facts, action);
+                    if (CollectionUtil.isNotEmpty(linkageScene.getActions())) {
+                        linkageScene.getActions().forEach(action -> {
+                            factory.getAction(action.getType()).execute(facts, action);
+                        });
+                    }
                 });
-            }
-        });
     }
 
 }

@@ -11,8 +11,8 @@ import java.util.List;
 @Data
 public class LinkageSceneRuleRO {
 
-    private FilterCondition filterCondition;
-    private List<List<OtherCondition>> conditions;
+//    private FilterCondition filterCondition;
+//    private List<List<OtherCondition>> conditions;
     private List<Scene> scenes;
     private List<Action> actions;
 }

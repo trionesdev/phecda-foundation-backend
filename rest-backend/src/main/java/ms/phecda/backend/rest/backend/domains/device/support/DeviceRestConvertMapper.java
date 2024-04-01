@@ -1,17 +1,13 @@
 package ms.phecda.backend.rest.backend.domains.device.support;
 
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.service.bo.DeviceCriteriaBO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceCreateRO;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceUpdateRO;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductCreateRO;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductThingModelUpsertRO;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductUpdateRO;
+import ms.phecda.backend.rest.backend.domains.device.controller.ro.*;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -32,5 +28,5 @@ public interface DeviceRestConvertMapper {
 
     Device from(DeviceUpdateRO args);
 
-    DeviceCriteria from(DeviceQuery query);
+    DeviceCriteriaBO from(DeviceQuery query);
 }

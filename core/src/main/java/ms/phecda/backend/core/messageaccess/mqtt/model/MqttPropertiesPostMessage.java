@@ -2,7 +2,7 @@ package ms.phecda.backend.core.messageaccess.mqtt.model;
 
 import cn.hutool.core.map.MapUtil;
 import lombok.Data;
-import ms.phecda.backend.core.messageaccess.disruptor.propertiespost.PropertiesPostMessage;
+import ms.phecda.backend.core.bootstrap.message.disruptor.propertiespost.PropertiesPostMessage;
 
 import java.util.HashMap;
 import java.util.Map;

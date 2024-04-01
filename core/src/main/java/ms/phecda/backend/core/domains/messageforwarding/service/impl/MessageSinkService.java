@@ -5,7 +5,7 @@ import com.trionesdev.commons.exception.spring.ex.BusinessException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.RuleSink;
-import ms.phecda.backend.core.domains.messageforwarding.mq.spring.MessageSinkChangeEvent;
+import ms.phecda.backend.core.domains.messageforwarding.event.spring.MessageSinkChangeEvent;
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.MessageSinkManager;
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.RuleSinkManager;
 import org.springframework.context.ApplicationEventPublisher;

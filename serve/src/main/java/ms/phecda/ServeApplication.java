@@ -16,4 +16,5 @@ public class ServeApplication {
         SpringApplication.run(ServeApplication.class, args);
         log.info("--app end--");
     }
+
 }

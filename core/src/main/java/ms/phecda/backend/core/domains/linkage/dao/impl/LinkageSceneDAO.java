@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import ms.phecda.backend.core.domains.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.LinkageSceneMapper;
@@ -23,17 +25,16 @@ public class LinkageSceneDAO extends ServiceImpl<LinkageSceneMapper, LinkageScen
             queryWrapper.eq(Objects.nonNull(criteria.getEnabled()), LinkageScene::getEnabled, criteria.getEnabled());
             queryWrapper.like(StringUtils.isNotBlank(criteria.getName()), LinkageScene::getName, criteria.getName());
         }
-        return queryWrapper;
+        return queryWrapper.orderByDesc(LinkageScene::getCreatedAt);
     }
 
     public List<LinkageScene> selectList(LinkageSceneCriteria criteria) {
         return baseMapper.selectList(buildQueryWrapper(criteria));
     }
 
-    public IPage<LinkageScene> page(LinkageSceneCriteria criteria) {
+    public PageInfo<LinkageScene> page(LinkageSceneCriteria criteria) {
         LambdaQueryWrapper<LinkageScene> queryWrapper = buildQueryWrapper(criteria);
-        IPage<LinkageScene> page = new Page<>(criteria.getPageNum(), criteria.getPageSize());
-        return baseMapper.selectPage(page, queryWrapper);
+        return MpPageUtils.of(baseMapper.selectPage(MpPageUtils.page(criteria), queryWrapper));
     }
 
 }

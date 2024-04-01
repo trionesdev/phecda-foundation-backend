@@ -24,6 +24,7 @@ import java.util.Objects;
  * @since 2023-07-11
  */
 
+@Deprecated
 @Repository
 public class AlarmLogDAO extends ServiceImpl<AlarmLogMapper, AlarmLog> {
 

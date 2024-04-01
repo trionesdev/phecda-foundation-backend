@@ -11,6 +11,7 @@ import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmLog;
  * @author jscoe
  * @since 2023-07-11
  */
+@Deprecated
 public interface AlarmLogMapper extends BaseMapper<AlarmLog> {
 
 }

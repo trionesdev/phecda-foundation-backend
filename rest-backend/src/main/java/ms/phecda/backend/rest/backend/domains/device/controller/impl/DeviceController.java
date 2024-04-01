@@ -7,11 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
-import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
-import ms.phecda.backend.core.domains.device.service.bo.DeviceStatisticsBO;
+import ms.phecda.backend.core.domains.device.service.bo.*;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceCreateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceEnabledRO;
@@ -83,7 +79,7 @@ public class DeviceController {
             @RequestParam(value = "pageSize") Integer pageSize,
             DeviceQuery query
     ) {
-        DeviceCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        DeviceCriteriaBO criteria = DeviceRestConvertMapper.INSTANT.from(query);
         return deviceService.queryExtPage(pageNum, pageSize, criteria);
     }
 
@@ -151,7 +147,7 @@ public class DeviceController {
     public List<Device> queryDeviceList(
             DeviceQuery query
     ) {
-        DeviceCriteria criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        DeviceCriteriaBO criteria = DeviceRestConvertMapper.INSTANT.from(query);
         return deviceService.queryList(criteria);
     }
 

@@ -26,6 +26,7 @@ import java.util.List;
  * @author jscoe
  * @since 2023-07-11
  */
+@Deprecated
 @EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor

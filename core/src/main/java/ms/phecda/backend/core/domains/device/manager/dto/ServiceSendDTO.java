@@ -10,6 +10,7 @@ import java.util.Map;
 public class ServiceSendDTO {
     private String version;
     private String id;
+    private Boolean sync;
     private String method;
     private String productKey;
     private String deviceName;

@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.domains.messageforwarding.dao.entity.source;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
@@ -21,13 +22,15 @@ import lombok.experimental.SuperBuilder;
 )
 @JsonSubTypes(
         {
-                @JsonSubTypes.Type(value = ThingPropertyReportSourceProps.class,name = "THING_PROPERTY_REPORT")
+                @JsonSubTypes.Type(value = ThingPropertyReportSourceProps.class, name = "THING_PROPERTY_REPORT")
         }
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SourceProps {
 
     private Type type;
-    public enum Type{
+
+    public enum Type {
         THING_PROPERTY_REPORT
     }
 

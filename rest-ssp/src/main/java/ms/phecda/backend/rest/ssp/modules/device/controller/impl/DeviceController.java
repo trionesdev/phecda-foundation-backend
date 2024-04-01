@@ -3,6 +3,7 @@ package ms.phecda.backend.rest.ssp.modules.device.controller.impl;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.domains.device.service.bo.DeviceCriteriaBO;
 import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.rest.ssp.modules.device.support.RestDeviceConvertMapper;
@@ -26,7 +27,7 @@ public class DeviceController implements DeviceRest {
 
     @Override
     public List<DeviceRep> find(QueryDeviceReq req) {
-        DeviceCriteria criteria = DeviceCriteria.builder()
+        DeviceCriteriaBO criteria = DeviceCriteriaBO.builder()
                 .productId(req.getProductId())
                 .ids(req.getDeviceIds())
                 .build();

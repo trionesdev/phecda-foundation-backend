@@ -18,8 +18,7 @@ public class LinkageSceneManager {
     private final LinkageSceneDAO linkageSceneDAO;
 
     public PageInfo<LinkageScene> page(LinkageSceneCriteria criteria) {
-        IPage<LinkageScene> page = linkageSceneDAO.page(criteria);
-        return MpPageUtils.of(page);
+        return linkageSceneDAO.page(criteria);
     }
 
     public void create(LinkageScene scene) {

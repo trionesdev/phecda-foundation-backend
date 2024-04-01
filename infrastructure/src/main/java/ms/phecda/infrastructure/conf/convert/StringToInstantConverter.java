@@ -6,6 +6,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class StringToInstantConverter implements Converter<String, Instant> {
@@ -20,6 +22,8 @@ public class StringToInstantConverter implements Converter<String, Instant> {
             boolean ifNumber = source.matches("[0-9]+");
             if (ifNumber) {
                 result = Instant.ofEpochMilli(Long.parseLong(source));
+            } else {
+                result = ZonedDateTime.parse(source, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
             }
         } catch (Exception e) {
             throw new TrionesException("Convert String To Instant Fail", e);

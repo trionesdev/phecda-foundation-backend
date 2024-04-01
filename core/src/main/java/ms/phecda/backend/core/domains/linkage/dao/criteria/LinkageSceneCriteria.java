@@ -1,18 +1,15 @@
 package ms.phecda.backend.core.domains.linkage.dao.criteria;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.trionesdev.commons.core.page.PageCriteria;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Builder
-public class LinkageSceneCriteria {
+public class LinkageSceneCriteria extends PageCriteria {
     private String name;
     private Boolean enabled;
-
-    private Integer pageNum;
-    private Integer pageSize;
 }
