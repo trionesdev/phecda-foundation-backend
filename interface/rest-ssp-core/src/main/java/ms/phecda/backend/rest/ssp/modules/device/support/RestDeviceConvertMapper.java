@@ -1,7 +1,9 @@
 package ms.phecda.backend.rest.ssp.modules.device.support;
 
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.DeviceRep;
+import ms.phecda.backend.rest.ssp.sdk.device.rep.ServiceInvokeReplyRep;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -15,4 +17,6 @@ public interface RestDeviceConvertMapper {
     List<DeviceRep> from(List<Device> args);
 
     DeviceRep from(Device args);
+
+    ServiceInvokeReplyRep from(ServiceInvokeReplyMessage args);
 }

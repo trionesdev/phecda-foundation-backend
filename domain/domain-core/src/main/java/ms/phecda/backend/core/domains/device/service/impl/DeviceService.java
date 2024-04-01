@@ -21,6 +21,7 @@ import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService.CallType;
+import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
 import ms.phecda.backend.core.messageaccess.mqtt.PhecdaMqtt;
 import ms.phecda.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
@@ -272,17 +273,16 @@ public class DeviceService {
     }
 
     public String startPushStreaming(Device device) {
-        Map<String, Object> params = Maps.newHashMap();
         String rtmpUrl = RTMP_URL.replaceAll("\\{host}", streamingMediaHost)
                 .replaceAll("\\{port}", String.valueOf(streamingMediaRtmpPort))
                 .replaceAll("\\{productId}", device.getProductId())
                 .replaceAll("\\{deviceName}", device.getName());
 
-        Map<String, Object> body = Maps.newHashMap();
-        body.put("pushUrl", rtmpUrl);
+        Map<String, String> params = Maps.newHashMap();
+        params.put("pushUrl", rtmpUrl);
         SendServiceArgBO args = SendServiceArgBO.builder()
                 .identifier("StartPushStreaming")
-                .body(body)
+                .params(params)
                 .build();
         sendService(device.getId(), args);
         return FLV_URL.replaceAll("\\{host}", streamingMediaHost)
@@ -298,12 +298,12 @@ public class DeviceService {
         sendService(device.getId(), args);
     }
 
-    public Map<String, Object> sendServiceWithDeviceName(String deviceName, SendServiceArgBO args) {
+    public ServiceInvokeReplyMessage sendServiceWithDeviceName(String deviceName, SendServiceArgBO args) {
         Device device = deviceManager.queryByName(deviceName).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return sendService(device.getId(), args);
     }
 
-    public Map<String, Object> sendService(String id, SendServiceArgBO args) {
+    public ServiceInvokeReplyMessage sendService(String id, SendServiceArgBO args) {
         Device device = deviceManager.queryById(id).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
@@ -314,7 +314,7 @@ public class DeviceService {
         ServiceSendDTO dto = ServiceSendDTO.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
-                .method(service.getIdentifier())
+//                .method(service.getIdentifier())
                 .productKey(product.getKey())
                 .deviceName(device.getName())
                 .params(args.getParams())
@@ -324,7 +324,7 @@ public class DeviceService {
     }
 
 
-    public Map<String, Object> sendService(AccessChannelEnum accessChannel, CallType callType, ServiceSendDTO dto) {
+    public ServiceInvokeReplyMessage sendService(AccessChannelEnum accessChannel, CallType callType, ServiceSendDTO dto) {
         switch (accessChannel) {
             case MQTT:
                 String sendTopic = TopicUtils.serviceSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
@@ -333,7 +333,7 @@ public class DeviceService {
                 } else if (CallType.SYNC.equals(callType)) {
                     String replayTopic = TopicUtils.serviceSyncReplyTopic(dto.getId());
                     MqttMessage replayMessage = phecdaMqtt.publishAsync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
-                    return JSON.parseObject(replayMessage.getPayload());
+                    return JSON.parseObject(replayMessage.getPayload(), ServiceInvokeReplyMessage.class);
                 }
                 break;
             case GATEWAY:
@@ -350,7 +350,8 @@ public class DeviceService {
                 if (CallType.ASYNC.equals(callType)) {
                     CompletableFuture.supplyAsync(() -> gatewayProvider.sendCommand(command));
                 } else if (CallType.SYNC.equals(callType)) {
-                    return gatewayProvider.sendCommand(command);
+//                    return gatewayProvider.sendCommand(command);
+                    return null;
                 }
                 break;
             default:

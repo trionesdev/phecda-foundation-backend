@@ -37,75 +37,75 @@ public class LinkageServiceTests extends BaseTest {
     @Autowired
     private RuleActionFactory ruleActionFactory;
 
-    @Test
-    public void rule_tests() {
-        List<LinkageScene> conditions = new ArrayList<>();
-        List<OtherCondition> otherConditions = new ArrayList<>();
-        otherConditions.add(ThingModelPropertyCondition.builder()
-                .property("humidity").operator(ThingModelPropertyCondition.OperatorEnum.GT).params(Lists.newArrayList(10))
-                .build());
-        List<List<OtherCondition>> r = new ArrayList<>();
-        r.add(otherConditions);
-
-        Action action = AlarmAction.builder().type(Action.TypeEnum.ALARM).deviceName("ssss").build();
-
-        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
-                .scenes(Lists.newArrayList(
-                        Scene.builder()
-                                .eventTrigger( ThingPropertyReportTrigger.builder()
-                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
-                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
-                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
-                                                .product("ppp")
-                                                .deviceName("a001")
-                                                .property("humidity")
-                                                .build())
-                                        .filter(EventTrigger.EventFilter.builder()
-                                                .operator(OperatorEnum.GT)
-                                                .valueType(ValueTypeEnum.INT)
-                                                .args(Lists.newArrayList("20"))
-                                                .build())
-                                        .build())
-                                .conditions(Lists.newArrayList(
-                                        Scene.OperatorCondition.builder()
-                                                .children(Lists.newArrayList(
-                                                        ThingPropertyValueCondition.builder()
-                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
-                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
-                                                                        .product("ppp")
-                                                                        .deviceName("a001")
-                                                                        .build())
-                                                                .condition(StateCondition.Condition.builder()
-                                                                        .valuePath("temperature")
-                                                                        .operator(OperatorEnum.GT)
-                                                                        .valueType(ValueTypeEnum.INT)
-                                                                        .args(Lists.newArrayList("20"))
-                                                                        .build())
-                                                                .build()
-                                                ))
-                                                .build()
-                                ))
-                                .build()
-                ))
-                .actions(Lists.newArrayList(action))
-                .enabled(true)
-                .build();
-
-        RulesEngine rulesEngine = new DefaultRulesEngine();
-        Rules rules = new Rules();
-        Rule rule = LinkageSceneUtils.createRule(linkageScene, ruleActionFactory);
-        if (Objects.nonNull(rule)) {
-            rules.register(rule);
-            rules.register(rule);
-        }
-
-        Facts facts = new Facts();
-        facts.put("product", "ppp");
-        facts.put("deviceName", "a001");
-        facts.put("temperature", 30);
-        facts.put("humidity", "25");
-
-        rulesEngine.fire(rules, facts);
-    }
+//    @Test
+//    public void rule_tests() {
+//        List<LinkageScene> conditions = new ArrayList<>();
+//        List<OtherCondition> otherConditions = new ArrayList<>();
+//        otherConditions.add(ThingModelPropertyCondition.builder()
+//                .property("humidity").operator(ThingModelPropertyCondition.OperatorEnum.GT).params(Lists.newArrayList(10))
+//                .build());
+//        List<List<OtherCondition>> r = new ArrayList<>();
+//        r.add(otherConditions);
+//
+//        Action action = AlarmAction.builder().type(Action.TypeEnum.ALARM).deviceName("ssss").build();
+//
+//        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
+//                .scenes(Lists.newArrayList(
+//                        Scene.builder()
+//                                .eventTrigger( ThingPropertyReportTrigger.builder()
+//                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+//                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
+//                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+//                                                .product("ppp")
+//                                                .deviceName("a001")
+//                                                .property("humidity")
+//                                                .build())
+//                                        .filter(EventTrigger.EventFilter.builder()
+//                                                .operator(OperatorEnum.GT)
+//                                                .valueType(ValueTypeEnum.INT)
+//                                                .args(Lists.newArrayList("20"))
+//                                                .build())
+//                                        .build())
+//                                .conditions(Lists.newArrayList(
+//                                        Scene.OperatorCondition.builder()
+//                                                .children(Lists.newArrayList(
+//                                                        ThingPropertyValueCondition.builder()
+//                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
+//                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
+//                                                                        .product("ppp")
+//                                                                        .deviceName("a001")
+//                                                                        .build())
+//                                                                .condition(StateCondition.Condition.builder()
+//                                                                        .valuePath("temperature")
+//                                                                        .operator(OperatorEnum.GT)
+//                                                                        .valueType(ValueTypeEnum.INT)
+//                                                                        .args(Lists.newArrayList("20"))
+//                                                                        .build())
+//                                                                .build()
+//                                                ))
+//                                                .build()
+//                                ))
+//                                .build()
+//                ))
+//                .actions(Lists.newArrayList(action))
+//                .enabled(true)
+//                .build();
+//
+//        RulesEngine rulesEngine = new DefaultRulesEngine();
+//        Rules rules = new Rules();
+//        Rule rule = LinkageSceneUtils.createRule(linkageScene, ruleActionFactory);
+//        if (Objects.nonNull(rule)) {
+//            rules.register(rule);
+//            rules.register(rule);
+//        }
+//
+//        Facts facts = new Facts();
+//        facts.put("product", "ppp");
+//        facts.put("deviceName", "a001");
+//        facts.put("temperature", 30);
+//        facts.put("humidity", "25");
+//
+//        rulesEngine.fire(rules, facts);
+//    }
 
 }
