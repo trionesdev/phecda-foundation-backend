@@ -9,6 +9,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.service.bo.*;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
+import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceCreateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceEnabledRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceProtocolUpdateRO;
@@ -200,5 +201,11 @@ public class DeviceController {
             @PathVariable(value = "id") String id
     ) {
         deviceService.stopPushStreaming(id);
+    }
+
+    @Operation(summary = "服务同步调用")
+    @PostMapping(value = "devices/{id}/service/sync/invoke")
+    public ServiceInvokeReplyMessage serviceInvoke(@PathVariable(value = "id") String id, @RequestBody SendServiceArgBO bo) {
+        return deviceService.sendService(id, bo);
     }
 }

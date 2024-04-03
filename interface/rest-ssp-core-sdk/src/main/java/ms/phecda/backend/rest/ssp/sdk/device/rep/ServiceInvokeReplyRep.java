@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Data
 public class ServiceInvokeReplyRep {
-    private String replayId;
+    private String replyId;
     private String code;
     private String errMsg;
 

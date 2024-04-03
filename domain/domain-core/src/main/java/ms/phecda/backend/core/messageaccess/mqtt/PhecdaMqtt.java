@@ -33,13 +33,12 @@ public class PhecdaMqtt {
         }
     }
 
-    public MqttMessage publishAsync(String topic,String replayTopic, String messageId, byte[] payload) {
-        String actualRepayTopic = TopicUtils.join(mqttProperties.getTopicPrefix(), replayTopic);
+    public MqttMessage publishAsync(String topic,String replyTopic, String messageId, byte[] payload) {
         AtomicBoolean finished = new AtomicBoolean(false);
         try {
             AtomicReference<MqttMessage> replyMessage = new AtomicReference<>(new MqttMessage());
-            mqttAsyncClient.subscribe(actualRepayTopic, 1, (topic1, message) -> {
-                if (actualRepayTopic.equals(topic1)) {
+            mqttAsyncClient.subscribe(replyTopic, 1, (topic1, message) -> {
+                if (replyTopic.equals(topic1)) {
                     replyMessage.set(message);
                     finished.set(true);
                 }
@@ -68,9 +67,9 @@ public class PhecdaMqtt {
         } finally {
             try {
                 finished.set(true);
-                mqttAsyncClient.unsubscribe(actualRepayTopic);
+                mqttAsyncClient.unsubscribe(replyTopic);
             } catch (MqttException e) {
-                log.error("unsubscribe topic {} failed", actualRepayTopic, e);
+                log.error("unsubscribe topic {} failed", replyTopic, e);
             }
         }
     }

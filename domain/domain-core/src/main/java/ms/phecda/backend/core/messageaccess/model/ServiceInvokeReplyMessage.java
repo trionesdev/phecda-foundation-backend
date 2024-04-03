@@ -7,7 +7,7 @@ import ms.phecda.backend.core.bootstrap.message.disruptor.propertiespost.Propert
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ServiceInvokeReplyMessage extends PropertiesPostMessage {
-    private String replayId;
+    private String replyId;
     private String code;
     private String errMsg;
 }

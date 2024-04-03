@@ -1,12 +1,17 @@
 package ms.phecda.backend.core.domains.device.service.bo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-@SuperBuilder
+@Builder
 public class SendServiceArgBO {
     private String identifier;
     private Map<String, String> params;
