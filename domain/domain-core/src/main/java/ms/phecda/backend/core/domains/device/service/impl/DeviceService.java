@@ -318,6 +318,7 @@ public class DeviceService {
                 .productKey(product.getKey())
                 .deviceName(device.getName())
                 .params(args.getParams())
+                .commandName(args.getIdentifier())
                 .body(args.getBody())
                 .build();
         return sendService(product.getAccessChannel(), service.getCallType(), dto);

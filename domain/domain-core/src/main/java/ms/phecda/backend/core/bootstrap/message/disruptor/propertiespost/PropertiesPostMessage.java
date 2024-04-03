@@ -1,6 +1,8 @@
 package ms.phecda.backend.core.bootstrap.message.disruptor.propertiespost;
 
 import cn.hutool.core.map.MapUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -26,8 +28,10 @@ public class PropertiesPostMessage {
     private Map<String, Reading> readings = new HashMap<>();
     private Map<String, Object> tags;
 
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Data
-    @SuperBuilder
+    @Builder
     public static class Reading {
         private Long ts;
         private String identifier;
