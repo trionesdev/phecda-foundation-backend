@@ -5,11 +5,11 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.domains.devicedata.dao.criteria.DeviceDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyCriteria;
 import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
-import ms.phecda.backend.core.domains.devicedata.support.util.IotDbUtils;
+import ms.phecda.backend.core.domains.device.support.util.IotDbUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -27,9 +27,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Slf4j
 @RequiredArgsConstructor
-@Service
+//@Service
 public class DeviceDataService {
     private final SessionPool sessionPool;
     private final DeviceProvider deviceProvider;
@@ -104,13 +105,13 @@ public class DeviceDataService {
     }
 
 
-    public List<DeviceDataBO> queryList(DeviceDataCriteria criteria) {
+    public List<DeviceDataBO> queryList(DevicePropertyCriteria criteria) {
         List<Map<String, Object>> rawDataList = queryRawData(criteria.getDeviceName(), Lists.newArrayList(criteria.getField()),
                 criteria.getStartTime().toEpochMilli(), criteria.getEndTime().toEpochMilli());
         return convertToBO(rawDataList, criteria);
     }
 
-    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DeviceDataCriteria criteria) {
+    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DevicePropertyCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = queryList(criteria);
         return PageInfo.<DeviceDataBO>builder()
                 .pageNum(pageNum)
@@ -119,7 +120,7 @@ public class DeviceDataService {
                 .build();
     }
 
-    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DeviceDataCriteria criteria) {
+    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DevicePropertyCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(rawDataList)) {
             DevicePDO devicePDO = deviceProvider.queryByName(criteria.getDeviceName());

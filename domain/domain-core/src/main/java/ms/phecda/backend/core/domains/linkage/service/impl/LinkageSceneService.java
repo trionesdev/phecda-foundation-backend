@@ -1,6 +1,7 @@
 package ms.phecda.backend.core.domains.linkage.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.BooleanUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,22 +9,31 @@ import ms.phecda.backend.core.domains.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.phecda.backend.core.domains.linkage.manager.impl.LinkageSceneManager;
 import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
 import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.RuleActionFactory;
+import ms.phecda.backend.core.domains.linkage.support.rule.RuleUtils;
 import ms.phecda.backend.core.domains.linkage.support.util.LinkageSceneUtils;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.RuleListener;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.core.DefaultRulesEngine;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class LinkageSceneService {
+    private static final Map<String, Boolean> continuousMap = new ConcurrentHashMap<>();
+    private final StringRedisTemplate stringRedisTemplate;
     private final DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
     private final Rules linkageRules = new Rules();
     private final LinkageSceneManager linkageSceneManager;
@@ -33,7 +43,21 @@ public class LinkageSceneService {
         rulesEngine.registerRuleListener(new RuleListener() {
             @Override
             public void beforeExecute(Rule rule, Facts facts) {
-                facts.put("ruleName", rule.getName());
+                facts.put(FACT_RULE_NAME, rule.getName());
+            }
+
+            @Override
+            public void afterEvaluate(Rule rule, Facts facts, boolean evaluationResult) {
+                if (BooleanUtil.isTrue(continuousMap.get(rule.getName()))) {
+                    if (evaluationResult) {
+                        if (stringRedisTemplate.opsForHash().hasKey(RuleUtils.ruleContinuousKey(rule.getName()), RULE_CONTINUOUS_START_PROPERTY_KEY)) {
+                            stringRedisTemplate.opsForHash().put(RuleUtils.ruleContinuousKey(rule.getName()), RULE_CONTINUOUS_START_PROPERTY_KEY, Instant.now().toString());
+                        }
+                        stringRedisTemplate.opsForHash().put(RuleUtils.ruleContinuousKey(rule.getName()), RULE_CONTINUOUS_COUNT_PROPERTY_KEY, 1);
+                    } else {
+                        stringRedisTemplate.opsForHash().delete(RuleUtils.ruleContinuousKey(rule.getName()));
+                    }
+                }
             }
         });
     }
@@ -80,12 +104,7 @@ public class LinkageSceneService {
 
     public void registerRule(String id) {
         //TODO upgrade to broadcast message
-        linkageSceneManager.queryById(id).ifPresent(t -> {
-            Rule rule = LinkageSceneUtils.createRule(t, ruleActionFactory);
-            if (Objects.nonNull(rule)) {
-                linkageRules.register(rule);
-            }
-        });
+        linkageSceneManager.queryById(id).ifPresent(this::registerRule);
     }
 
     public void unregisterRule(String id) {
@@ -113,12 +132,17 @@ public class LinkageSceneService {
     public void registerAllRules() {
         List<LinkageScene> scenes = linkageSceneManager.queryList(LinkageSceneCriteria.builder().enabled(true).build());
         if (CollectionUtil.isNotEmpty(scenes)) {
-            scenes.forEach(scene -> {
-                Rule rule = LinkageSceneUtils.createRule(scene, ruleActionFactory);
-                if (Objects.nonNull(rule)) {
-                    linkageRules.register(rule);
-                }
-            });
+            scenes.forEach(this::registerRule);
+        }
+    }
+
+    public void registerRule(LinkageScene scene) {
+        Rule rule = LinkageSceneUtils.createRule(scene, ruleActionFactory);
+        if (Objects.nonNull(rule)) {
+            if (LinkageSceneUtils.continuous(scene)) {
+                continuousMap.put(rule.getName(), true);
+            }
+            linkageRules.register(rule);
         }
     }
 

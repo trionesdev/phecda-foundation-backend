@@ -14,4 +14,5 @@ public class AlarmQuery {
     private Instant startTime;
     private Instant endTime;
     private Alarm.Status status;
+    private Integer limit;
 }

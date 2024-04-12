@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.service.bo.*;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
@@ -15,8 +16,8 @@ import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceEnabled
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceProtocolUpdateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.DeviceUpdateRO;
+import ms.phecda.backend.rest.backend.domains.device.support.DeviceBeRestConvert;
 import ms.phecda.backend.rest.backend.domains.device.support.DeviceConstants;
-import ms.phecda.backend.rest.backend.domains.device.support.DeviceRestConvertMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,25 +36,26 @@ import java.util.List;
 @RestController
 @RequestMapping(value = DeviceConstants.DEVICE_URI)
 public class DeviceController {
+    private final DeviceBeRestConvert deviceBeRestConvert;
     private final DeviceService deviceService;
 
     @Operation(summary = "设备统计")
     @GetMapping(value = "devices/statistics")
-    public DeviceStatisticsBO statistics() {
+    public DeviceStatisticsDVO statistics() {
         return deviceService.statistics();
     }
 
     @Operation(summary = "新建设备")
     @PostMapping(value = "devices")
     public void createDevice(@Validated @RequestBody DeviceCreateRO args) {
-        Device device = DeviceRestConvertMapper.INSTANT.from(args);
+        Device device = deviceBeRestConvert.from(args);
         deviceService.createDevice(device);
     }
 
     @Operation(summary = "更新设备")
     @PutMapping(value = "devices")
     public void updateDevice(@Validated @RequestBody DeviceUpdateRO args) {
-        Device device = DeviceRestConvertMapper.INSTANT.from(args);
+        Device device = deviceBeRestConvert.from(args);
         deviceService.updateById(device);
     }
 
@@ -80,7 +82,7 @@ public class DeviceController {
             @RequestParam(value = "pageSize") Integer pageSize,
             DeviceQuery query
     ) {
-        DeviceCriteriaBO criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        DeviceCriteria criteria = deviceBeRestConvert.from(query);
         return deviceService.queryExtPage(pageNum, pageSize, criteria);
     }
 
@@ -148,7 +150,7 @@ public class DeviceController {
     public List<Device> queryDeviceList(
             DeviceQuery query
     ) {
-        DeviceCriteriaBO criteria = DeviceRestConvertMapper.INSTANT.from(query);
+        DeviceCriteria criteria = deviceBeRestConvert.from(query);
         return deviceService.queryList(criteria);
     }
 

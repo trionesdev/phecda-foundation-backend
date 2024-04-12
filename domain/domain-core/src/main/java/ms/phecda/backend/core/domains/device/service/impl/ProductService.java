@@ -1,10 +1,10 @@
 package ms.phecda.backend.core.domains.device.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
+import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
@@ -15,14 +15,15 @@ import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
+import ms.phecda.backend.core.domains.device.support.util.DeviceUtils;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,17 +56,25 @@ public class ProductService {
         productManager.create(product);
     }
 
+
     public void deleteProductById(String id) {
-        productManager.deleteById(Product.builder().id(id).build());
+        Product productSnap = productManager.queryById(id).orElseThrow(() -> new BusinessException("产品不存在"));
+        productManager.deleteById(productSnap);
+        productManager.cleanProductCache(productSnap);
     }
 
+    @Transactional
     public void updateProductById(Product product) {
+        Product productSnap = productManager.queryById(product.getId()).orElseThrow(() -> new BusinessException("产品不存在"));
         productManager.updateById(product);
+        productManager.cleanProductCache(productSnap); //清空缓存
     }
+
 
     public Optional<Product> queryProductById(String id) {
         return productManager.queryById(id);
     }
+
 
     public Optional<Product> findProductByKey(String key) {
         return productManager.findByKey(key);
@@ -188,12 +197,24 @@ public class ProductService {
      * @param productId
      */
     public void publishThingModel(String productId) {
+        Product product = productManager.queryById(productId).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         productThingModelDraftManager.publish(productId);
+        productManager.cleanLatestThingModelPropertiesCache(product);//清空缓存
+
     }
 
-    @Cacheable(value = "product", key = "#productId+':'+#version")
-    public Optional<ProductThingModelVersion> queryThingModelCache(String productId, String version) {
-        return queryThingModel(productId, version);
+    public List<ThingModelProperty> queryThingModelLatestPropertiesByProductKey(String productKey) {
+        return productManager.findLatestThingModelPropertiesByProductKey(productKey);
+    }
+
+    /***
+     * 查询最新物模型属性
+     * @param productKey
+     * @param identifier
+     * @return
+     */
+    public Optional<ThingModelProperty> queryThingModelLatestProperty(String productKey, String identifier) {
+        return productManager.findLatestThingModelPropertyByProductKey(productKey,identifier);
     }
 
     public Optional<ProductThingModelVersion> queryThingModel(String productId, String version) {
@@ -204,6 +225,17 @@ public class ProductService {
         }
         return productThingModelVersionManager.findByProductVersion(productId, version);
     }
+
+    public Optional<ProductThingModelVersion> queryThingModelByKey(String key, String version) {
+        Product product = productManager.findByKey(key).orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND"));
+        if (StrUtil.isBlank(version)) {
+            version = productManager.queryById(product.getId())
+                    .orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND"))
+                    .getThingModelVersion();
+        }
+        return productThingModelVersionManager.findByProductVersion(product.getId(), version);
+    }
+
 
     public void updateProductProtocolProperties(Product product) {
         productManager.updateById(product);
@@ -218,9 +250,9 @@ public class ProductService {
     }
 
     public String generateProductKey() {
-        String key = RandomUtil.randomString(10);
+        String key = DeviceUtils.productKeyGenerate();
         while (productManager.findByKey(key).isEmpty()) {
-            key = RandomUtil.randomString(10);
+            key = DeviceUtils.productKeyGenerate();
         }
         return key;
     }

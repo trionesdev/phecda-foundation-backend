@@ -9,14 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.service.impl.DeviceDataService;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
+import ms.phecda.backend.core.domains.device.support.util.IotDbUtils;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
-import ms.phecda.backend.core.domains.devicedata.service.impl.DeviceDataService;
-import ms.phecda.backend.core.domains.devicedata.support.util.IotDbUtils;
 import ms.phecda.backend.core.domains.linkage.service.impl.LinkageSceneService;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionArgs;
 import ms.phecda.backend.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.jeasy.rules.api.Facts;
@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -76,12 +77,15 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
     public void ruleFire(PropertiesPostMessage message) {
         try {
             Facts facts = new Facts();
-            facts.put("productKey", Optional.ofNullable(message.getProductKey()).orElse("nil"));
-            facts.put("deviceName", Optional.ofNullable(message.getDeviceName()).orElse("nil"));
+            facts.put(FACT_PRODUCT_KEY, Optional.ofNullable(message.getProductKey()).orElse("nil"));
+            facts.put(FACT_DEVICE_NAME, Optional.ofNullable(message.getDeviceName()).orElse("nil"));
             if (MapUtil.isNotEmpty(message.getReadings())) {
+                Map<String, ActionArgs.Reading> readings = Maps.newHashMap();
                 message.getReadings().forEach((k, v) -> {
                     facts.put(k, expressionConvert(v.getReadingValue()));
+                    readings.put(k, ActionArgs.Reading.builder().identifier(k).value(v.getReadingValue()).build());
                 });
+                facts.put(FACT_READINGS, readings);
             }
             linkageSceneService.rulesFire(facts);
         } catch (Exception ex) {
@@ -111,16 +115,9 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
                 return;
             }
 
-            Optional<ProductThingModelVersion> thingModelVersionOptional = productService
-                    .queryThingModelCache(deviceOptional.get().getProductId(), product.getThingModelVersion());
-            if (thingModelVersionOptional.isEmpty()) {
-                log.warn("thingModel of device {} not exist", message.getDeviceName());
-                return;
-            }
-
-            List<ThingModelProperty> properties = thingModelVersionOptional.get().getThingModel().getProperties();
-            Map<String, ValueTypeEnum> identifierAndTypeMap = properties.stream()
-                    .collect(Collectors.toMap(ThingModelProperty::getIdentifier, ThingModelProperty::getValueType));
+//            List<ThingModelProperty> properties = productService.queryThingModelLatestPropertiesByProductKey(product.getKey());
+//            Map<String, ValueTypeEnum> identifierAndTypeMap = properties.stream()
+//                    .collect(Collectors.toMap(ThingModelProperty::getIdentifier, ThingModelProperty::getValueType));
 
             Map<Long, List<TSDataType>> typesMap = Maps.newHashMap();
             Map<Long, List<String>> measurementsMap = Maps.newHashMap();
@@ -129,7 +126,8 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
             for (Entry<String, PropertiesPostMessage.Reading> reading : message.getReadings().entrySet()) {
                 String identifier = reading.getKey();
                 PropertiesPostMessage.Reading property = reading.getValue();
-                ValueTypeEnum valueType = identifierAndTypeMap.get(identifier);
+//                ValueTypeEnum valueType = identifierAndTypeMap.get(identifier);
+                ValueTypeEnum valueType = productService.queryThingModelLatestProperty(product.getKey(), identifier).map(ThingModelProperty::getValueType).orElse(null);
                 TSDataType tsDataType = IotDbUtils.typeConvert(valueType);
                 if (Objects.isNull(tsDataType)) {
                     log.warn("can not convert dataType {} of device {} not exist", valueType, message.getDeviceName());
@@ -160,9 +158,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
             }
 
             for (Entry<Long, List<TSDataType>> entry : typesMap.entrySet()) {
-                deviceDataService.insertRecord(product.getId(), message.getDeviceName(),
-                        entry.getKey(), measurementsMap.get(entry.getKey()), entry.getValue(),
-                        valuesMap.get(entry.getKey()));
+                deviceDataService.savePropertyData(product.getKey(), message.getDeviceName(), entry.getKey(), measurementsMap.get(entry.getKey()), entry.getValue(), valuesMap.get(entry.getKey()));
             }
         } catch (Exception e) {
             log.error("[ReportPropertyEventHandler] save data fail: productKey :{} , message: {}", message.getProductKey(), e.getMessage(), e);

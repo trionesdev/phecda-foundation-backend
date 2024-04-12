@@ -14,6 +14,7 @@ import ms.phecda.backend.core.domains.linkage.support.util.LinkageSceneUtils;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
+import org.jeasy.rules.api.RuleListener;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
 import org.jeasy.rules.core.DefaultRulesEngine;
@@ -99,71 +100,90 @@ public class EasyRuleTest {
     }
 
 
-//    @Test
-//    public void rule_tests() {
-//        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
-//                .scenes(Lists.newArrayList(
-//                        Scene.builder()
-//                                .eventTrigger(ThingPropertyReportTrigger.builder()
-//                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
-//                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
-//                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
-//                                                .product("ppp")
-//                                                .deviceName("a001")
-//                                                .property("humidity")
-//                                                .build())
-//                                        .filter(EventTrigger.EventFilter.builder()
-//                                                .operator(OperatorEnum.GT)
-//                                                .valueType(ValueTypeEnum.INT)
-//                                                .args(Lists.newArrayList("20"))
-//                                                .build())
-//                                        .build())
-//                                .conditions(Lists.newArrayList(
-//                                        Scene.OperatorCondition.builder()
-//                                                .children(Lists.newArrayList(
-//                                                        ThingPropertyValueCondition.builder()
-//                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
-//                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
-//                                                                        .product("ppp")
-//                                                                        .deviceName("a001")
-//                                                                        .build())
-//                                                                .condition(StateCondition.Condition.builder()
-//                                                                        .valuePath("temperature")
-//                                                                        .operator(OperatorEnum.GT)
-//                                                                        .valueType(ValueTypeEnum.INT)
-//                                                                        .args(Lists.newArrayList("20"))
-//                                                                        .build())
-//                                                                .build()
-//                                                ))
-//                                                .build()
-//                                ))
-//                                .build()
-//                ))
-//
-//                .enabled(true)
-//                .build();
-//
-//        RulesEngine rulesEngine = new DefaultRulesEngine();
-//        Rules rules = new Rules();
-//        String condition = LinkageSceneUtils.buildScenesRuleCondition(linkageScene.getScenes());
-//
-//        Rule rule = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
-//
-//        rules.register(rule);
-//
-//        Facts facts = new Facts();
-//        facts.put("product", "ppp");
-//        facts.put("deviceName", "a001");
-//        facts.put("temperature", 10);
-//        facts.put("humidity", "25");
-//
-//        rulesEngine.fire(rules, facts);
-//    }
+    @Test
+    public void rule_tests() {
+        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
+                .scenes(Lists.newArrayList(
+                        Scene.builder()
+                                .eventTrigger(ThingPropertyReportTrigger.builder()
+                                        .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+                                        .identifier(ThingPropertyReportTrigger.Identifier.builder()
+                                                .type(TriggerTypeEnum.THING_PROPERTY_REPORT)
+                                                .productKey("ppp")
+                                                .deviceName("a001")
+                                                .property("humidity")
+                                                .build())
+                                        .filter(EventTrigger.EventFilter.builder()
+                                                .operator(OperatorEnum.GT)
+                                                .valueType(ValueTypeEnum.INT)
+                                                .args(Lists.newArrayList("20"))
+                                                .build())
+                                        .build())
+                                .conditions(Lists.newArrayList(
+                                        Scene.OperatorCondition.builder()
+                                                .children(Lists.newArrayList(
+                                                        ThingPropertyValueCondition.builder()
+                                                                .stateIdentifier(ThingPropertyValueCondition.StateIdentifier.builder()
+                                                                        .type(ConditionTypeEnum.THING_PROPERTY_VALUE)
+                                                                        .productKey("ppp")
+                                                                        .deviceName("a001")
+                                                                        .build())
+                                                                .condition(StateCondition.Condition.builder()
+                                                                        .valuePath("temperature")
+                                                                        .operator(OperatorEnum.GT)
+                                                                        .valueType(ValueTypeEnum.INT)
+                                                                        .args(Lists.newArrayList("20"))
+                                                                        .build())
+                                                                .build()
+                                                ))
+                                                .build()
+                                ))
+                                .build()
+                ))
+
+                .enabled(true)
+                .build();
+
+        RulesEngine rulesEngine = new DefaultRulesEngine();
+        Rules rules = new Rules();
+        String condition = LinkageSceneUtils.buildScenesRuleCondition(linkageScene.getScenes());
+
+        Rule rule = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
+
+        rules.register(rule);
+
+        Facts facts = new Facts();
+        facts.put("product", "ppp");
+        facts.put("deviceName", "a001");
+        facts.put("temperature", 10);
+        facts.put("humidity", "25");
+
+        rulesEngine.fire(rules, facts);
+    }
+
+    public static class MyRuleListener implements RuleListener {
+
+        @Override
+        public void afterEvaluate(Rule rule, Facts facts, boolean evaluationResult) {
+            System.out.println("result "+evaluationResult);
+        }
+
+        @Override
+        public void onSuccess(Rule rule, Facts facts) {
+            System.out.println("---success");
+        }
+
+        @Override
+        public void onFailure(Rule rule, Facts facts, Exception exception) {
+            System.out.println("fail");
+        }
+    }
 
     @Test
     public void rule_builder_test_3() {
         //规则引擎
-        RulesEngine rulesEngine = new DefaultRulesEngine();
+        DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
+        rulesEngine.registerRuleListener(new MyRuleListener());
         Rules rules = new Rules();
         Rule rule = new MVELRule().name("age rule").when(" obj.a > 9 ").then("System.out.println(\"age success\")").priority(1);
 
@@ -171,7 +191,7 @@ public class EasyRuleTest {
         //匹配规则的事实
         Facts facts = new Facts();
         Map<String, Object> map = new HashMap<>();
-        map.put("a", 10);
+        map.put("a", 1);
         facts.put("name", "张");
         facts.put("age", "11");
         facts.put("obj", map);
@@ -179,6 +199,9 @@ public class EasyRuleTest {
         rulesEngine.fire(rules, facts);
 
     }
+
+
+
 
     @Test
     public void test() {

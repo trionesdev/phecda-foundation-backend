@@ -1,12 +1,8 @@
 package ms.phecda.backend.core.bootstrap.message.disruptor.propertiespost;
 
-import cn.hutool.core.map.MapUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.messageaccess.mqtt.model.MqttPropertiesPostMessage;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -17,6 +13,7 @@ import java.util.Optional;
 @SuperBuilder
 @NoArgsConstructor
 public class PropertiesPostMessage {
+    private String type;
     private String version;
     private String id;
     private String productKey;
@@ -28,10 +25,8 @@ public class PropertiesPostMessage {
     private Map<String, Reading> readings = new HashMap<>();
     private Map<String, Object> tags;
 
-    @NoArgsConstructor
-    @AllArgsConstructor
     @Data
-    @Builder
+    @SuperBuilder
     public static class Reading {
         private Long ts;
         private String identifier;
@@ -55,32 +50,6 @@ public class PropertiesPostMessage {
             }
             return null;
         }
-    }
-
-    public static PropertiesPostMessage from(MqttPropertiesPostMessage message) {
-        PropertiesPostMessage processMessage = new PropertiesPostMessage();
-        processMessage.setId(message.getId());
-        processMessage.setDeviceName(message.getDeviceName());
-        processMessage.setProductKey(message.getProductKey());
-        processMessage.setSourceName(message.getSourceName());
-        processMessage.setTs(message.getTs());
-        processMessage.setTags(message.getTags());
-        if (MapUtil.isNotEmpty(message.getReadings())) {
-            message.getReadings().forEach((key, value) -> {
-                Reading reading = Reading.builder()
-                        .ts(value.getTs())
-                        .identifier(value.getIdentifier())
-                        .valueType(value.getValueType())
-                        .utils(value.getUtils())
-                        .binaryValue(value.getBinaryValue())
-                        .mediaType(value.getMediaType())
-                        .objectValue(value.getObjectValue())
-                        .value(value.getValue())
-                        .build();
-                processMessage.getReadings().put(key, reading);
-            });
-        }
-        return processMessage;
     }
 
 }

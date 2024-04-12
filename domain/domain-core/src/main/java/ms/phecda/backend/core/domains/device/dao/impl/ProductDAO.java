@@ -27,7 +27,7 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
             queryWrapper.eq(Objects.nonNull(criteria.getNodeType()), Product::getNodeType, criteria.getNodeType());
             queryWrapper.like(StringUtils.isNotBlank(criteria.getName()), Product::getName, criteria.getName());
         }
-        return queryWrapper;
+        return queryWrapper.orderByDesc(Product::getCreatedAt);
     }
 
     public ProductStatisticsDVO selectStatistics() {
@@ -39,9 +39,7 @@ public class ProductDAO extends ServiceImpl<ProductMapper, Product> {
     }
 
     public PageInfo<Product> selectPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
-        LambdaQueryWrapper<Product> queryWrapper = buildQueryWrapper(criteria);
-        queryWrapper.orderByDesc(Product::getUpdatedAt);
-        return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), queryWrapper));
+        return MpPageUtils.of(baseMapper.selectPage(new Page<>(pageNum, pageSize), buildQueryWrapper(criteria)));
     }
 
     public void updateVersion(String productId, String version) {

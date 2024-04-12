@@ -3,24 +3,35 @@ package ms.phecda.backend.core.domains.device.manager.impl;
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static ms.phecda.backend.core.domains.device.support.DeviceCacheConstants.DEVICE_NAME_NAMES;
+import static ms.phecda.backend.core.domains.device.support.DeviceCacheConstants.DEVICE_NAME_PREFIX;
 
 @RequiredArgsConstructor
 @Service
 public class DeviceManager {
     private final DeviceDAO deviceDAO;
 
+    public DeviceStatisticsDVO queryStatusStatistics() {
+        return deviceDAO.selectStatusStatistics();
+    }
+
     public void create(Device device) {
         deviceDAO.save(device);
     }
 
-    public void deleteById(String id) {
-        deviceDAO.removeById(id);
+    public void deleteById(Device device) {
+        deviceDAO.removeById(device);
     }
 
     public void updateById(Device device) {
@@ -47,11 +58,19 @@ public class DeviceManager {
         return deviceDAO.list();
     }
 
+    @Cacheable(value = DEVICE_NAME_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#name")
     public Optional<Device> queryByName(String name) {
         return deviceDAO.getByName(name);
     }
 
+
     public void removeChildDevice(String parentDeviceId, List<String> childDeviceIds) {
         deviceDAO.removeChildDevice(parentDeviceId, childDeviceIds);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = DEVICE_NAME_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#device.name")
+    })
+    public void cleanDeviceCache(Device device) {
     }
 }

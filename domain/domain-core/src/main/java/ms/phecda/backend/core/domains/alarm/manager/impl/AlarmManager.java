@@ -106,6 +106,11 @@ public class AlarmManager {
         return Optional.ofNullable(alarmDAO.getById(id));
     }
 
+    public List<AlarmDTO> findAlarmsExt(AlarmCriteria criteria) {
+        List<Alarm> alarms = alarmDAO.selectList(criteria);
+        return assembleAlarmExtBatch(alarms);
+    }
+
     public PageInfo<Alarm> findAlarmsPage(AlarmCriteria criteria) {
         return alarmDAO.selectPage(criteria);
     }

@@ -1,6 +1,5 @@
 package ms.phecda.backend.core.domains.alarm.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.alarm.dao.criteria.AlarmCriteria;
@@ -12,17 +11,12 @@ import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmType;
 import ms.phecda.backend.core.domains.alarm.manager.dto.AlarmDTO;
 import ms.phecda.backend.core.domains.alarm.manager.impl.AlarmManager;
 import ms.phecda.backend.core.domains.alarm.service.bo.AlarmCreateArgBO;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
-import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -90,12 +84,6 @@ public class AlarmService {
         if (productPDO == null) {
             return;
         }
-        Map<String, ThingModelPropertyPDO> thingModelPropertiesMap = deviceProvider.findThingModelProperties(productPDO.getId(), productPDO.getThingModelVersion()).stream().collect(Collectors.toMap(ThingModelPropertyPDO::getIdentifier, Function.identity(), (v1, v2) -> v1));
-        if (CollectionUtil.isNotEmpty(alarmCreateArg.getEventData())) {
-            alarmCreateArg.getEventData().forEach(event -> {
-                event.setLabel(Optional.ofNullable(thingModelPropertiesMap.get(event.getIdentifier())).map(ThingModelPropertyPDO::getName).orElse(null));
-            });
-        }
         Alarm alarm = Alarm.builder()
                 .type(alarmCreateArg.getType())
                 .level(alarmCreateArg.getLevel())
@@ -115,6 +103,10 @@ public class AlarmService {
 
     public void deleteAlarmById(String alarmId) {
         alarmManager.deleteAlarmById(alarmId);
+    }
+
+    public List<AlarmDTO> findAlarmsExt(AlarmCriteria criteria) {
+        return alarmManager.findAlarmsExt(criteria);
     }
 
     public Optional<Alarm> findAlarmById(String alarmId) {

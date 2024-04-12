@@ -21,7 +21,7 @@ public class ThingPropertyValueCondition extends StateCondition {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StateIdentifier extends StateCondition.StateIdentifier {
-        private String product;
+        private String productKey;
         private String deviceName;
     }
 }

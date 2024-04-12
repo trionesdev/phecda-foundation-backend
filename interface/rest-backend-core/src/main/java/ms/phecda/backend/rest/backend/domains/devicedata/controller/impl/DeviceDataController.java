@@ -4,7 +4,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.devicedata.dao.criteria.DeviceDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyCriteria;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
 import ms.phecda.backend.core.domains.devicedata.service.impl.DeviceDataService;
 import ms.phecda.backend.rest.backend.domains.devicedata.controller.query.DeviceDataQuery;
@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Deprecated
 @Tag(name = "设备数据")
 @RequiredArgsConstructor
-@RestController
+//@RestController
 @RequestMapping(value = DeviceDataConstants.DEVICE_DATA_URI)
 public class DeviceDataController {
     private final DeviceDataService deviceDataService;
@@ -28,7 +29,7 @@ public class DeviceDataController {
     @Operation(summary = "查询设备数据列表")
     @GetMapping(value = "device-datas/list")
     public List<DeviceDataBO> queryDeviceDataList(@Validated DeviceDataQuery query) {
-        DeviceDataCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
+        DevicePropertyCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
         return deviceDataService.queryList(criteria);
     }
 
@@ -38,7 +39,7 @@ public class DeviceDataController {
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             @Validated DeviceDataQuery query) {
-        DeviceDataCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
+        DevicePropertyCriteria criteria = DeviceDataRestConvertMapper.INSTANCE.from(query);
         return deviceDataService.queryPage(pageNum, pageSize, criteria);
     }
 

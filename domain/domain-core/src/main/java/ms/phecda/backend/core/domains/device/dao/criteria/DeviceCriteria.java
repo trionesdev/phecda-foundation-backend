@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
 
 import java.util.Collection;
 
@@ -15,6 +16,8 @@ public class DeviceCriteria {
     private String productId;
     private String nodeId;
     private String gatewayId;
+    private String productKey;
+    private NodeTypeEnum nodeType;
     private String name;
     private String remarkName;
 

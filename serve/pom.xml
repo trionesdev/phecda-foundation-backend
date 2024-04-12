@@ -21,6 +21,10 @@
             <groupId>ms.phecda</groupId>
             <artifactId>rest-ssp-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ms.phecda</groupId>
+            <artifactId>mq-consumer-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

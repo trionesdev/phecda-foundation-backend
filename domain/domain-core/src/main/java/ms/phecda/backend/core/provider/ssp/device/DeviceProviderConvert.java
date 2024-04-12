@@ -22,5 +22,7 @@ public interface DeviceProviderConvert {
 
     DevicePDO from(Device device);
 
+
+    ThingModelPropertyPDO from(ThingModelProperty thingModelProperty);
     List<ThingModelPropertyPDO> thisModelPropertiesPDOFromModel(List<ThingModelProperty> thingModelProperties);
 }

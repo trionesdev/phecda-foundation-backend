@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@TableName(value = "alarm_type", autoResultMap = true)
+@TableName(value = "phecda_alarm_type", autoResultMap = true)
 public class AlarmType extends BaseLogicEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;

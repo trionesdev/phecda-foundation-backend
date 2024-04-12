@@ -103,6 +103,13 @@ public class AlarmController {
     //endregion
 
     @Operation(summary = "查询报警列表（扩展信息）")
+    @GetMapping(value = "alarms/ext/list")
+    public List<AlarmDTO> findAlarmsExt(AlarmQuery query) {
+        AlarmCriteria criteria = alarmBeRestConvert.from(query);
+        return alarmService.findAlarmsExt(criteria);
+    }
+
+    @Operation(summary = "查询报警列表（扩展信息）")
     @GetMapping(value = "alarms/ext/page")
     public PageInfo<AlarmDTO> findAlarmExtPage(
             @RequestParam(value = "pageNum") Integer pageNum,

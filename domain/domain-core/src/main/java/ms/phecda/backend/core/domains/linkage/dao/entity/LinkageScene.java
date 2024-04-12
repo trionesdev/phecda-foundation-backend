@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ActionsTypeHandler;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ScenesTypeHandler;
 import ms.phecda.backend.core.domains.linkage.support.rule.Scene;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.Action;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class LinkageScene extends BaseLogicEntity {
     private List<Scene> scenes;
 
     @TableField(typeHandler = ActionsTypeHandler.class)
-    private List<Action> actions;
+    private List<PhecdaAction> actions;
 
     @TableField(value = "is_enabled")
     private Boolean enabled;
