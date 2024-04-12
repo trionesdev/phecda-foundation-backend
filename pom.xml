@@ -16,6 +16,7 @@
         <module>edge</module>
         <module>domain</module>
         <module>interface</module>
+        <module>interface/mq-consumer-core</module>
     </modules>
 
     <artifactId>phecda-backend</artifactId>
@@ -89,6 +90,11 @@
             <dependency>
                 <groupId>ms.phecda</groupId>
                 <artifactId>rest-ssp-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ms.phecda</groupId>
+                <artifactId>mq-consumer-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

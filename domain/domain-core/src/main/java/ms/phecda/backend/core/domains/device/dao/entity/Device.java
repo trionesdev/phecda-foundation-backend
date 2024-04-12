@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
 
 import java.util.List;
 

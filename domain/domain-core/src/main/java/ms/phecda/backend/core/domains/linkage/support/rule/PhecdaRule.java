@@ -110,7 +110,7 @@ public class PhecdaRule extends BasicRule {
                 }
             }
         }
-
+        //此处的action 对应的是 rule 中的when
         for (Action action : actions) {
             action.execute(facts);
         }

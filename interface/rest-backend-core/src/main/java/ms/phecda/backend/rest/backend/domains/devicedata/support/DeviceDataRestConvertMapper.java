@@ -1,6 +1,6 @@
 package ms.phecda.backend.rest.backend.domains.devicedata.support;
 
-import ms.phecda.backend.core.domains.devicedata.dao.criteria.DeviceDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyCriteria;
 import ms.phecda.backend.rest.backend.domains.devicedata.controller.query.DeviceDataQuery;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -11,5 +11,5 @@ public interface DeviceDataRestConvertMapper {
 
     DeviceDataRestConvertMapper INSTANCE = Mappers.getMapper(DeviceDataRestConvertMapper.class);
 
-    DeviceDataCriteria from(DeviceDataQuery query);
+    DevicePropertyCriteria from(DeviceDataQuery query);
 }

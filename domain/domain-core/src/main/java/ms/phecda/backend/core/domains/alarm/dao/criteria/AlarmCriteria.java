@@ -23,4 +23,5 @@ public class AlarmCriteria extends PageCriteria {
     private Instant startTime;
     private Instant endTime;
     private Alarm.Status status;
+    private Integer limit;
 }

@@ -9,6 +9,7 @@ import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
@@ -22,12 +23,12 @@ import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
 import ms.phecda.backend.core.domains.device.thing.model.ThingModelService.CallType;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
-import ms.phecda.backend.core.messageaccess.mqtt.PhecdaMqtt;
 import ms.phecda.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
 import ms.phecda.backend.core.provider.ssp.gatweay.impl.GatewayProvider;
 import ms.phecda.backend.core.provider.ssp.gatweay.pdo.CommandSendPDO;
 import ms.phecda.backend.core.support.util.TopicUtils;
+import ms.phecda.infrastructure.conf.mqtt.PhecdaMqtt;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -36,13 +37,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -65,8 +60,8 @@ public class DeviceService {
     private static final String RTMP_URL = "rtmp://{host}:{port}/{productId}/{deviceName}";
     private static final String FLV_URL = "http://{host}:{port}/{productId}/{deviceName}.live.flv";
 
-    public DeviceStatisticsBO statistics() {
-        return DeviceStatisticsBO.builder().build();
+    public DeviceStatisticsDVO statistics() {
+        return deviceManager.queryStatusStatistics();
     }
 
 
@@ -75,11 +70,16 @@ public class DeviceService {
     }
 
     public void deleteDeviceById(String id) {
-        deviceManager.deleteById(id);
+        deviceManager.queryById(id).ifPresent(t -> {
+            deviceManager.deleteById(t);
+            deviceManager.cleanDeviceCache(t);
+        });
     }
 
     public void updateById(Device device) {
+        Objects.requireNonNull(device.getId());
         deviceManager.updateById(device);
+        deviceManager.cleanDeviceCache(device);
     }
 
     public Optional<DeviceExtBO> queryExtById(String id) {
@@ -90,11 +90,7 @@ public class DeviceService {
         });
     }
 
-    public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteriaBO criteria) {
-        if (StringUtils.isNotBlank(criteria.getProductKey())) {
-            Product product = productManager.findByKey(criteria.getProductKey()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
-            criteria.setProductId(product.getId());
-        }
+    public PageInfo<DeviceExtBO> queryExtPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
         if (StringUtils.isNotBlank(criteria.getNodeId())) {
             List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
             Set<String> deviceIds = nodeDevicePDOS.stream()
@@ -136,6 +132,7 @@ public class DeviceService {
                 .id(deviceId)
                 .enabled(true)
                 .build());
+        deviceManager.cleanDeviceCache(device);
     }
 
     /**
@@ -152,6 +149,7 @@ public class DeviceService {
                 .id(deviceId)
                 .enabled(false)
                 .build());
+        deviceManager.cleanDeviceCache(device);
     }
 
     public List<DevicePropertyDataBO> queryDeviceThingModelPropertiesData(String deviceId) {
@@ -204,11 +202,7 @@ public class DeviceService {
                         .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
-    public List<Device> queryList(DeviceCriteriaBO criteria) {
-        if (StringUtils.isNotBlank(criteria.getProductKey())) {
-            Product product = productManager.findByKey(criteria.getProductKey()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
-            criteria.setProductId(product.getId());
-        }
+    public List<Device> queryList(DeviceCriteria criteria) {
         if (StringUtils.isNotBlank(criteria.getNodeId())) {
             List<NodeDevicePDO> nodeDevicePDOS = nodeDeviceProvider.listByNodeId(criteria.getNodeId());
             Set<String> deviceIds = nodeDevicePDOS.stream()

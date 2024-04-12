@@ -14,6 +14,9 @@ import ms.phecda.backend.core.domains.linkage.support.util.RuleUtils;
 import java.util.List;
 import java.util.Objects;
 
+import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.FACT_DEVICE_NAME;
+import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.FACT_PRODUCT_KEY;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
@@ -27,10 +30,10 @@ public class ThingPropertyReportTrigger extends EventTrigger {
         List<String> rules = Lists.newArrayList();
         if (Objects.nonNull(identifier)) {
             if (StrUtil.isNotBlank(identifier.getProductKey())) {
-                rules.add(" productKey == " + RuleUtils.param(identifier.getProductKey(), true));
+                rules.add(" " + FACT_PRODUCT_KEY + " == " + RuleUtils.param(identifier.getProductKey(), true));
             }
             if (StrUtil.isNotBlank(identifier.getDeviceName())) {
-                rules.add(" deviceName == " + RuleUtils.param(identifier.getDeviceName(), true));
+                rules.add(" " + FACT_DEVICE_NAME + " == " + RuleUtils.param(identifier.getDeviceName(), true));
             }
             EventTrigger.EventFilter filter = getFilter();
             if (Objects.nonNull(filter) && CollectionUtil.isNotEmpty(filter.getArgs())) {

@@ -1,104 +1,103 @@
 package ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
-import com.google.common.collect.Maps;
+import cn.hutool.core.util.StrUtil;
+import com.trionesdev.commons.core.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.alarm.dao.entity.Alarm;
 import ms.phecda.backend.core.domains.alarm.service.bo.AlarmCreateArgBO;
 import ms.phecda.backend.core.domains.alarm.service.impl.AlarmService;
 import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.PhecdaRuleAction;
-import ms.phecda.backend.core.domains.linkage.service.impl.LinkageSceneService;
-import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmLog;
-import ms.phecda.backend.core.domains.alarm.dao.entity.enums.AlarmLevelEnum;
-import ms.phecda.backend.core.domains.alarm.dao.entity.enums.DealStatuEnums;
-import ms.phecda.backend.core.domains.alarm.service.impl.AlarmLogService;
-import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.Action;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmAction;
+import ms.phecda.backend.core.domains.linkage.support.rule.RuleUtils;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionArgs;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmPhecdaAction;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaRuleActionComponent;
 import org.apache.commons.lang3.StringUtils;
-import org.jeasy.rules.api.Facts;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
-import javax.annotation.Resource;
+import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.RULE_CONTINUOUS_START_PROPERTY_KEY;
 
 @Slf4j
 @RequiredArgsConstructor
-@PhecdaRuleActionComponent(type = Action.TypeEnum.ALARM)
+@PhecdaRuleActionComponent(type = PhecdaAction.TypeEnum.ALARM)
 public class AlarmActionImpl implements PhecdaRuleAction {
-    private final AlarmLogService alarmLogService;
+    private final StringRedisTemplate stringRedisTemplate;
     private final AlarmService alarmService;
 
-    @Lazy
-    @Resource
-    private LinkageSceneService linkageSceneService;
-
-    //同一个设备，同一个规则，上一次告警的时间，暂时先默认静默240分钟告警一次
-    private Map<String, Long> lastAlarmTimeMap = Maps.newHashMap();
-
     @Override
-    public void execute(Facts facts, Action action) {
-        AlarmAction alarmAction = (AlarmAction) action;
-        log.info("alarmAction: {}, facts: {}", alarmAction, facts);
-
-        if (alarmAction.getTriggerMode() == AlarmAction.TriggerMode.SINGLE) {
-            if (Objects.nonNull(alarmAction.getInterval()) && NumberUtil.compare(alarmAction.getInterval(), 0) > 0) {
-
-            } else {
-                alarm(facts, alarmAction);
-            }
-        } else if (alarmAction.getTriggerMode() == AlarmAction.TriggerMode.CONTINUOUS) {
-
+    public void execute(ActionArgs actionArgs, PhecdaAction phecdaAction) {
+        if (StringUtils.isBlank(actionArgs.getRuleName()) || StringUtils.isBlank(actionArgs.getDeviceName())) {
+            return;
         }
+        AlarmPhecdaAction alarmAction = (AlarmPhecdaAction) phecdaAction;
+        log.info("alarmAction: {}, facts: {}", alarmAction, JsonUtils.toJsonString(actionArgs));
 
-
-//        String deviceName = facts.get("deviceName");
-//        String ruleName = facts.get("ruleName");
-//        if (StringUtils.isBlank(ruleName) || StringUtils.isBlank(deviceName)) {
-//            return;
-//        }
-//
-//        Long lastAlarmTime = lastAlarmTimeMap.get(deviceName + ruleName);
-//        if (Objects.nonNull(lastAlarmTime) && System.currentTimeMillis() - lastAlarmTime < 240 * 60 * 1000) {
-//            return;
-//        } else {
-//            lastAlarmTimeMap.put(deviceName + ruleName, System.currentTimeMillis());
-//        }
-//
-//        Optional<LinkageScene> linkageSceneOptional = linkageSceneService.querySceneById(ruleName);
-//        linkageSceneOptional.ifPresent(linkageScene -> {
-//            AlarmLog alarmLog = AlarmLog.builder()
-//                    .title(linkageScene.getName())
-//                    .level(AlarmLevelEnum.THIRD_LEVEL)
-//                    .alarmTime(Instant.now())
-//                    .describe(linkageScene.getDescription())
-//                    .dealStatus(DealStatuEnums.PENDING)
-//                    .deviceName(deviceName)
-////                .assetSn(null)
-////                .assetSpareSn(null)
-//                    .build();
-//
-//
-//            alarmLogService.create(alarmLog);
-//        });
+        if (alarmAction.getTriggerMode() == AlarmPhecdaAction.TriggerMode.SINGLE) {
+            singleProcess(actionArgs, alarmAction);
+        } else if (alarmAction.getTriggerMode() == AlarmPhecdaAction.TriggerMode.CONTINUOUS) {
+            continuousProcess(actionArgs, alarmAction);
+        }
     }
 
-    public void alarm(Facts facts, AlarmAction alarmAction) {
-        List<Alarm.Item> eventData = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(facts)) {
-            facts.asMap().forEach((k, v) -> {
-                if (!CollectionUtil.contains(ListUtil.of("productKey", "deviceName", "ruleName"), k)) {
-                    eventData.add(Alarm.Item.builder().identifier(k).value(v).build());
+    /**
+     * 持续触发报警
+     */
+    public void continuousProcess(ActionArgs actionArgs, AlarmPhecdaAction alarmAction) {
+        if (Objects.nonNull(alarmAction.getDuration()) && NumberUtil.compare(alarmAction.getDuration(), 0) > 0) { //有持续时间要求
+            Object continuousStartTime = stringRedisTemplate.opsForHash().get(RuleUtils.ruleContinuousKey(actionArgs.getRuleName()), RULE_CONTINUOUS_START_PROPERTY_KEY);
+            if (Objects.nonNull(continuousStartTime)) {
+                Instant continuousStartInstance = ZonedDateTime.parse(continuousStartTime.toString(), DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+                Duration duration = Duration.between(Instant.now(), continuousStartInstance);
+                if (duration.toSeconds() <= alarmAction.getDuration()) {
+                    return;
                 }
+            } else {
+                return;
+            }
+        }
+        singleProcess(actionArgs, alarmAction);
+    }
+
+    /**
+     * 直接报警
+     */
+    public void singleProcess(ActionArgs actionArgs, AlarmPhecdaAction alarmAction) {
+        if (Objects.nonNull(alarmAction.getInterval()) && NumberUtil.compare(alarmAction.getInterval(), 0) > 0) {
+            String previousTime = stringRedisTemplate.opsForValue().get(RuleUtils.ruleIntervalKey(actionArgs.getRuleName()));
+            if (StrUtil.isNotBlank(previousTime)) {
+                Instant previousInstant = ZonedDateTime.parse(previousTime, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+                Duration duration = Duration.between(Instant.now(), previousInstant);
+                if (duration.toSeconds() < alarmAction.getInterval()) {
+                    return;
+                }
+            }
+            stringRedisTemplate.opsForValue().set(RuleUtils.ruleIntervalKey(actionArgs.getRuleName()), Instant.now().toString(), Duration.ofSeconds(alarmAction.getInterval()));
+        }
+        alarm(actionArgs, alarmAction);
+
+    }
+
+
+    public void alarm(ActionArgs actionArgs, AlarmPhecdaAction alarmAction) {
+        List<Alarm.Item> eventData = new ArrayList<>();
+        if (MapUtil.isNotEmpty(actionArgs.getReadings())) {
+            actionArgs.getReadings().forEach((k, v) -> {
+                eventData.add(Alarm.Item.builder().identifier(v.getIdentifier()).label(v.getLabel()).value(v.getValue()).build());
             });
         }
         AlarmCreateArgBO alarm = AlarmCreateArgBO.builder().type(alarmAction.getAlarmType()).level(alarmAction.getAlarmLevel())
-                .productKey(facts.get("productKey")).deviceName(facts.get("deviceName")).description(alarmAction.getDescription())
+                .productKey(actionArgs.getProductKey()).deviceName(actionArgs.getDeviceName()).description(alarmAction.getDescription())
                 .eventData(eventData)
                 .build();
         alarmService.createAlarm(alarm);

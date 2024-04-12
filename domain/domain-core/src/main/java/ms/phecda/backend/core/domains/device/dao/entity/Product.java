@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.trionesdev.commons.mybatisplus.entity.BaseLogicEntity;
+import com.trionesdev.commons.mybatisplus.typehandlers.CollectionTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,15 +32,25 @@ public class Product extends BaseLogicEntity {
     private AccessChannelEnum accessChannel;
     @TableField(value = "thing_model_version")
     private String thingModelVersion;
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<ProtocolProperty> protocolProperties;
     private ProductStatusEnum status;
     private String driverName;
 
 
     @Data
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ProtocolProperty {
         private String name;
         private String label;
+    }
+
+    public static class ProtocolListTypeHandler extends CollectionTypeHandler<ProtocolProperty> {
+        protected Class<ProtocolProperty> specificType()
+        {
+            return ProtocolProperty.class;
+        }
     }
 }

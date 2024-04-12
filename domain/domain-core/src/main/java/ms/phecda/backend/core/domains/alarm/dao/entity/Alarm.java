@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@TableName(value = "alarm_alarm", autoResultMap = true)
+@TableName(value = "phecda_alarm_alarm", autoResultMap = true)
 public class Alarm extends BaseLogicEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;

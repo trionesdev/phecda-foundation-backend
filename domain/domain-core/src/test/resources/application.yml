@@ -1,6 +1,8 @@
+server:
+  port: 8200
 spring:
   application:
-    name: belt-backend
+    name: phecda-backend
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
@@ -18,6 +20,16 @@ spring:
       max-request-size: 50MB
   messages:
     basename: i18n/validation
+  cache:
+    type: redis
+    redis:
+      key-prefix: "phecda:"
+      use-key-prefix: true
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      group-id: ${spring.application.name}
   redis:
     redisson:
       config: |
@@ -41,13 +53,10 @@ spring:
         nettyThreads: 32
         codec: !<org.redisson.codec.MarshallingCodec> {}
         transportMode: "NIO"
-#  autoconfigure:
-#    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+
+
 
 mybatis-plus:
-#  mapper-locations: classpath*:/mapper/**/*.xml
-#  type-handlers-package: com.vinka.core.modules.*.dao.typehandler
-#  type-aliases-package: com.vinka.core.modules.*.dao.typehandler
   configuration:
     map-underscore-to-camel-case: true
     log-prefix: dao.
@@ -57,13 +66,9 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-ms:
-  spring:
-    exception:
-      resource-paths: i18n/error
+triones:
+  exception:
+    resource-paths: i18n/error
+  security:
+    exclude-matchers: /**
 
-#logging:
-#  level:
-#    org.springframework.web: INFO
-#    com.github.binarywang.demo.wx.mp: DEBUG
-#    me.chanjar.weixin: DEBUG

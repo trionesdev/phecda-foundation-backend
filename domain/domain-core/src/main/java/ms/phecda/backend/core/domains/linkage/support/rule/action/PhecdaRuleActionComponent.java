@@ -9,5 +9,5 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface PhecdaRuleActionComponent {
-    Action.TypeEnum type();
+    PhecdaAction.TypeEnum type();
 }
