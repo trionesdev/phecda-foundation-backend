@@ -26,10 +26,10 @@ import java.util.Objects;
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
-@EnableConfigurationProperties({SpringCacheExtProperties.class})
+@EnableConfigurationProperties({TrionesCacheProperties.class})
 public class SpringRedisCacheConfiguration {
     private final CacheProperties cacheProperties;
-    private final SpringCacheExtProperties cacheExtProperties;
+    private final TrionesCacheProperties cacheExtProperties;
     private final ObjectMapper objectMapper;
 
     @Bean
@@ -42,6 +42,7 @@ public class SpringRedisCacheConfiguration {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(redisObjMapper));
         redisTemplate.afterPropertiesSet();
+
         return redisTemplate;
     }
 
@@ -71,7 +72,7 @@ public class SpringRedisCacheConfiguration {
         };
     }
 
-    private <T> RedisCacheConfiguration buildCacheConfiguration(RedisTemplate<String, T> redisTemplate, SpringCacheExtProperties.CacheItem item) {
+    private <T> RedisCacheConfiguration buildCacheConfiguration(RedisTemplate<String, T> redisTemplate, TrionesCacheProperties.CacheItem item) {
         RedisCacheConfiguration redisCacheConfiguration = defaultRedisCacheConfiguration();
         redisCacheConfiguration.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getStringSerializer()));
         redisCacheConfiguration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getValueSerializer()));
