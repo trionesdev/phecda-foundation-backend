@@ -8,8 +8,8 @@ import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "spring.cache.ext")
-public class SpringCacheExtProperties {
+@ConfigurationProperties(prefix = "triones.cache")
+public class TrionesCacheProperties {
     private Map<String, CacheItem> cacheNames;
 
     @Data
