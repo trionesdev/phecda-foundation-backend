@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ActionsTypeHandler;
 import ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler.ScenesTypeHandler;
-import ms.phecda.backend.core.domains.linkage.support.rule.Scene;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionTrigger;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
+import ms.phecda.backend.core.domains.linkage.internal.rule.Scene;
+import ms.phecda.backend.core.domains.linkage.internal.rule.action.ActionTrigger;
+import ms.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaAction;
 
 import java.util.List;
 

@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.linkage.dao.criteria.LinkageSceneCriteria;
 import ms.phecda.backend.core.domains.linkage.manager.impl.LinkageSceneManager;
 import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
-import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.RuleActionFactory;
-import ms.phecda.backend.core.domains.linkage.support.rule.RuleUtils;
-import ms.phecda.backend.core.domains.linkage.support.util.LinkageSceneUtils;
+import ms.phecda.backend.core.domains.linkage.internal.factory.ruleaction.RuleActionFactory;
+import ms.phecda.backend.core.domains.linkage.internal.rule.RuleUtils;
+import ms.phecda.backend.core.domains.linkage.internal.util.LinkageSceneUtils;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.RuleListener;
@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.*;
+import static ms.phecda.backend.core.domains.linkage.internal.rule.RuleConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor

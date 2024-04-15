@@ -3,10 +3,9 @@ package ms.phecda.backend.core.bootstrap.message.process;
 import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.bootstrap.message.disruptor.propertiespost.PropertiesPostEventProducer;
-import ms.phecda.backend.core.bootstrap.message.disruptor.propertiespost.PropertiesPostMessage;
+import ms.phecda.backend.core.internal.disruptor.propertiespost.PropertiesPostEventProducer;
+import ms.phecda.backend.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import ms.phecda.backend.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
-import org.springframework.stereotype.Component;
 
 @Deprecated
 @Slf4j
