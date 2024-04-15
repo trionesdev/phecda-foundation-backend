@@ -1,9 +1,11 @@
-package ms.phecda.backend.core.provider.middleware.cache;
+package ms.phecda.infrastructure.conf.cache;
 
 import java.util.concurrent.TimeUnit;
 
-public interface CacheProvider<K, V> {
+public interface CacheTemplate<K, V> {
     void setValue(K key, V value, long timeout, TimeUnit unit);
 
     V getValue(K key);
+
+    void delete(K key);
 }

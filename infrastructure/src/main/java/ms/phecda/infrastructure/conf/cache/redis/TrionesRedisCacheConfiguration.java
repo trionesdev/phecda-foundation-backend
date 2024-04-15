@@ -1,4 +1,4 @@
-package ms.phecda.infrastructure.conf.cache;
+package ms.phecda.infrastructure.conf.cache.redis;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -26,16 +26,16 @@ import java.util.Objects;
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
-@EnableConfigurationProperties({TrionesCacheProperties.class})
-public class SpringRedisCacheConfiguration {
+@EnableConfigurationProperties({TrionesRedisCacheProperties.class})
+public class TrionesRedisCacheConfiguration<K, V> {
     private final CacheProperties cacheProperties;
-    private final TrionesCacheProperties cacheExtProperties;
+    private final TrionesRedisCacheProperties cacheExtProperties;
     private final ObjectMapper objectMapper;
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<K, V> bojectRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         ObjectMapper redisObjMapper = redisObjectMapper();
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+        RedisTemplate<K, V> redisTemplate = new RedisTemplate<K, V>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(redisObjMapper));
@@ -56,7 +56,7 @@ public class SpringRedisCacheConfiguration {
             if (MapUtils.isNotEmpty(cacheExtProperties.getCacheNames())) {
                 cacheExtProperties.getCacheNames().forEach((k, v) -> {
                     RedisCacheConfiguration cacheConfiguration;
-                    switch (v.getValueSerializer()) {
+                    switch (v.getValueType()) {
                         case JSON:
                             cacheConfiguration = buildCacheConfiguration(redisTemplate, v);
                             break;
@@ -72,7 +72,12 @@ public class SpringRedisCacheConfiguration {
         };
     }
 
-    private <T> RedisCacheConfiguration buildCacheConfiguration(RedisTemplate<String, T> redisTemplate, TrionesCacheProperties.CacheItem item) {
+    @Bean
+    public <K, V> RedisCacheTemplate<K, V> redisCacheTemplate(RedisTemplate<K, V> redisTemplate) {
+        return new RedisCacheTemplate<>(redisTemplate);
+    }
+
+    private <S, V> RedisCacheConfiguration buildCacheConfiguration(RedisTemplate<S, V> redisTemplate, TrionesRedisCacheProperties.CacheItem item) {
         RedisCacheConfiguration redisCacheConfiguration = defaultRedisCacheConfiguration();
         redisCacheConfiguration.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getStringSerializer()));
         redisCacheConfiguration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getValueSerializer()));

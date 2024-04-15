@@ -9,13 +9,12 @@ import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.RuleAct
 import ms.phecda.backend.core.domains.linkage.support.rule.PhecdaRule;
 import ms.phecda.backend.core.domains.linkage.support.rule.Scene;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionArgs;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmPhecdaAction;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction.TypeEnum;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionTrigger;
 import org.jeasy.rules.api.Rule;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class LinkageSceneUtils {
 
@@ -74,6 +73,9 @@ public class LinkageSceneUtils {
                 .then(facts -> {
                     //region execute fire action
                     if (CollectionUtil.isNotEmpty(linkageScene.getActions())) {
+                        if (!factory.canActionTrigger(linkageScene)) { //判断是否满足触发条件
+                            return;
+                        }
                         ActionArgs actionArgs = factory.factsToActionArgs(facts);
                         linkageScene.getActions().forEach(action -> {
                             factory.getAction(action.getType()).execute(actionArgs, action);
@@ -87,14 +89,8 @@ public class LinkageSceneUtils {
         if (CollectionUtil.isEmpty(scene.getActions())) {
             return false;
         }
-        for (int i = 0; i < scene.getActions().size(); i++) {
-            PhecdaAction phecdaAction = scene.getActions().get(i);
-            if (Objects.equals(phecdaAction.getType(), TypeEnum.ALARM)) {
-                AlarmPhecdaAction alarmAction = (AlarmPhecdaAction) phecdaAction;
-                if (Objects.equals(alarmAction.getTriggerMode(), AlarmPhecdaAction.TriggerMode.CONTINUOUS)) {
-                    return true;
-                }
-            }
+        if (Objects.equals(ActionTrigger.TriggerMode.CONTINUOUS, Optional.ofNullable(scene.getActionTrigger()).map(ActionTrigger::getTriggerMode).orElse(null))) {
+            return true;
         }
         return false;
     }

@@ -2,27 +2,41 @@ package ms.phecda.backend.core.domains.linkage.service.factory.ruleaction;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
+import ms.phecda.backend.core.domains.linkage.support.rule.RuleUtils;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionArgs;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionTrigger;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionTrigger.TriggerMode;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaRuleActionComponent;
 import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.jeasy.rules.api.Facts;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static ms.phecda.backend.core.domains.linkage.support.rule.RuleConstants.*;
 
 @RequiredArgsConstructor
 @Component
 public class RuleActionFactory {
+    private final StringRedisTemplate stringRedisTemplate;
     private final DeviceProvider deviceProvider;
     private final Map<PhecdaAction.TypeEnum, PhecdaRuleAction> actionMap = new HashMap<>();
 
@@ -44,6 +58,51 @@ public class RuleActionFactory {
         return actionMap.get(type);
     }
 
+    public Boolean canActionTrigger(LinkageScene linkageScene) {
+        ActionTrigger actionTrigger = linkageScene.getActionTrigger();
+        if (actionTrigger.getTriggerMode() == TriggerMode.SINGLE) {
+            return meetActionInterval(linkageScene);
+        } else if (actionTrigger.getTriggerMode() == TriggerMode.CONTINUOUS) {
+            if (Objects.nonNull(actionTrigger.getDuration()) && NumberUtil.compare(actionTrigger.getDuration(), 0) > 0) { //有持续时间要求
+                Object continuousStartTime = stringRedisTemplate.opsForHash().get(RuleUtils.ruleContinuousKey(linkageScene.getId()), RULE_CONTINUOUS_START_PROPERTY_KEY);
+                if (Objects.nonNull(continuousStartTime)) {
+                    Instant continuousStartInstance = ZonedDateTime.parse(continuousStartTime.toString(), DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+                    Duration duration = Duration.between(Instant.now(), continuousStartInstance);
+                    if (duration.toSeconds() <= actionTrigger.getDuration()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            return meetActionInterval(linkageScene);
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 是否满足时间间隔
+     *
+     * @param linkageScene
+     * @return
+     */
+    public boolean meetActionInterval(LinkageScene linkageScene) {
+        long defaultInterval = 0;
+        long actionInterval = Optional.of(linkageScene.getActionTrigger()).map(ActionTrigger::getInterval).orElse(defaultInterval);
+        if (NumberUtil.compare(actionInterval, 0) > 0) {
+            String previousTime = stringRedisTemplate.opsForValue().get(RuleUtils.ruleIntervalKey(linkageScene.getId()));
+            if (StrUtil.isNotBlank(previousTime)) {
+                Instant previousInstant = ZonedDateTime.parse(previousTime, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+                Duration duration = Duration.between(Instant.now(), previousInstant);
+                if (duration.toSeconds() < actionInterval) {
+                    return false;
+                }
+            }
+            stringRedisTemplate.opsForValue().set(RuleUtils.ruleIntervalKey(linkageScene.getId()), Instant.now().toString(), Duration.ofSeconds(actionInterval));
+        }
+        return true;
+    }
 
     public ActionArgs factsToActionArgs(Facts facts) {
         Map<String, ActionArgs.Reading> readingMap = facts.get(FACT_READINGS);

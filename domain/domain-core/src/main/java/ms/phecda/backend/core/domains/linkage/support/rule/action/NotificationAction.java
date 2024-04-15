@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NotificationPhecdaAction extends PhecdaAction {
+public class NotificationAction extends PhecdaAction {
     private ContactsType contactsType;
     private List<String> contactIds;
     private List<String> contactGroupIds;

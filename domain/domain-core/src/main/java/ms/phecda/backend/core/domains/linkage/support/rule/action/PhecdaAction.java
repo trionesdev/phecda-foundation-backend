@@ -21,8 +21,8 @@ import lombok.experimental.SuperBuilder;
 )
 @JsonSubTypes(
         {
-                @JsonSubTypes.Type(value = AlarmPhecdaAction.class, name = "ALARM"),
-                @JsonSubTypes.Type(value = NotificationPhecdaAction.class, name = "NOTIFICATION"),
+                @JsonSubTypes.Type(value = AlarmAction.class, name = "ALARM"),
+                @JsonSubTypes.Type(value = NotificationAction.class, name = "NOTIFICATION"),
         }
 )
 public abstract class PhecdaAction {
