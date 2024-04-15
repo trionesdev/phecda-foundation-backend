@@ -1,4 +1,4 @@
-package ms.phecda.infrastructure.conf.cache;
+package ms.phecda.infrastructure.conf.cache.redis;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -8,18 +8,18 @@ import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "triones.cache")
-public class TrionesCacheProperties {
+@ConfigurationProperties(prefix = "spring.cache.redis")
+public class TrionesRedisCacheProperties {
     private Map<String, CacheItem> cacheNames;
 
     @Data
     @RequiredArgsConstructor
     public static class CacheItem {
         private Long timeToLeave;
-        private ValueSerializerEnum valueSerializer;
+        private ValueTypeEnum valueType;
     }
 
-    public enum ValueSerializerEnum {
+    public enum ValueTypeEnum {
         STRING,
         JSON
     }

@@ -49,6 +49,7 @@ public class LinkageSceneService {
             @Override
             public void afterEvaluate(Rule rule, Facts facts, boolean evaluationResult) {
                 if (BooleanUtil.isTrue(continuousMap.get(rule.getName()))) {
+                    //region 触发记录，如果是持续触发，则记录触发次数，否则，清空记录
                     if (evaluationResult) {
                         if (stringRedisTemplate.opsForHash().hasKey(RuleUtils.ruleContinuousKey(rule.getName()), RULE_CONTINUOUS_START_PROPERTY_KEY)) {
                             stringRedisTemplate.opsForHash().put(RuleUtils.ruleContinuousKey(rule.getName()), RULE_CONTINUOUS_START_PROPERTY_KEY, Instant.now().toString());
@@ -57,6 +58,7 @@ public class LinkageSceneService {
                     } else {
                         stringRedisTemplate.opsForHash().delete(RuleUtils.ruleContinuousKey(rule.getName()));
                     }
+                    //endregion
                 }
             }
         });
@@ -109,6 +111,7 @@ public class LinkageSceneService {
 
     public void unregisterRule(String id) {
         linkageRules.unregister(id);
+        continuousMap.remove(id);
     }
 
     /**

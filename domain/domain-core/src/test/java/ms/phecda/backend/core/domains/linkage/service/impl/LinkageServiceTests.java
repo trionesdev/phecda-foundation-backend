@@ -1,12 +1,13 @@
 package ms.phecda.backend.core.domains.linkage.service.impl;
 
 import com.google.common.collect.Lists;
+import com.trionesdev.commons.core.util.JsonUtils;
 import ms.phecda.BaseTest;
 import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
 import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.RuleActionFactory;
 import ms.phecda.backend.core.domains.linkage.support.rule.OperatorEnum;
 import ms.phecda.backend.core.domains.linkage.support.rule.Scene;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmPhecdaAction;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.AlarmAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.statecondition.ConditionTypeEnum;
 import ms.phecda.backend.core.domains.linkage.support.rule.statecondition.StateCondition;
@@ -16,6 +17,7 @@ import ms.phecda.backend.core.domains.linkage.support.rule.trigger.ThingProperty
 import ms.phecda.backend.core.domains.linkage.support.rule.trigger.TriggerTypeEnum;
 import ms.phecda.backend.core.domains.linkage.support.util.LinkageSceneUtils;
 import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
+import ms.phecda.infrastructure.conf.cache.CacheTemplate;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;
@@ -25,7 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class LinkageServiceTests extends BaseTest {
     @Autowired
@@ -35,6 +39,9 @@ public class LinkageServiceTests extends BaseTest {
     private LinkageSceneService linkageSceneService;
     @Autowired
     private RuleActionFactory ruleActionFactory;
+
+    @Autowired
+    private CacheTemplate<String, Map<String,String>> cacheTemplate;
 
     @Test
     public void rule_tests() {
@@ -46,7 +53,7 @@ public class LinkageServiceTests extends BaseTest {
 //        List<List<OtherCondition>> r = new ArrayList<>();
 //        r.add(otherConditions);
 
-        PhecdaAction phecdaAction = AlarmPhecdaAction.builder().type(PhecdaAction.TypeEnum.ALARM).build();
+        PhecdaAction phecdaAction = AlarmAction.builder().type(PhecdaAction.TypeEnum.ALARM).build();
 
         LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
                 .scenes(Lists.newArrayList(
@@ -111,6 +118,12 @@ public class LinkageServiceTests extends BaseTest {
     public void hash_test(){
         stringRedisTemplate.opsForHash().increment("ss","count",1);
         stringRedisTemplate.opsForHash().put("ss","start", Instant.now().toString());
+    }
+
+    @Test
+    public void cache_test(){
+        cacheTemplate.setValue("test", Map.of("a", "b"), 30, TimeUnit.SECONDS);
+        System.out.println(JsonUtils.toJsonString(cacheTemplate.getValue("test")));
     }
 
 }

@@ -3,7 +3,7 @@ package ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.impl;
 import cn.hutool.core.map.MapUtil;
 import ms.phecda.backend.core.domains.linkage.service.factory.ruleaction.PhecdaRuleAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.ActionArgs;
-import ms.phecda.backend.core.domains.linkage.support.rule.action.NotificationPhecdaAction;
+import ms.phecda.backend.core.domains.linkage.support.rule.action.NotificationAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaAction.TypeEnum;
 import ms.phecda.backend.core.domains.linkage.support.rule.action.PhecdaRuleActionComponent;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class NotificationActionImpl implements PhecdaRuleAction {
     @Override
     public void execute(ActionArgs actionArgs, PhecdaAction phecdaAction) {
-        NotificationPhecdaAction notificationAction = (NotificationPhecdaAction) phecdaAction;
+        NotificationAction notificationAction = (NotificationAction) phecdaAction;
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("productId", actionArgs.getProductId());
         paramsMap.put("productKey", actionArgs.getProductKey());
