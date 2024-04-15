@@ -11,7 +11,7 @@ import ms.phecda.backend.core.domains.messageforwarding.manager.dto.MessageSourc
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.MessageForwardingRuleManager;
 import ms.phecda.backend.core.domains.messageforwarding.service.factory.action.AbsForwardingAction;
 import ms.phecda.backend.core.domains.messageforwarding.service.factory.action.ForwardingActionComponent;
-import ms.phecda.backend.core.support.util.MqttTopicUtils;
+import ms.phecda.backend.core.internal.util.MqttTopicUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 

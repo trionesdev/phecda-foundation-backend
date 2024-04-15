@@ -3,7 +3,7 @@ package ms.phecda.backend.core.domains.messageforwarding.dao.entity.source;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.support.util.TopicUtils;
+import ms.phecda.backend.core.internal.util.TopicUtils;
 
 import java.util.Objects;
 

@@ -27,7 +27,7 @@ import ms.phecda.backend.core.provider.ssp.edge.impl.NodeDeviceProvider;
 import ms.phecda.backend.core.provider.ssp.edge.pdo.NodeDevicePDO;
 import ms.phecda.backend.core.provider.ssp.gatweay.impl.GatewayProvider;
 import ms.phecda.backend.core.provider.ssp.gatweay.pdo.CommandSendPDO;
-import ms.phecda.backend.core.support.util.TopicUtils;
+import ms.phecda.backend.core.internal.util.TopicUtils;
 import ms.phecda.infrastructure.conf.mqtt.PhecdaMqtt;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

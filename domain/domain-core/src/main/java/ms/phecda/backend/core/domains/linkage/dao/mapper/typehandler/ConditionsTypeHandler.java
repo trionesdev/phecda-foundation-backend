@@ -2,7 +2,7 @@ package ms.phecda.backend.core.domains.linkage.dao.mapper.typehandler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.trionesdev.commons.mybatisplus.typehandlers.SpecificTypeHandler;
-import ms.phecda.backend.core.domains.linkage.support.rule.othercondition.OtherCondition;
+import ms.phecda.backend.core.domains.linkage.internal.rule.othercondition.OtherCondition;
 
 import java.util.List;
 
