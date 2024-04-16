@@ -2,12 +2,14 @@ package ms.phecda.backend.rest.backend.domains.device.support;
 
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceEventLogQuery;
+import ms.phecda.backend.rest.backend.domains.device.controller.query.DevicePropertyDataQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceServiceLogQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
@@ -37,6 +39,8 @@ public interface DeviceBeRestConvert {
     Device from(DeviceUpdateRO args);
 
     DeviceCriteria from(DeviceQuery query);
+
+    DevicePropertyDataCriteria from(DevicePropertyDataQuery query);
 
     DeviceEventLogCriteria from(DeviceEventLogQuery query);
 

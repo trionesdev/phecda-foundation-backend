@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.domains.device.manager.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.page.PageInfo;
@@ -7,6 +8,7 @@ import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.DeviceEventLog;
@@ -17,11 +19,15 @@ import ms.phecda.backend.core.domains.device.dao.impl.DeviceEventLogDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DevicePropertyDataDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceServiceLogDAO;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
+import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -59,7 +65,7 @@ public class DeviceDataManager {
         return productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
     }
 
-    public List<Map<String, Object>> queryDevicePropertyList(String deviceName, List<String> fields, long startTime, long endTime) {
+    public List<Map<String, Object>> queryDevicePropertyDataList(String deviceName, List<String> fields, long startTime, long endTime) {
         Product product = getProductByDeviceName(deviceName);
         List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
         return devicePropertyDataDAO.selectList(paths, startTime, endTime);
@@ -69,6 +75,32 @@ public class DeviceDataManager {
         Product product = getProductByDeviceName(deviceName);
         List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
         return devicePropertyDataDAO.selectLastList(paths);
+    }
+
+    public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
+        List<Map<String, Object>> rawsData = queryDevicePropertyDataList(criteria.getDeviceName(), Lists.newArrayList(criteria.getIdentifier()),
+                Optional.of(criteria.getStartTime()).map(Instant::toEpochMilli).get(), Optional.of(criteria.getStartTime()).map(Instant::toEpochMilli).orElse(null));
+        return assembleDevicePropertiesData(rawsData, criteria);
+    }
+
+    public List<DevicePropertyDataDTO> assembleDevicePropertiesData(List<Map<String, Object>> rawsData, DevicePropertyDataCriteria criteria) {
+        if (CollectionUtil.isEmpty(rawsData)) {
+            return Collections.emptyList();
+        }
+        Product product = getProductByDeviceName(criteria.getDeviceName());
+
+        return rawsData.stream().map(row -> {
+            String timeStr = String.valueOf(row.get("Time")).substring(0, 13);
+            Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
+            String devicePath = IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), criteria.getDeviceName(), criteria.getIdentifier()));
+            Object value = row.get(devicePath);
+            return DevicePropertyDataDTO.builder()
+                    .ts(time)
+                    .value(value)
+                    .identifier(criteria.getIdentifier())
+                    .deviceName(criteria.getDeviceName())
+                    .build();
+        }).collect(Collectors.toList());
     }
 
     //endregion

@@ -14,6 +14,6 @@ public class DevicePropertyDataQuery {
     @NotNull
     private String deviceName;
     @NotNull
-    private String field;
+    private String identifier;
 
 }

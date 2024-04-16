@@ -13,10 +13,10 @@ import java.time.Instant;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class DevicePropertyCriteria {
+public class DevicePropertyDataCriteria {
+    private String deviceName;
     private Instant startTime;
     private Instant endTime;
-    private String deviceName;
-    private String field;
+    private String identifier;
     private String nodeId;
 }

@@ -30,8 +30,7 @@ public interface DeviceConvertMapper {
             @Mapping(source = "product.type.label", target = "typeLabel")
     })
     ProductDTO fromRecord(Product product);
-
-    //    @Mapping(source = "nodeType.label", target = "nodeTypeLabel")
+    
     List<ProductDTO> productDtoFromRecord(List<Product> products);
 
     ProductThingModelVersion from(ProductThingModelDraft args);

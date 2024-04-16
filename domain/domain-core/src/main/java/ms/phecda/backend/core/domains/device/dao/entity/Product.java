@@ -44,7 +44,9 @@ public class Product extends BaseLogicEntity {
     public enum Type {
 
         SENSOR("传感器"),
-        CAMERA("摄像头");
+        CAMERA("摄像头"),
+        GATEWAY("网关"),
+        ;
         private final String label;
     }
 
