@@ -16,6 +16,7 @@ import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelServ
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -24,7 +25,10 @@ import java.util.List;
 public interface DeviceConvertMapper {
     DeviceConvertMapper INSTANCE = Mappers.getMapper(DeviceConvertMapper.class);
 
-    @Mapping(source = "product.nodeType.label", target = "nodeTypeLabel")
+    @Mappings({
+            @Mapping(source = "product.nodeType.label", target = "nodeTypeLabel"),
+            @Mapping(source = "product.type.label", target = "typeLabel")
+    })
     ProductDTO fromRecord(Product product);
 
     //    @Mapping(source = "nodeType.label", target = "nodeTypeLabel")

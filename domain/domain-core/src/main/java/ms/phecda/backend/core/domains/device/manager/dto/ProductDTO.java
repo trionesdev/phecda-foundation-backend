@@ -14,4 +14,5 @@ import ms.phecda.backend.core.domains.device.dao.entity.Product;
 @NoArgsConstructor
 public class ProductDTO extends Product {
     private String nodeTypeLabel;
+    private String typeLabel;
 }

@@ -9,6 +9,7 @@ import com.trionesdev.commons.mybatisplus.typehandlers.CollectionTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
@@ -30,12 +31,22 @@ public class Product extends BaseLogicEntity {
     private String key;
     private NodeTypeEnum nodeType;
     private AccessChannelEnum accessChannel;
+    private Type type;
     @TableField(value = "thing_model_version")
     private String thingModelVersion;
     @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<ProtocolProperty> protocolProperties;
     private ProductStatusEnum status;
     private String driverName;
+
+    @Getter
+    @AllArgsConstructor
+    public enum Type {
+
+        SENSOR("传感器"),
+        CAMERA("摄像头");
+        private final String label;
+    }
 
 
     @Data
@@ -48,8 +59,7 @@ public class Product extends BaseLogicEntity {
     }
 
     public static class ProtocolListTypeHandler extends CollectionTypeHandler<ProtocolProperty> {
-        protected Class<ProtocolProperty> specificType()
-        {
+        protected Class<ProtocolProperty> specificType() {
             return ProtocolProperty.class;
         }
     }
