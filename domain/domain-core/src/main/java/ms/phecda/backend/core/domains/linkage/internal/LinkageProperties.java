@@ -6,5 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "phecda.linkage")
 public class LinkageProperties {
-    private Long defaultActionInterval = 6000L;
+    private Long defaultActionInterval = 600L;
 }
