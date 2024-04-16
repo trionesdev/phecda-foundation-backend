@@ -26,20 +26,19 @@ public class AlarmDAO extends ServiceImpl<AlarmMapper, Alarm> {
                     .gt(Objects.nonNull(criteria.getStartTime()), Alarm::getCreatedAt, criteria.getStartTime())
                     .lt(Objects.nonNull(criteria.getEndTime()), Alarm::getCreatedAt, criteria.getEndTime())
                     .eq(Objects.nonNull(criteria.getStatus()), Alarm::getStatus, criteria.getStatus())
-                    .func(wrapper -> {
-                        if (Objects.nonNull(criteria.getLimit())) {
-                            wrapper.last("limit " + criteria.getLimit());
-                        } else {
-                            wrapper.last("limit 1000");
-                        }
-                    })
             ;
         }
         return queryWrapper.orderByDesc(Alarm::getCreatedAt);
     }
 
     public List<Alarm> selectList(AlarmCriteria criteria) {
-        return baseMapper.selectList(buildQueryWrapper(criteria));
+        return baseMapper.selectList(buildQueryWrapper(criteria).func(wrapper -> {
+            if (Objects.nonNull(criteria.getLimit())) {
+                wrapper.last("limit " + criteria.getLimit());
+            } else {
+                wrapper.last("limit 1000");
+            }
+        }));
     }
 
     public PageInfo<Alarm> selectPage(AlarmCriteria criteria) {
