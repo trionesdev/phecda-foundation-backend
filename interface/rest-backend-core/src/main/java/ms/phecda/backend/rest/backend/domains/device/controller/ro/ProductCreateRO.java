@@ -1,6 +1,7 @@
 package ms.phecda.backend.rest.backend.domains.device.controller.ro;
 
 import lombok.Data;
+import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
 
@@ -18,5 +19,6 @@ public class ProductCreateRO {
     private NodeTypeEnum nodeType;
     @NotNull
     private AccessChannelEnum accessChannel;
+    private Product.Type type;
     private String driverName;
 }
