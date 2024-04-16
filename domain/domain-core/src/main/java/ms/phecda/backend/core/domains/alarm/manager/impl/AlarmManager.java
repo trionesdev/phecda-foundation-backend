@@ -15,7 +15,7 @@ import ms.phecda.backend.core.domains.alarm.dao.impl.AlarmDAO;
 import ms.phecda.backend.core.domains.alarm.dao.impl.AlarmLevelDAO;
 import ms.phecda.backend.core.domains.alarm.dao.impl.AlarmTypeDAO;
 import ms.phecda.backend.core.domains.alarm.manager.dto.AlarmDTO;
-import ms.phecda.backend.core.domains.alarm.support.AlarmConvert;
+import ms.phecda.backend.core.domains.alarm.internal.AlarmConvert;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

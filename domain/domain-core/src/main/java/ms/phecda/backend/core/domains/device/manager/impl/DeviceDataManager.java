@@ -16,7 +16,7 @@ import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceEventLogDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DevicePropertyDataDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceServiceLogDAO;
-import ms.phecda.backend.core.domains.device.support.util.IotDbUtils;
+import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.springframework.stereotype.Service;
 

@@ -12,7 +12,7 @@ import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeOption;
+import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeOption;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductCreateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductProtocolPropertiesUpdateRO;

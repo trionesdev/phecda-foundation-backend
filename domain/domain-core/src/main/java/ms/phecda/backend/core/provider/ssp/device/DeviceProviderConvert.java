@@ -2,8 +2,7 @@ package ms.phecda.backend.core.provider.ssp.device;
 
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;

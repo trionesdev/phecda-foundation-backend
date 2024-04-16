@@ -7,7 +7,7 @@ import ms.phecda.backend.core.domains.dict.dao.criteria.DictionaryCriteria;
 import ms.phecda.backend.core.domains.dict.dao.entity.Dictionary;
 import ms.phecda.backend.core.domains.dict.manager.DictionaryManager;
 import ms.phecda.backend.core.domains.dict.service.bo.DictionaryBO;
-import ms.phecda.backend.core.domains.dict.support.DictionaryConvertMapper;
+import ms.phecda.backend.core.domains.dict.internal.DictionaryConvertMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 

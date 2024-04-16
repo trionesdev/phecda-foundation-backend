@@ -12,10 +12,10 @@ import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
-import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
-import ms.phecda.backend.core.domains.device.support.DeviceCacheConstants;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
+import ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModel;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static ms.phecda.backend.core.domains.device.support.DeviceCacheConstants.*;
+import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.*;
 
 @RequiredArgsConstructor
 @Service

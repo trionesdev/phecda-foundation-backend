@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelEvent.Type;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelEvent.Type;
 
 import java.time.Instant;
 

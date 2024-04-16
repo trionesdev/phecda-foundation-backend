@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AbilityTypeEnum;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelEvent;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelEvent;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelService;
 
 @Data
 @SuperBuilder

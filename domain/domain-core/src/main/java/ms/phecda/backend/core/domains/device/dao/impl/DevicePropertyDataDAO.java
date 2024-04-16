@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.device.dao.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.support.util.IotDbUtils;
+import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.pool.SessionDataSetWrapper;
