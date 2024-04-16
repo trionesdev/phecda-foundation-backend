@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static ms.phecda.backend.core.domains.device.support.DeviceCacheConstants.DEVICE_NAME_NAMES;
-import static ms.phecda.backend.core.domains.device.support.DeviceCacheConstants.DEVICE_NAME_PREFIX;
+import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.DEVICE_NAME_NAMES;
+import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.DEVICE_NAME_PREFIX;
 
 @RequiredArgsConstructor
 @Service

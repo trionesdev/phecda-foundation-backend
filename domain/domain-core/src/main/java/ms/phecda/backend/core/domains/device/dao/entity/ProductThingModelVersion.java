@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModel;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModel;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

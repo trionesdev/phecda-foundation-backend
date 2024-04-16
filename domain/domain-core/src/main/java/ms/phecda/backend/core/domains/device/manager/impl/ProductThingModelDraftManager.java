@@ -6,7 +6,7 @@ import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion
 import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelDraftDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
-import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
+import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;

@@ -6,7 +6,7 @@ import com.trionesdev.commons.exception.spring.ex.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.*;
-import ms.phecda.backend.core.domains.messageforwarding.event.spring.MessageForwardingRuleChangeEvent;
+import ms.phecda.backend.core.domains.messageforwarding.internal.event.spring.MessageForwardingRuleChangeEvent;
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

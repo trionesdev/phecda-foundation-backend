@@ -9,7 +9,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyCriteria
 import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
-import ms.phecda.backend.core.domains.device.support.util.IotDbUtils;
+import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -19,7 +19,6 @@ import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.read.common.Field;
 import org.apache.iotdb.tsfile.read.common.RowRecord;
 import org.assertj.core.util.Lists;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;

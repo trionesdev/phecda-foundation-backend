@@ -16,7 +16,7 @@ import ms.phecda.backend.core.domains.linkage.internal.rule.trigger.EventTrigger
 import ms.phecda.backend.core.domains.linkage.internal.rule.trigger.ThingPropertyReportTrigger;
 import ms.phecda.backend.core.domains.linkage.internal.rule.trigger.TriggerTypeEnum;
 import ms.phecda.backend.core.domains.linkage.internal.util.LinkageSceneUtils;
-import ms.phecda.backend.core.domains.device.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeEnum;
 import ms.phecda.infrastructure.conf.cache.CacheTemplate;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;

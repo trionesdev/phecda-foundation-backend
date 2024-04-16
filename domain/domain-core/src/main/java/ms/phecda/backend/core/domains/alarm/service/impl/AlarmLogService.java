@@ -6,7 +6,7 @@ import ms.phecda.backend.core.domains.alarm.dao.criteria.AlarmLogCriteria;
 import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmLog;
 import ms.phecda.backend.core.domains.alarm.manager.AlarmLogManager;
 import ms.phecda.backend.core.domains.alarm.service.bo.AlarmLogBO;
-import ms.phecda.backend.core.domains.alarm.support.AlarmLogConvertMapper;
+import ms.phecda.backend.core.domains.alarm.internal.AlarmLogConvertMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

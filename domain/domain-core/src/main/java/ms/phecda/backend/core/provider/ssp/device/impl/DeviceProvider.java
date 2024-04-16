@@ -6,15 +6,14 @@ import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.domains.device.support.DeviceConvertMapper;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
 import ms.phecda.backend.core.provider.ssp.device.DeviceProviderConvert;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

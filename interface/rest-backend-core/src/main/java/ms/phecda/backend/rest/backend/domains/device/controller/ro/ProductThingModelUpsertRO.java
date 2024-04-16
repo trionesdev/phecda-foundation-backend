@@ -2,9 +2,9 @@ package ms.phecda.backend.rest.backend.domains.device.controller.ro;
 
 import lombok.Data;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AbilityTypeEnum;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelEvent;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.thing.model.ThingModelService;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelEvent;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelService;
 
 import javax.validation.constraints.NotNull;
 
