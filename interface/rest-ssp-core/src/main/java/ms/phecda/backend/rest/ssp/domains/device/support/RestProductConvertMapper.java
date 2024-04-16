@@ -3,6 +3,7 @@ package ms.phecda.backend.rest.ssp.domains.device.support;
 import com.alibaba.fastjson2.JSONObject;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.ProductRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.ProductThingModelVersionRep;
 import org.mapstruct.Builder;
@@ -16,7 +17,7 @@ import java.util.Objects;
 public interface RestProductConvertMapper {
     RestProductConvertMapper INSTANCE = Mappers.getMapper(RestProductConvertMapper.class);
 
-    List<ProductRep> from(List<Product> args);
+    List<ProductRep> from(List<ProductDTO> args);
 
     default ProductThingModelVersionRep from(ProductThingModelVersion args) {
         if (Objects.isNull(args)) {

@@ -3,11 +3,13 @@ package ms.phecda.backend.core.domains.device.manager.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.util.PageUtils;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.*;
@@ -39,6 +42,9 @@ public class ProductManager {
     }
 
     public void create(Product product) {
+        if (Objects.equals(NodeTypeEnum.GATEWAY, product.getNodeType())) {
+            product.setType(Product.Type.GATEWAY);
+        }
         productDAO.save(product);
     }
 
@@ -63,12 +69,13 @@ public class ProductManager {
         return assembleCollection(productDAO.listByIds(ids));
     }
 
-    public List<Product> queryList(ProductCriteria criteria) {
-        return productDAO.selectList(criteria);
+    public List<ProductDTO> queryList(ProductCriteria criteria) {
+        return assembleCollection(productDAO.selectList(criteria));
     }
 
-    public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
-        return productDAO.selectPage(pageNum, pageSize, criteria);
+    public PageInfo<ProductDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
+        PageInfo<Product> pageInfo = productDAO.selectPage(pageNum, pageSize, criteria);
+        return PageUtils.of(pageInfo, assembleCollection(pageInfo.getRows()));
     }
 
     @Cacheable(value = DeviceCacheConstants.PRODUCT_KEY_NAMES, key = "'" + PRODUCT_KEY_PREFIX + "'+#key")

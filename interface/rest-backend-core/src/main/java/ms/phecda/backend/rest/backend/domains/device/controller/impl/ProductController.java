@@ -10,6 +10,7 @@ import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeOption;
@@ -85,15 +86,15 @@ public class ProductController {
     }
 
     @Operation(summary = "获取产品列表")
-    @GetMapping(value = "products")
-    public List<Product> queryProductList(ProductQuery query) {
+    @GetMapping(value = "products/list")
+    public List<ProductDTO> queryProductList(ProductQuery query) {
         ProductCriteria criteria = DeviceBeRestConvert.INSTANT.from(query);
         return productService.queryList(criteria);
     }
 
     @Operation(summary = "查询产品列表(分页)")
     @GetMapping(value = "products/page")
-    public PageInfo<Product> queryProductPage(
+    public PageInfo<ProductDTO> queryProductPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             ProductQuery query) {

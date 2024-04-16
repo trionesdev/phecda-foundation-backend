@@ -30,6 +30,7 @@ public abstract class PhecdaAction {
 
     public enum TypeEnum {
         ALARM,
-        NOTIFICATION
+        NOTIFICATION,
+        SERVICE_INVOCATION
     }
 }

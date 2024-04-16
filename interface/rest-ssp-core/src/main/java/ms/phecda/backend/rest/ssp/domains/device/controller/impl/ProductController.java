@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.rest.ssp.domains.device.support.RestProductConvertMapper;
 import ms.phecda.backend.rest.ssp.internal.RestConstants;
@@ -24,7 +25,7 @@ public class ProductController implements ProductRest {
     @Override
     public List<ProductRep> findAll() {
         ProductCriteria criteria = ProductCriteria.builder().build();
-        List<Product> products = productService.queryList(criteria);
+        List<ProductDTO> products = productService.queryList(criteria);
         return RestProductConvertMapper.INSTANCE.from(products);
     }
 

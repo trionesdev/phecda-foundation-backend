@@ -11,6 +11,7 @@ import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
@@ -80,11 +81,11 @@ public class ProductService {
         return productManager.findByKey(key);
     }
 
-    public List<Product> queryList(ProductCriteria criteria) {
+    public List<ProductDTO> queryList(ProductCriteria criteria) {
         return productManager.queryList(criteria);
     }
 
-    public PageInfo<Product> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
+    public PageInfo<ProductDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return productManager.queryPage(pageNum, pageSize, criteria);
     }
 

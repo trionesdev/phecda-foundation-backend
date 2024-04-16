@@ -5,7 +5,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
@@ -104,13 +104,13 @@ public class DeviceDataService {
     }
 
 
-    public List<DeviceDataBO> queryList(DevicePropertyCriteria criteria) {
-        List<Map<String, Object>> rawDataList = queryRawData(criteria.getDeviceName(), Lists.newArrayList(criteria.getField()),
+    public List<DeviceDataBO> queryList(DevicePropertyDataCriteria criteria) {
+        List<Map<String, Object>> rawDataList = queryRawData(criteria.getDeviceName(), Lists.newArrayList(criteria.getIdentifier()),
                 criteria.getStartTime().toEpochMilli(), criteria.getEndTime().toEpochMilli());
         return convertToBO(rawDataList, criteria);
     }
 
-    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DevicePropertyCriteria criteria) {
+    public PageInfo<DeviceDataBO> queryPage(Integer pageNum, Integer pageSize, DevicePropertyDataCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = queryList(criteria);
         return PageInfo.<DeviceDataBO>builder()
                 .pageNum(pageNum)
@@ -119,7 +119,7 @@ public class DeviceDataService {
                 .build();
     }
 
-    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DevicePropertyCriteria criteria) {
+    private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DevicePropertyDataCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(rawDataList)) {
             DevicePDO devicePDO = deviceProvider.queryByName(criteria.getDeviceName());
@@ -130,12 +130,12 @@ public class DeviceDataService {
             for (Map<String, Object> rwaData : rawDataList) {
                 String timeStr = String.valueOf(rwaData.get("Time")).substring(0, 13);
                 Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
-                String devicePath = path(devicePDO.getProductId(), criteria.getDeviceName() + "." + criteria.getField());
+                String devicePath = path(devicePDO.getProductId(), criteria.getDeviceName() + "." + criteria.getIdentifier());
 
                 DeviceDataBO deviceDataBO = DeviceDataBO.builder()
                         .time(time)
                         .value(rwaData.get(devicePath))
-                        .field(criteria.getField())
+                        .field(criteria.getIdentifier())
                         .deviceName(criteria.getDeviceName())
                         .build();
                 deviceDataBOS.add(deviceDataBO);

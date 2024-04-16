@@ -1,0 +1,28 @@
+package ms.phecda.backend.core.domains.linkage.internal.rule.action;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.util.Map;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ServiceInvocationAction extends PhecdaAction {
+    private String productKey;
+    private String deviceName;
+    private String serviceIdentifier;
+    private Map<String, Object> params;
+
+    @Override
+    public TypeEnum getType() {
+        return TypeEnum.SERVICE_INVOCATION;
+    }
+}
