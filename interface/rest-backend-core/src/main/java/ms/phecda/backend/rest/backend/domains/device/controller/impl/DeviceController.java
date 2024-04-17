@@ -207,7 +207,7 @@ public class DeviceController {
 
     @Operation(summary = "服务同步调用")
     @PostMapping(value = "devices/{id}/service/sync/invoke")
-    public ServiceInvokeReplyMessage serviceInvoke(@PathVariable(value = "id") String id, @RequestBody SendServiceArgBO bo) {
-        return deviceService.sendService(id, bo);
+    public ServiceInvokeReplyMessage serviceInvoke(@PathVariable(value = "id") String id, @RequestBody InvokeServiceArgBO bo) {
+        return deviceService.invokeService(id, bo);
     }
 }

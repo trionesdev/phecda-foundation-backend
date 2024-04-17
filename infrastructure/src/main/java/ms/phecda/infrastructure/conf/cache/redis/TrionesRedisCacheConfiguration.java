@@ -105,7 +105,7 @@ public class TrionesRedisCacheConfiguration<K, V> {
         if (!redisProperties.isCacheNullValues()) {
             redisCacheConfiguration = redisCacheConfiguration.disableCachingNullValues();
         }
-        return redisCacheConfiguration;
+        return redisCacheConfiguration.disableCachingNullValues();
     }
 
     private ObjectMapper redisObjectMapper() {

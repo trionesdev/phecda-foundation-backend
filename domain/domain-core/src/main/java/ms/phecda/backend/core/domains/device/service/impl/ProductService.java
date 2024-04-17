@@ -221,17 +221,17 @@ public class ProductService {
     public Optional<ProductThingModelVersion> queryThingModel(String productId, String version) {
         if (StrUtil.isBlank(version)) {
             version = productManager.queryById(productId)
-                    .orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND"))
+                    .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"))
                     .getThingModelVersion();
         }
         return productThingModelVersionManager.findByProductVersion(productId, version);
     }
 
     public Optional<ProductThingModelVersion> queryThingModelByKey(String key, String version) {
-        Product product = productManager.findByKey(key).orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND"));
+        Product product = productManager.findByKey(key).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         if (StrUtil.isBlank(version)) {
             version = productManager.queryById(product.getId())
-                    .orElseThrow(() -> new BusinessException("PRODUCT_NOT_FOUND"))
+                    .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"))
                     .getThingModelVersion();
         }
         return productThingModelVersionManager.findByProductVersion(product.getId(), version);

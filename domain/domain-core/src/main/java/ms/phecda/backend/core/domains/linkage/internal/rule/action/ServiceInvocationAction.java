@@ -19,7 +19,8 @@ public class ServiceInvocationAction extends PhecdaAction {
     private String productKey;
     private String deviceName;
     private String serviceIdentifier;
-    private Map<String, Object> params;
+    private String params;
+    private String body;
 
     @Override
     public TypeEnum getType() {

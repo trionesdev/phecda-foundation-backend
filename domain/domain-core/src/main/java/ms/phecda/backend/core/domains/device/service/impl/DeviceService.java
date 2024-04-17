@@ -5,16 +5,20 @@ import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.util.JsonUtils;
 import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.domains.device.dao.entity.DeviceServiceLog;
+import ms.phecda.backend.core.domains.device.dao.entity.DeviceServiceLog.Result;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.manager.dto.ServiceSendDTO;
+import ms.phecda.backend.core.domains.device.manager.impl.DeviceDataManager;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.service.bo.*;
@@ -46,6 +50,7 @@ import java.util.stream.Collectors;
 public class DeviceService {
     private final DeviceManager deviceManager;
     private final ProductManager productManager;
+    private final DeviceDataManager deviceDataManager;
     private final NodeDeviceProvider nodeDeviceProvider;
     private final PhecdaMqtt phecdaMqtt;
     private final GatewayProvider gatewayProvider;
@@ -274,11 +279,11 @@ public class DeviceService {
 
         Map<String, String> params = Maps.newHashMap();
         params.put("pushUrl", rtmpUrl);
-        SendServiceArgBO args = SendServiceArgBO.builder()
+        InvokeServiceArgBO args = InvokeServiceArgBO.builder()
                 .identifier("StartPushStreaming")
                 .params(params)
                 .build();
-        sendService(device.getId(), args);
+        invokeService(device.getId(), args);
         return FLV_URL.replaceAll("\\{host}", streamingMediaHost)
                 .replaceAll("\\{port}", String.valueOf(streamingMediaHttpPort))
                 .replaceAll("\\{productId}", device.getProductId())
@@ -286,18 +291,25 @@ public class DeviceService {
     }
 
     public void stopPushStreaming(Device device) {
-        SendServiceArgBO args = SendServiceArgBO.builder()
+        InvokeServiceArgBO args = InvokeServiceArgBO.builder()
                 .identifier("StopPushStreaming")
                 .build();
-        sendService(device.getId(), args);
+        invokeService(device.getId(), args);
     }
 
-    public ServiceInvokeReplyMessage sendServiceWithDeviceName(String deviceName, SendServiceArgBO args) {
+    public ServiceInvokeReplyMessage sendServiceWithDeviceName(String deviceName, InvokeServiceArgBO args) {
         Device device = deviceManager.queryByName(deviceName).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-        return sendService(device.getId(), args);
+        return invokeService(device.getId(), args);
     }
 
-    public ServiceInvokeReplyMessage sendService(String id, SendServiceArgBO args) {
+    /**
+     * 调用服务
+     *
+     * @param id
+     * @param args
+     * @return
+     */
+    public ServiceInvokeReplyMessage invokeService(String id, InvokeServiceArgBO args) {
         Device device = deviceManager.queryById(id).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         Product product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
@@ -315,42 +327,85 @@ public class DeviceService {
                 .commandName(args.getIdentifier())
                 .body(args.getBody())
                 .build();
-        return sendService(product.getAccessChannel(), service.getCallType(), dto);
+        return invokeService(product, service.getCallType(), dto, args.getTags());
     }
 
 
-    public ServiceInvokeReplyMessage sendService(AccessChannelEnum accessChannel, CallType callType, ServiceSendDTO dto) {
-        switch (accessChannel) {
-            case MQTT:
-                String sendTopic = TopicUtils.serviceSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
-                if (CallType.ASYNC.equals(callType)) {
-                    phecdaMqtt.publish(sendTopic, JSON.toJSONBytes(dto));
-                } else if (CallType.SYNC.equals(callType)) {
-                    String replayTopic = TopicUtils.serviceSyncReplyTopic(dto.getId());
-                    MqttMessage replayMessage = phecdaMqtt.publishAsync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
-                    return JSON.parseObject(replayMessage.getPayload(), ServiceInvokeReplyMessage.class);
-                }
-                break;
-            case GATEWAY:
-                CommandSendPDO command = CommandSendPDO.builder()
-                        .id(dto.getId())
-                        .method(dto.getMethod())
-                        .productKey(dto.getProductKey())
-                        .deviceName(dto.getDeviceName())
-                        .commandName(dto.getCommandName())
-                        .params(dto.getParams())
-                        .body(dto.getBody())
-                        .version(dto.getVersion())
-                        .build();
-                if (CallType.ASYNC.equals(callType)) {
-                    CompletableFuture.supplyAsync(() -> gatewayProvider.sendCommand(command));
-                } else if (CallType.SYNC.equals(callType)) {
+    public ServiceInvokeReplyMessage invokeService(String productKey, String deviceName, InvokeServiceArgBO args) {
+        Product product = productManager.findByKey(productKey).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
+        ThingModelService service = thingModel.getServices().stream()
+                .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
+        ServiceSendDTO dto = ServiceSendDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .sync(service.getCallType().equals(CallType.SYNC))
+                .productKey(productKey)
+                .deviceName(deviceName)
+                .params(args.getParams())
+                .commandName(args.getIdentifier())
+                .body(args.getBody())
+                .build();
+        return invokeService(product, service.getCallType(), dto, args.getTags());
+    }
+
+
+    public ServiceInvokeReplyMessage invokeService(Product product, CallType callType, ServiceSendDTO dto, Map<String, String> tags) {
+        AccessChannelEnum channel = product.getAccessChannel();
+
+        DeviceServiceLog serviceLog = DeviceServiceLog.builder()
+                .messageId(dto.getId())
+                .productId(product.getId())
+                .deviceName(dto.getDeviceName())
+                .productId(product.getId())
+                .serviceIdentifier(dto.getCommandName())
+                .serviceName(dto.getCommandName())
+                .sync(dto.getSync())
+                .inputData(JsonUtils.toJsonString(dto.getBody()))
+                .tags(tags)
+                .build();
+
+        try {
+            switch (channel) {
+                case MQTT:
+                    String sendTopic = TopicUtils.serviceSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
+                    if (CallType.ASYNC.equals(callType)) {
+                        phecdaMqtt.publish(sendTopic, JSON.toJSONBytes(dto));
+                        serviceLog.setResult(Result.SUCCESS);
+                    } else if (CallType.SYNC.equals(callType)) {
+                        String replayTopic = TopicUtils.serviceSyncReplyTopic(dto.getId());
+                        MqttMessage replayMessage = phecdaMqtt.publishAsync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
+                        serviceLog.setResult(Result.SUCCESS).setInputData(Optional.ofNullable(replayMessage.getPayload()).map(String::new).orElse(null));
+                        return JSON.parseObject(replayMessage.getPayload(), ServiceInvokeReplyMessage.class);
+                    }
+                    break;
+                case GATEWAY:
+                    CommandSendPDO command = CommandSendPDO.builder()
+                            .id(dto.getId())
+                            .method(dto.getMethod())
+                            .productKey(dto.getProductKey())
+                            .deviceName(dto.getDeviceName())
+                            .commandName(dto.getCommandName())
+                            .params(dto.getParams())
+                            .body(dto.getBody())
+                            .version(dto.getVersion())
+                            .build();
+                    if (CallType.ASYNC.equals(callType)) {
+                        CompletableFuture.supplyAsync(() -> gatewayProvider.sendCommand(command));
+                        serviceLog.setResult(Result.SUCCESS);
+                    } else if (CallType.SYNC.equals(callType)) {
 //                    return gatewayProvider.sendCommand(command);
-                    return null;
-                }
-                break;
-            default:
-                break;
+                        return null;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            serviceLog.setResult(Result.FAILURE).setErrorMessage(e.getMessage());
+        } finally {
+            deviceDataManager.saveServiceLog(serviceLog);
         }
         return null;
     }

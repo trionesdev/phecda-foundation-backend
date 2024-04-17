@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.service.bo.InvokeServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
@@ -11,6 +12,7 @@ import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProp
 import ms.phecda.backend.core.provider.ssp.device.DeviceProviderConvert;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
+import ms.phecda.backend.core.provider.ssp.device.pdo.InvokeServiceArgPDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.springframework.stereotype.Component;
 
@@ -50,4 +52,15 @@ public class DeviceProvider {
         Optional<Device> deviceOptional = deviceService.queryByName(name);
         return DeviceConvertMapper.INSTANCE.toPDO(deviceOptional.orElse(null));
     }
+
+    public void invokeService(InvokeServiceArgPDO args) {
+        InvokeServiceArgBO invokeServiceArgBO = InvokeServiceArgBO.builder()
+                .identifier(args.getServiceIdentifier())
+                .params(args.getParams())
+                .body(args.getBody())
+                .tags(args.getTags())
+                .build();
+        deviceService.invokeService(args.getProductKey(), args.getDeviceName(), invokeServiceArgBO);
+    }
+
 }

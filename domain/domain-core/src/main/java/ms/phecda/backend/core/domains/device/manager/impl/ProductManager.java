@@ -78,7 +78,7 @@ public class ProductManager {
         return PageUtils.of(pageInfo, assembleCollection(pageInfo.getRows()));
     }
 
-    @Cacheable(value = DeviceCacheConstants.PRODUCT_KEY_NAMES, key = "'" + PRODUCT_KEY_PREFIX + "'+#key")
+    @Cacheable(value = {PRODUCT_NAMES}, key = "'" + PRODUCT_KEY_PREFIX + "'+#key", unless = "#result==null")
     public Optional<Product> findByKey(String key) {
         return Optional.ofNullable(productDAO.selectByKey(key));
     }
@@ -103,12 +103,12 @@ public class ProductManager {
         }).map(ProductThingModelVersion::getThingModel);
     }
 
-    @Cacheable(value = DeviceCacheConstants.PRODUCT_THING_MODEL_LATEST_PROPERTIES_KEY_NAMES, key = "'" + PRODUCT_THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#productKey")
+    @Cacheable(value = THING_MODEL_LATEST_PROPERTIES_NAMES, key = "'" + THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#productKey")
     public List<ThingModelProperty> findLatestThingModelPropertiesByProductKey(String productKey) {
         return findThingModelByKey(productKey).map(ThingModel::getProperties).orElse(null);
     }
 
-    @Cacheable(value = PRODUCT_THING_MODEL_LATEST_PROPERTY_KEY_NAMES, key = "'" + PRODUCT_THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#productKey+':'+#identifier")
+    @Cacheable(value = THING_MODEL_LATEST_PROPERTY_NAMES, key = "'" + THING_MODEL_LATEST_PROPERTY_KEY_PREFIX + "'+#productKey+':'+#identifier")
     public Optional<ThingModelProperty> findLatestThingModelPropertyByProductKey(String productKey, String identifier) {
         return findLatestThingModelPropertiesByProductKey(productKey).stream().filter(property -> property.getIdentifier().equals(identifier)).findFirst();
     }
@@ -136,19 +136,19 @@ public class ProductManager {
      * @param product
      */
     @Caching(evict = {
-            @CacheEvict(value = DeviceCacheConstants.PRODUCT_KEY_NAMES, key = "'" + PRODUCT_KEY_PREFIX + "'+#product.key")
+            @CacheEvict(value = PRODUCT_NAMES, key = "'" + PRODUCT_KEY_PREFIX + "'+#product.key")
     })
     public void cleanProductCache(Product product) {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = DeviceCacheConstants.PRODUCT_THING_MODEL_LATEST_PROPERTIES_KEY_NAMES, key = "'" + PRODUCT_THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#product.key")
+            @CacheEvict(value = THING_MODEL_LATEST_PROPERTIES_NAMES, key = "'" + THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#product.key")
     })
     public void cleanLatestThingModelPropertiesCache(Product product) {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = PRODUCT_THING_MODEL_LATEST_PROPERTY_KEY_NAMES, key = "'" + PRODUCT_THING_MODEL_LATEST_PROPERTY_KEY_PREFIX + "'+#productKey+':'+#identifier")
+            @CacheEvict(value = THING_MODEL_LATEST_PROPERTY_NAMES, key = "'" + THING_MODEL_LATEST_PROPERTY_KEY_PREFIX + "'+#productKey+':'+#identifier")
     })
     public void cleanLatestThingModelPropertyCache(String productKey, String identifier) {
     }

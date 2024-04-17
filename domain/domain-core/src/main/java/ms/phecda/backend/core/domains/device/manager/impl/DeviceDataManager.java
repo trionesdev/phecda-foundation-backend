@@ -55,6 +55,10 @@ public class DeviceDataManager {
         deviceServiceLogDAO.save(entity);
     }
 
+    public void updateServiceLog(DeviceServiceLog entity) {
+        deviceServiceLogDAO.updateById(entity);
+    }
+
     //region device property data
     public void savePropertyData(String productKey, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
         devicePropertyDataDAO.insertRecord(IotDbUtils.generatePath(Lists.newArrayList(productKey, deviceName)), time, measurements, types, values);
