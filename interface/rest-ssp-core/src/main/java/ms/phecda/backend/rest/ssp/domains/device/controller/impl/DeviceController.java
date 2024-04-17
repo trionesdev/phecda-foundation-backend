@@ -3,7 +3,7 @@ package ms.phecda.backend.rest.ssp.domains.device.controller.impl;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.service.bo.SendServiceArgBO;
+import ms.phecda.backend.core.domains.device.service.bo.InvokeServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
 import ms.phecda.backend.rest.ssp.domains.device.support.RestDeviceConvertMapper;
@@ -55,18 +55,18 @@ public class DeviceController implements DeviceRest {
 
     @Override
     public ServiceInvokeReplyRep serviceSend(String id, SendServiceReqSO args) {
-        SendServiceArgBO argsBO = SendServiceArgBO.builder()
+        InvokeServiceArgBO argsBO = InvokeServiceArgBO.builder()
                 .identifier(args.getIdentifier())
                 .params(args.getParams())
                 .body(args.getBody())
                 .build();
-        ServiceInvokeReplyMessage serviceInvokeReplyMessage = deviceService.sendService(id, argsBO);
+        ServiceInvokeReplyMessage serviceInvokeReplyMessage = deviceService.invokeService(id, argsBO);
         return RestDeviceConvertMapper.INSTANCE.from(serviceInvokeReplyMessage);
     }
 
     @Override
     public ServiceInvokeReplyRep serviceSendByDeviceName(String name, SendServiceReqSO args) {
-        SendServiceArgBO argsBO = SendServiceArgBO.builder()
+        InvokeServiceArgBO argsBO = InvokeServiceArgBO.builder()
                 .identifier(args.getIdentifier())
                 .params(args.getParams())
                 .body(args.getBody())

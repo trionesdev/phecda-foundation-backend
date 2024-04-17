@@ -23,6 +23,7 @@ import lombok.experimental.SuperBuilder;
         {
                 @JsonSubTypes.Type(value = AlarmAction.class, name = "ALARM"),
                 @JsonSubTypes.Type(value = NotificationAction.class, name = "NOTIFICATION"),
+                @JsonSubTypes.Type(value = ServiceInvocationAction.class, name = "SERVICE_INVOCATION"),
         }
 )
 public abstract class PhecdaAction {

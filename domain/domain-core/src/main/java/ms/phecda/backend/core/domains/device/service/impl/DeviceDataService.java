@@ -34,6 +34,9 @@ public class DeviceDataService {
     public void saveServiceLog(DeviceServiceLog entity) {
         deviceDataManager.saveServiceLog(entity);
     }
+
+
+
     //endregion
 
 

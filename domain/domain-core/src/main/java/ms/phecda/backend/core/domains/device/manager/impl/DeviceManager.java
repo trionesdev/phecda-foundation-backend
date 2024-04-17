@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.DEVICE_NAME_NAMES;
-import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.DEVICE_NAME_PREFIX;
+import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.*;
 
 @RequiredArgsConstructor
 @Service
@@ -58,7 +57,7 @@ public class DeviceManager {
         return deviceDAO.list();
     }
 
-    @Cacheable(value = DEVICE_NAME_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#name")
+    @Cacheable(value = DEVICE_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#name")
     public Optional<Device> queryByName(String name) {
         return deviceDAO.getByName(name);
     }
@@ -69,7 +68,7 @@ public class DeviceManager {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = DEVICE_NAME_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#device.name")
+            @CacheEvict(value = DEVICE_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#device.name")
     })
     public void cleanDeviceCache(Device device) {
     }
