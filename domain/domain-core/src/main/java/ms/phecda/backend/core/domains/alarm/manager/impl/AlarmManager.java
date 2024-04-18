@@ -134,6 +134,10 @@ public class AlarmManager {
         }).collect(Collectors.toList());
     }
 
+    public Long queryCount(AlarmCriteria criteria){
+        return alarmDAO.selectCount(criteria);
+    }
+
     //endregion
 
 }

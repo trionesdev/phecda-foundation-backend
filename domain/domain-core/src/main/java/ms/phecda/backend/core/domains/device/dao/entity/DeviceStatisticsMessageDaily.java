@@ -18,11 +18,15 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
 @Accessors(chain = true)
-@TableName(value = "phecda_device_statistics_message", autoResultMap = true)
-public class DeviceStatisticsMessage {
+@TableName(value = "phecda_device_statistics_message_daily", autoResultMap = true)
+public class DeviceStatisticsMessageDaily {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
     private String type;
     private LocalDate date;
     private Long quantity;
+
+    public enum Type {
+        PROPERTIES_POST,
+    }
 }

@@ -10,6 +10,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriter
 import ms.phecda.backend.core.domains.device.dao.entity.DeviceEventLog;
 import ms.phecda.backend.core.domains.device.dao.entity.DeviceServiceLog;
 import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
+import ms.phecda.backend.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceDataService;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceEventLogQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DevicePropertyDataQuery;
@@ -30,9 +31,15 @@ public class DeviceDataController {
     private final DeviceBeRestConvert deviceBeRestConvert;
     private final DeviceDataService deviceDataService;
 
+    @Operation(summary = "查询设备属性数据统计")
+    @GetMapping(value = "properties-post/statistics")
+    public DevicePropertiesPostStatisticsBO queryDevicePropertiesPostStatistics() {
+        return deviceDataService.queryDevicePropertiesPostStatistics();
+    }
+
     @Operation(summary = "查询设备属性数据列表")
     @GetMapping(value = "property/data/list")
-    public List<DevicePropertyDataDTO> queryProperties(DevicePropertyDataQuery query){
+    public List<DevicePropertyDataDTO> queryProperties(DevicePropertyDataQuery query) {
         DevicePropertyDataCriteria criteria = deviceBeRestConvert.from(query);
         return deviceDataService.queryDevicePropertyDataList(criteria);
     }

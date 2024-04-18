@@ -14,4 +14,7 @@ public class DeviceCacheConstants {
 
     public static final String DEVICE_NAMES = "devices";
     public static final String DEVICE_NAME_PREFIX = "name:";
+
+
+    public static final String PROPERTIES_POST_STATISTICS_PREFIX = "properties-post-statistics:";
 }

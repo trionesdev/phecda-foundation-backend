@@ -8,6 +8,7 @@ import ms.phecda.backend.core.domains.alarm.dao.criteria.AlarmCriteria;
 import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmLevel;
 import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmType;
 import ms.phecda.backend.core.domains.alarm.manager.dto.AlarmDTO;
+import ms.phecda.backend.core.domains.alarm.service.bo.AlarmStatisticsBO;
 import ms.phecda.backend.core.domains.alarm.service.impl.AlarmService;
 import ms.phecda.backend.rest.backend.domains.alarm.controller.query.AlarmLevelQuery;
 import ms.phecda.backend.rest.backend.domains.alarm.controller.query.AlarmQuery;
@@ -119,6 +120,12 @@ public class AlarmController {
         criteria.setPageNum(pageNum);
         criteria.setPageSize(pageSize);
         return alarmService.findAlarmExtPage(criteria);
+    }
+
+    @Operation(summary = "报警统计")
+    @GetMapping(value = "alarms/statistics")
+    public AlarmStatisticsBO queryAlarmStatistics() {
+        return alarmService.queryAlarmStatistics();
     }
 
 }

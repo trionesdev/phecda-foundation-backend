@@ -11,10 +11,14 @@ import ms.phecda.backend.core.domains.alarm.dao.entity.AlarmType;
 import ms.phecda.backend.core.domains.alarm.manager.dto.AlarmDTO;
 import ms.phecda.backend.core.domains.alarm.manager.impl.AlarmManager;
 import ms.phecda.backend.core.domains.alarm.service.bo.AlarmCreateArgBO;
+import ms.phecda.backend.core.domains.alarm.service.bo.AlarmStatisticsBO;
 import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,6 +130,19 @@ public class AlarmService {
 
     public PageInfo<AlarmDTO> findAlarmExtPage(AlarmCriteria criteria) {
         return alarmManager.findAlarmExtPage(criteria);
+    }
+
+    public AlarmStatisticsBO queryAlarmStatistics() {
+        Long total = alarmManager.queryCount(AlarmCriteria.builder().build());
+        Instant mouthStartTime = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0).atZone(ZoneId.systemDefault()).toInstant();
+        Long mouthTotal = alarmManager.queryCount(AlarmCriteria.builder().startTime(mouthStartTime).endTime(Instant.now()).build());
+        Instant dayStartTime = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).atZone(ZoneId.systemDefault()).toInstant();
+        Long dayTotal = alarmManager.queryCount(AlarmCriteria.builder().startTime(dayStartTime).endTime(Instant.now()).build());
+        return AlarmStatisticsBO.builder()
+                .total(total)
+                .monthTotal(mouthTotal)
+                .dayTotal(dayTotal)
+                .build();
     }
 
     //endregion

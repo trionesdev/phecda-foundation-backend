@@ -44,6 +44,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
     @Override
     public void onEvent(PropertiesPostEvent event, long l, boolean b) {
         try {
+            deviceDataService.messageRecord();
             PropertiesPostMessage message = event.getMessage();
             Device device = deviceService.queryByNameCache(message.getDeviceName());
             if (Objects.isNull(device)) {
