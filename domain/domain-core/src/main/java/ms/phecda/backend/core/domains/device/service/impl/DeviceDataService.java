@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
@@ -15,11 +16,14 @@ import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceDataManager;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -33,11 +37,13 @@ import java.util.concurrent.TimeUnit;
 
 import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.PROPERTIES_POST_STATISTICS_PREFIX;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DeviceDataService {
     private final StringRedisTemplate stringRedisTemplate;
     private final DeviceDataManager deviceDataManager;
+    private final RedissonClient redissonClient;
 
     //region event
     public PageInfo<DeviceEventLog> eventLogsPage(DeviceEventLogCriteria criteria) {
@@ -117,8 +123,35 @@ public class DeviceDataService {
     }
 
 
-    public void saveStatisticsMessageDaily(DeviceStatisticsMessageDaily record) {
-        deviceDataManager.saveStatisticsMessageDaily(record);
+    public void statisticsMessageDaily() {
+        LocalDate targetDate = LocalDate.now().minusDays(1);
+        List<DeviceStatisticsMessageDaily> records = deviceDataManager.findList(DeviceStatisticsMessageDailyCriteria.builder()
+                .type(DeviceStatisticsMessageDaily.Type.PROPERTIES_POST.name()).date(targetDate).build());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = targetDate.format(formatter);
+        if (CollUtil.isNotEmpty(records)) {
+            log.warn("[DeviceDataService] day {} message statistics has logged ", formattedDate);
+            return;
+        }
+
+        RLock lock = redissonClient.getLock("device_properties_post_statistics_lock");
+        try {
+            boolean isLocked = lock.tryLock(10, 10, TimeUnit.SECONDS);
+            if (isLocked) {
+                String count = stringRedisTemplate.opsForValue().get(PROPERTIES_POST_STATISTICS_PREFIX + formattedDate);
+                DeviceStatisticsMessageDaily record = DeviceStatisticsMessageDaily.builder()
+                        .type(DeviceStatisticsMessageDaily.Type.PROPERTIES_POST.name())
+                        .date(targetDate)
+                        .quantity(Objects.isNull(count) ? 0L : Long.parseLong(count))
+                        .build();
+                record.setDate(LocalDateTime.now().minusDays(1).toLocalDate());
+                deviceDataManager.saveStatisticsMessageDaily(record);
+            }
+        } catch (InterruptedException ignored) {
+            log.error("[DeviceDataService] day {} message statistics lock failed ", formattedDate);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public DevicePropertiesPostStatisticsBO queryDevicePropertiesPostStatistics() {

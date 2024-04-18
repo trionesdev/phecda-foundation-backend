@@ -44,9 +44,6 @@ public class DeviceDataManager {
     private final ProductDAO productDAO;
     private final DeviceStatisticsMessageDailyDAO deviceStatisticsMessageDailyDAO;
 
-    public void saveStatisticsMessageDaily(DeviceStatisticsMessageDaily record){
-        deviceStatisticsMessageDailyDAO.save(record);
-    }
 
     public PageInfo<DeviceEventLog> eventLogsPage(DeviceEventLogCriteria criteria) {
         Page<DeviceEventLog> page = deviceEventLogDAO.page(criteria);
@@ -118,7 +115,15 @@ public class DeviceDataManager {
 
     //endregion
 
-    public Long getQuantitySum(DeviceStatisticsMessageDailyCriteria criteria){
+    public void saveStatisticsMessageDaily(DeviceStatisticsMessageDaily record) {
+        deviceStatisticsMessageDailyDAO.save(record);
+    }
+
+    public List<DeviceStatisticsMessageDaily> findList(DeviceStatisticsMessageDailyCriteria criteria) {
+        return deviceStatisticsMessageDailyDAO.selectList(criteria);
+    }
+
+    public Long getQuantitySum(DeviceStatisticsMessageDailyCriteria criteria) {
         return deviceStatisticsMessageDailyDAO.selectQuantitySum(criteria);
     }
 

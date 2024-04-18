@@ -29,7 +29,7 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-      group-id: ${spring.application.name}
+      group-id: triones-${spring.application.name}
   redis:
     redisson:
       config: |

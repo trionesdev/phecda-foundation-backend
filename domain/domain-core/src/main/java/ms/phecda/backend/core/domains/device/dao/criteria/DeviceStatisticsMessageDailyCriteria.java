@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Data
 @SuperBuilder
@@ -15,4 +16,5 @@ public class DeviceStatisticsMessageDailyCriteria {
     private Instant startTime;
     private Instant endTime;
     private String type;
+    private LocalDate date;
 }
