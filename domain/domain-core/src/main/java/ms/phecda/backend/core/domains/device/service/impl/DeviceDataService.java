@@ -125,7 +125,6 @@ public class DeviceDataService {
     /**
      * 记录前一天的消息数量，通过分布式锁保障只有一个实例执行
      */
-
     public void statisticsMessageDaily() {
         LocalDate targetDate = LocalDate.now().minusDays(1);
         List<DeviceStatisticsMessageDaily> records = deviceDataManager.findList(DeviceStatisticsMessageDailyCriteria.builder()
