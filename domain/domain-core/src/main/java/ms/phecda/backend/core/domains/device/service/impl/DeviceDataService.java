@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.PROPERTIES_POST_STATISTICS_DAILY_LOCK_KEY;
 import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants.PROPERTIES_POST_STATISTICS_PREFIX;
 
 @Slf4j
@@ -136,7 +137,7 @@ public class DeviceDataService {
             return;
         }
 
-        RLock lock = redissonClient.getLock("device_properties_post_statistics_lock");
+        RLock lock = redissonClient.getLock(PROPERTIES_POST_STATISTICS_DAILY_LOCK_KEY);
         try {
             boolean isLocked = lock.tryLock(10, 10, TimeUnit.SECONDS);
             if (isLocked) {

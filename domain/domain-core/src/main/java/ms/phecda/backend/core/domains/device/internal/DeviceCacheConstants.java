@@ -17,4 +17,6 @@ public class DeviceCacheConstants {
 
 
     public static final String PROPERTIES_POST_STATISTICS_PREFIX = "properties-post-statistics:";
+
+    public static final String PROPERTIES_POST_STATISTICS_DAILY_LOCK_KEY = "device_properties_post_statistics_daily_lock";
 }
