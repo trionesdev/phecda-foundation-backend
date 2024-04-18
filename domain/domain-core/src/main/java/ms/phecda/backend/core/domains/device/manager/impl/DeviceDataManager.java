@@ -10,14 +10,18 @@ import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceStatisticsMessageDailyCriteria;
 import ms.phecda.backend.core.domains.device.dao.entity.Device;
 import ms.phecda.backend.core.domains.device.dao.entity.DeviceEventLog;
 import ms.phecda.backend.core.domains.device.dao.entity.DeviceServiceLog;
+import ms.phecda.backend.core.domains.device.dao.entity.DeviceStatisticsMessageDaily;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceEventLogDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DevicePropertyDataDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.DeviceServiceLogDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.DeviceStatisticsMessageDailyDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
 import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -37,7 +41,12 @@ public class DeviceDataManager {
     private final DeviceServiceLogDAO deviceServiceLogDAO;
     private final DevicePropertyDataDAO devicePropertyDataDAO;
     private final DeviceDAO deviceDAO;
-    private final ProductManager productManager;
+    private final ProductDAO productDAO;
+    private final DeviceStatisticsMessageDailyDAO deviceStatisticsMessageDailyDAO;
+
+    public void saveStatisticsMessageDaily(DeviceStatisticsMessageDaily record){
+        deviceStatisticsMessageDailyDAO.save(record);
+    }
 
     public PageInfo<DeviceEventLog> eventLogsPage(DeviceEventLogCriteria criteria) {
         Page<DeviceEventLog> page = deviceEventLogDAO.page(criteria);
@@ -66,7 +75,7 @@ public class DeviceDataManager {
 
     public Product getProductByDeviceName(String deviceName) {
         Device device = deviceDAO.getByName(deviceName).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-        return productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        return productDAO.getById(device.getProductId());
     }
 
     public List<Map<String, Object>> queryDevicePropertyDataList(String deviceName, List<String> fields, long startTime, long endTime) {
@@ -108,5 +117,9 @@ public class DeviceDataManager {
     }
 
     //endregion
+
+    public Long getQuantitySum(DeviceStatisticsMessageDailyCriteria criteria){
+        return deviceStatisticsMessageDailyDAO.selectQuantitySum(criteria);
+    }
 
 }

@@ -28,7 +28,7 @@ public class AlarmDAO extends ServiceImpl<AlarmMapper, Alarm> {
                     .eq(Objects.nonNull(criteria.getStatus()), Alarm::getStatus, criteria.getStatus())
             ;
         }
-        return queryWrapper.orderByDesc(Alarm::getCreatedAt);
+        return queryWrapper;
     }
 
     public List<Alarm> selectList(AlarmCriteria criteria) {
@@ -38,10 +38,15 @@ public class AlarmDAO extends ServiceImpl<AlarmMapper, Alarm> {
             } else {
                 wrapper.last("limit 1000");
             }
-        }));
+        }).orderByDesc(Alarm::getCreatedAt));
     }
 
     public PageInfo<Alarm> selectPage(AlarmCriteria criteria) {
-        return MpPageUtils.of(baseMapper.selectPage(MpPageUtils.page(criteria), buildQueryWrapper(criteria)));
+        return MpPageUtils.of(baseMapper.selectPage(MpPageUtils.page(criteria), buildQueryWrapper(criteria).orderByDesc(Alarm::getCreatedAt)));
     }
+
+    public Long selectCount(AlarmCriteria criteria) {
+        return baseMapper.selectCount(buildQueryWrapper(criteria));
+    }
+
 }
