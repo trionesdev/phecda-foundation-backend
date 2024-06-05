@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-@MapperScan(value = {"ms.phecda.backend.core.domains.*.dao.mapper"})
+@MapperScan(value = {"ms.phecda.backend.core.domains.*.repository.mapper"})
 //@EnableFeignClients
 public class TestApplication {
     public static void main(String[] args) {

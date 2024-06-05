@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.linkage.internal.util;
 
 import ms.phecda.backend.core.domains.linkage.internal.rule.OperatorEnum;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 
 import java.util.List;
 

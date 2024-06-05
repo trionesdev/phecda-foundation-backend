@@ -13,10 +13,10 @@
     <modules>
         <module>serve</module>
         <module>infrastructure</module>
-        <module>edge</module>
+<!--        <module>edge</module>-->
         <module>domain</module>
-        <module>interface</module>
-        <module>interface/mq-consumer-core</module>
+        <module>interfaces</module>
+        <module>interfaces/mq-consumer-core</module>
     </modules>
 
     <artifactId>phecda-backend</artifactId>

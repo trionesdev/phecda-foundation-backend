@@ -2,10 +2,10 @@ package ms.phecda.backend.core.domains.device.manager.impl;
 
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
-import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
-import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
+import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.repository.dvo.DeviceStatisticsDVO;
+import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.repository.impl.DeviceDAO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -25,40 +25,40 @@ public class DeviceManager {
         return deviceDAO.selectStatusStatistics();
     }
 
-    public void create(Device device) {
+    public void create(DevicePO device) {
         deviceDAO.save(device);
     }
 
-    public void deleteById(Device device) {
+    public void deleteById(DevicePO device) {
         deviceDAO.removeById(device);
     }
 
-    public void updateById(Device device) {
+    public void updateById(DevicePO device) {
         deviceDAO.updateById(device);
     }
 
-    public void updateBatchById(List<Device> entityList) {
+    public void updateBatchById(List<DevicePO> entityList) {
         deviceDAO.updateBatchById(entityList);
     }
 
-    public Optional<Device> queryById(String id) {
+    public Optional<DevicePO> queryById(String id) {
         return Optional.ofNullable(deviceDAO.getById(id));
     }
 
-    public PageInfo<Device> queryPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
+    public PageInfo<DevicePO> queryPage(Integer pageNum, Integer pageSize, DeviceCriteria criteria) {
         return deviceDAO.selectPage(pageNum, pageSize, criteria);
     }
 
-    public List<Device> queryList(DeviceCriteria criteria) {
+    public List<DevicePO> queryList(DeviceCriteria criteria) {
         return deviceDAO.selectList(criteria);
     }
 
-    public List<Device> listAll() {
+    public List<DevicePO> listAll() {
         return deviceDAO.list();
     }
 
     @Cacheable(value = DEVICE_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#name")
-    public Optional<Device> queryByName(String name) {
+    public Optional<DevicePO> queryByName(String name) {
         return deviceDAO.getByName(name);
     }
 
@@ -70,6 +70,6 @@ public class DeviceManager {
     @Caching(evict = {
             @CacheEvict(value = DEVICE_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#device.name")
     })
-    public void cleanDeviceCache(Device device) {
+    public void cleanDeviceCache(DevicePO device) {
     }
 }

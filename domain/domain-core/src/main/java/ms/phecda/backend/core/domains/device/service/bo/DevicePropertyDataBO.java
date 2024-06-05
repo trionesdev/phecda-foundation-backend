@@ -2,7 +2,7 @@ package ms.phecda.backend.core.domains.device.service.bo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 
 import java.time.Instant;
 

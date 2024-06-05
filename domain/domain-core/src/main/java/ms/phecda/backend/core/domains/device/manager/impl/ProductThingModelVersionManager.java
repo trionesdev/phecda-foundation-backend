@@ -1,8 +1,8 @@
 package ms.phecda.backend.core.domains.device.manager.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductThingModelVersionDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

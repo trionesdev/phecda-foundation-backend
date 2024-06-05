@@ -1,8 +1,8 @@
 package ms.phecda.backend.core.provider.ssp.device.pdo;
 
 import lombok.Data;
-import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
-import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
+import ms.phecda.backend.core.domains.device.repository.po.enums.AccessChannelEnum;
+import ms.phecda.backend.core.domains.device.repository.po.enums.NodeTypeEnum;
 
 @Data
 public class ProductPDO {
