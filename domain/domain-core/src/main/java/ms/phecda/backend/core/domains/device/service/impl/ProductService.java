@@ -6,23 +6,23 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
+import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.internal.util.DeviceUtils;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModel;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelEvent;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelService;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeEnum;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeOption;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class ProductService {
         return productManager.queryStatistics();
     }
 
-    public void createProduct(Product product) {
+    public void createProduct(ProductPO product) {
         if (StrUtil.isBlank(product.getKey())) {
             product.setKey(generateProductKey());
         }
@@ -59,25 +59,25 @@ public class ProductService {
 
 
     public void deleteProductById(String id) {
-        Product productSnap = productManager.queryById(id).orElseThrow(() -> new BusinessException("产品不存在"));
+        ProductPO productSnap = productManager.queryById(id).orElseThrow(() -> new BusinessException("产品不存在"));
         productManager.deleteById(productSnap);
         productManager.cleanProductCache(productSnap);
     }
 
     @Transactional
-    public void updateProductById(Product product) {
-        Product productSnap = productManager.queryById(product.getId()).orElseThrow(() -> new BusinessException("产品不存在"));
+    public void updateProductById(ProductPO product) {
+        ProductPO productSnap = productManager.queryById(product.getId()).orElseThrow(() -> new BusinessException("产品不存在"));
         productManager.updateById(product);
         productManager.cleanProductCache(productSnap); //清空缓存
     }
 
 
-    public Optional<Product> queryProductById(String id) {
+    public Optional<ProductPO> queryProductById(String id) {
         return productManager.queryById(id);
     }
 
 
-    public Optional<Product> findProductByKey(String key) {
+    public Optional<ProductPO> findProductByKey(String key) {
         return productManager.findByKey(key);
     }
 
@@ -198,7 +198,7 @@ public class ProductService {
      * @param productId
      */
     public void publishThingModel(String productId) {
-        Product product = productManager.queryById(productId).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        ProductPO product = productManager.queryById(productId).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         productThingModelDraftManager.publish(productId);
         productManager.cleanLatestThingModelPropertiesCache(product);//清空缓存
 
@@ -228,7 +228,7 @@ public class ProductService {
     }
 
     public Optional<ProductThingModelVersion> queryThingModelByKey(String key, String version) {
-        Product product = productManager.findByKey(key).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        ProductPO product = productManager.findByKey(key).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         if (StrUtil.isBlank(version)) {
             version = productManager.queryById(product.getId())
                     .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"))
@@ -238,7 +238,7 @@ public class ProductService {
     }
 
 
-    public void updateProductProtocolProperties(Product product) {
+    public void updateProductProtocolProperties(ProductPO product) {
         productManager.updateById(product);
     }
 

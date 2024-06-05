@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.domains.device.dao.entity.enums.AbilityTypeEnum;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelEvent;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelService;
+import ms.phecda.backend.core.domains.device.repository.po.enums.AbilityTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
 
 @Data
 @SuperBuilder

@@ -7,21 +7,21 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
-import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceStatisticsMessageDailyCriteria;
-import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.dao.entity.DeviceEventLog;
-import ms.phecda.backend.core.domains.device.dao.entity.DeviceServiceLog;
-import ms.phecda.backend.core.domains.device.dao.entity.DeviceStatisticsMessageDaily;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.DeviceEventLogDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.DevicePropertyDataDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.DeviceServiceLogDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.DeviceStatisticsMessageDailyDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
+import ms.phecda.backend.core.domains.device.repository.criteria.DeviceEventLogCriteria;
+import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
+import ms.phecda.backend.core.domains.device.repository.criteria.DeviceServiceLogCriteria;
+import ms.phecda.backend.core.domains.device.repository.criteria.DeviceStatisticsMessageDailyCriteria;
+import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.repository.po.DeviceEventLog;
+import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog;
+import ms.phecda.backend.core.domains.device.repository.po.DeviceStatisticsMessageDaily;
+import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
+import ms.phecda.backend.core.domains.device.repository.impl.DeviceDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.DeviceEventLogDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.DevicePropertyDataDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.DeviceServiceLogDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.DeviceStatisticsMessageDailyDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
 import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -70,19 +70,19 @@ public class DeviceDataManager {
         devicePropertyDataDAO.insertRecord(IotDbUtils.generatePath(Lists.newArrayList(productKey, deviceName)), time, measurements, types, values);
     }
 
-    public Product getProductByDeviceName(String deviceName) {
-        Device device = deviceDAO.getByName(deviceName).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+    public ProductPO getProductByDeviceName(String deviceName) {
+        DevicePO device = deviceDAO.getByName(deviceName).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productDAO.getById(device.getProductId());
     }
 
     public List<Map<String, Object>> queryDevicePropertyDataList(String deviceName, List<String> fields, long startTime, long endTime) {
-        Product product = getProductByDeviceName(deviceName);
+        ProductPO product = getProductByDeviceName(deviceName);
         List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
         return devicePropertyDataDAO.selectList(paths, startTime, endTime);
     }
 
     public List<Map<String, Object>> queryDevicePropertyLastData(String deviceName, List<String> fields) {
-        Product product = getProductByDeviceName(deviceName);
+        ProductPO product = getProductByDeviceName(deviceName);
         List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
         return devicePropertyDataDAO.selectLastList(paths);
     }
@@ -97,7 +97,7 @@ public class DeviceDataManager {
         if (CollectionUtil.isEmpty(rawsData)) {
             return Collections.emptyList();
         }
-        Product product = getProductByDeviceName(criteria.getDeviceName());
+        ProductPO product = getProductByDeviceName(criteria.getDeviceName());
 
         return rawsData.stream().map(row -> {
             String timeStr = String.valueOf(row.get("Time")).substring(0, 13);

@@ -5,19 +5,18 @@ import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.core.util.PageUtils;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
-import ms.phecda.backend.core.domains.device.dao.entity.enums.ProductStatusEnum;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
+import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.repository.po.enums.NodeTypeEnum;
+import ms.phecda.backend.core.domains.device.repository.po.enums.ProductStatusEnum;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductThingModelVersionDAO;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
-import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
-import ms.phecda.backend.core.domains.device.internal.DeviceCacheConstants;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModel;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.DeviceConvert;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -41,28 +40,28 @@ public class ProductManager {
         return productDAO.selectStatistics();
     }
 
-    public void create(Product product) {
+    public void create(ProductPO product) {
         if (Objects.equals(NodeTypeEnum.GATEWAY, product.getNodeType())) {
-            product.setType(Product.Type.GATEWAY);
+            product.setType(ProductPO.Type.GATEWAY);
         }
         productDAO.save(product);
     }
 
-    public void deleteById(Product product) {
+    public void deleteById(ProductPO product) {
         productDAO.removeById(product);
     }
 
-    public void updateById(Product product) {
+    public void updateById(ProductPO product) {
         productDAO.updateById(product);
     }
 
 
-    public Optional<Product> queryById(String id) {
+    public Optional<ProductPO> queryById(String id) {
         return Optional.ofNullable(productDAO.getById(id));
     }
 
     public Optional<ProductDTO> queryExtById(String id) {
-        return Optional.ofNullable(productDAO.getById(id)).map(DeviceConvertMapper.INSTANCE::fromRecord);
+        return Optional.ofNullable(productDAO.getById(id)).map(DeviceConvert.INSTANCE::fromRecord);
     }
 
     public List<ProductDTO> queryAllByIds(Collection<String> ids) {
@@ -74,12 +73,12 @@ public class ProductManager {
     }
 
     public PageInfo<ProductDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
-        PageInfo<Product> pageInfo = productDAO.selectPage(pageNum, pageSize, criteria);
+        PageInfo<ProductPO> pageInfo = productDAO.selectPage(pageNum, pageSize, criteria);
         return PageUtils.of(pageInfo, assembleCollection(pageInfo.getRows()));
     }
 
     @Cacheable(value = {PRODUCT_NAMES}, key = "'" + PRODUCT_KEY_PREFIX + "'+#key", unless = "#result==null")
-    public Optional<Product> findByKey(String key) {
+    public Optional<ProductPO> findByKey(String key) {
         return Optional.ofNullable(productDAO.selectByKey(key));
     }
 
@@ -114,11 +113,11 @@ public class ProductManager {
     }
 
 
-    private List<ProductDTO> assembleCollection(List<Product> records) {
+    private List<ProductDTO> assembleCollection(List<ProductPO> records) {
         if (CollectionUtil.isEmpty(records)) {
             return Collections.emptyList();
         }
-        return DeviceConvertMapper.INSTANCE.productDtoFromRecord(records);
+        return DeviceConvert.INSTANCE.productDtoFromRecord(records);
     }
 
     public void publish(String id) {
@@ -138,13 +137,13 @@ public class ProductManager {
     @Caching(evict = {
             @CacheEvict(value = PRODUCT_NAMES, key = "'" + PRODUCT_KEY_PREFIX + "'+#product.key")
     })
-    public void cleanProductCache(Product product) {
+    public void cleanProductCache(ProductPO product) {
     }
 
     @Caching(evict = {
             @CacheEvict(value = THING_MODEL_LATEST_PROPERTIES_NAMES, key = "'" + THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#product.key")
     })
-    public void cleanLatestThingModelPropertiesCache(Product product) {
+    public void cleanLatestThingModelPropertiesCache(ProductPO product) {
     }
 
     @Caching(evict = {

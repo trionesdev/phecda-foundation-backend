@@ -6,13 +6,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
-import ms.phecda.backend.core.domains.device.dao.entity.Device;
+import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceExtBO extends Device {
+public class DeviceExtBO extends DevicePO {
     private ProductDTO product;
 }

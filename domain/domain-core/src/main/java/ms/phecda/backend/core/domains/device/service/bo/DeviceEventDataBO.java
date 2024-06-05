@@ -2,7 +2,7 @@ package ms.phecda.backend.core.domains.device.service.bo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelEvent;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

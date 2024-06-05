@@ -1,8 +1,8 @@
 package ms.phecda.backend.core.provider.ssp.device;
 
-import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
@@ -17,9 +17,9 @@ import java.util.List;
         builder = @Builder(disableBuilder = true))
 @Named("deviceProviderConvert")
 public interface DeviceProviderConvert {
-    ProductPDO from(Product product);
+    ProductPDO from(ProductPO product);
 
-    DevicePDO from(Device device);
+    DevicePDO from(DevicePO device);
 
 
     ThingModelPropertyPDO from(ThingModelProperty thingModelProperty);

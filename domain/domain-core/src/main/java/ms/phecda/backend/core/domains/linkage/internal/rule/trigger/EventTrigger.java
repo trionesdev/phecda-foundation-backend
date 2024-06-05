@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import ms.phecda.backend.core.domains.linkage.internal.rule.OperatorEnum;
 import ms.phecda.backend.core.domains.linkage.internal.util.RuleUtils;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 
 import java.util.List;
 import java.util.Objects;

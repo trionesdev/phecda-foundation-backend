@@ -1,12 +1,12 @@
 package ms.phecda.backend.core.domains.device.manager.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.dao.entity.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelDraftDAO;
-import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
-import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
+import ms.phecda.backend.core.domains.device.internal.DeviceConvert;
+import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
+import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductThingModelDraftDAO;
+import ms.phecda.backend.core.domains.device.repository.impl.ProductThingModelVersionDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -35,7 +35,7 @@ public class ProductThingModelDraftManager {
     public void publish(String productId) {
         ProductThingModelDraft draft = productThingModelDraftDAO.selectByProductId(productId);
         if (Objects.nonNull(draft)) {
-            ProductThingModelVersion version = DeviceConvertMapper.INSTANCE.from(draft);
+            ProductThingModelVersion version = DeviceConvert.INSTANCE.from(draft);
             version.setId(null);
             productThingModelVersionDAO.save(version);
             productDAO.updateVersion(productId, version.getId());

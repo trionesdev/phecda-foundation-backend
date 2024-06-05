@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueType;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueType;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 
 import java.util.List;
 

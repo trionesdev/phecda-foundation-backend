@@ -1,14 +1,14 @@
 package ms.phecda.backend.core.provider.ssp.device.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
-import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.DeviceConvert;
+import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 import ms.phecda.backend.core.domains.device.service.bo.InvokeServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.domains.device.internal.DeviceConvertMapper;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import ms.phecda.backend.core.provider.ssp.device.DeviceProviderConvert;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
@@ -28,7 +28,7 @@ public class DeviceProvider {
     private final DeviceService deviceService;
 
     public ProductPDO findProductByKey(String key) {
-        Product product = productService.findProductByKey(key).orElse(null);
+        ProductPO product = productService.findProductByKey(key).orElse(null);
         return deviceProviderConvert.from(product);
     }
 
@@ -44,13 +44,13 @@ public class DeviceProvider {
 
     public List<DevicePDO> listById(List<String> ids) {
         DeviceCriteria criteria = DeviceCriteria.builder().ids(ids).build();
-        List<Device> devices = deviceService.queryList(criteria);
-        return DeviceConvertMapper.INSTANCE.toPDOList(devices);
+        List<DevicePO> devices = deviceService.queryList(criteria);
+        return DeviceConvert.INSTANCE.toPDOList(devices);
     }
 
     public DevicePDO queryByName(String name) {
-        Optional<Device> deviceOptional = deviceService.queryByName(name);
-        return DeviceConvertMapper.INSTANCE.toPDO(deviceOptional.orElse(null));
+        Optional<DevicePO> deviceOptional = deviceService.queryByName(name);
+        return DeviceConvert.INSTANCE.toPDO(deviceOptional.orElse(null));
     }
 
     public void invokeService(InvokeServiceArgPDO args) {

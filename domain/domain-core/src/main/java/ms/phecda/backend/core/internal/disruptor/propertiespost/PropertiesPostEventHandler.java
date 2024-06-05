@@ -7,14 +7,14 @@ import com.google.common.collect.Maps;
 import com.lmax.disruptor.EventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.domains.device.dao.entity.Device;
-import ms.phecda.backend.core.domains.device.dao.entity.Product;
+import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceDataService;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
-import ms.phecda.backend.core.domains.device.internal.thing.model.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.thing.valuetype.ValueTypeEnum;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 import ms.phecda.backend.core.domains.linkage.service.impl.LinkageSceneService;
 import ms.phecda.backend.core.domains.linkage.internal.rule.action.ActionArgs;
 import ms.phecda.backend.core.domains.messageforwarding.internal.factory.ForwardingActionFactory;
@@ -46,7 +46,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
         try {
             deviceDataService.messageRecord();
             PropertiesPostMessage message = event.getMessage();
-            Device device = deviceService.queryByNameCache(message.getDeviceName());
+            DevicePO device = deviceService.queryByNameCache(message.getDeviceName());
             if (Objects.isNull(device)) {
                 log.warn("[MessageProcess#propertiesPost] device {} not found ", message.getDeviceName());
                 return;
@@ -104,13 +104,13 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
 
     public void saveMessage(PropertiesPostMessage message) {
         try {
-            Product product = productService.findProductByKey(message.getProductKey()).orElse(null);
+            ProductPO product = productService.findProductByKey(message.getProductKey()).orElse(null);
             if (Objects.isNull(product)) {
                 log.warn("product {} not exist", message.getProductKey());
                 return;
             }
 
-            Optional<Device> deviceOptional = deviceService.queryByName(message.getDeviceName());
+            Optional<DevicePO> deviceOptional = deviceService.queryByName(message.getDeviceName());
             if (deviceOptional.isEmpty()) {
                 log.warn("device {} not exist", message.getDeviceName());
                 return;
