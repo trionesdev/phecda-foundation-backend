@@ -2,9 +2,9 @@ package ms.phecda.backend.core.domains.device.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
+import org.apache.iotdb.isession.pool.SessionDataSetWrapper;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
-import org.apache.iotdb.session.pool.SessionDataSetWrapper;
 import org.apache.iotdb.session.pool.SessionPool;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.springframework.stereotype.Repository;

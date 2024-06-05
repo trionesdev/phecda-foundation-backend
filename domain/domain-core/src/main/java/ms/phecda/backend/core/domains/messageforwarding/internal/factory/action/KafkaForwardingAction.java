@@ -1,6 +1,8 @@
 package ms.phecda.backend.core.domains.messageforwarding.internal.factory.action;
 
 import cn.hutool.core.collection.CollectionUtil;
+import io.reactivex.rxjava3.core.Completable;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
@@ -13,13 +15,11 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
-
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -73,8 +73,12 @@ public class KafkaForwardingAction extends AbsForwardingAction {
         if (Objects.isNull(kafkaTemplate)) {
             log.error("[KafkaForwardingAction] kafka instance not found ,sink id :{}", action.getId());
         }
-        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(action.getTopic(), data);
-        future.addCallback(result -> log.info("success send kafka message: {}", result),
-                result -> log.error("fail send kafka message: ", result));
+        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(action.getTopic(), data);
+        future.thenAccept(t -> {
+            log.info("[KafkaForwardingAction] kafka send success ,sink id :{}", action.getId());
+        }).exceptionally(t -> {
+            log.error("[KafkaForwardingAction] kafka send fail ,sink id :{}", action.getId(), t);
+            return null;
+        });
     }
 }

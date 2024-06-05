@@ -61,6 +61,10 @@ public class Product extends BaseLogicEntity {
     }
 
     public static class ProtocolListTypeHandler extends CollectionTypeHandler<ProtocolProperty> {
+        public ProtocolListTypeHandler(Class<?> type) {
+            super(type);
+        }
+
         protected Class<ProtocolProperty> specificType() {
             return ProtocolProperty.class;
         }

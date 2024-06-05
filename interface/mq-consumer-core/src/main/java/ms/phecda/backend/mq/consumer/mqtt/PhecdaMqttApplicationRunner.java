@@ -1,12 +1,12 @@
 package ms.phecda.backend.mq.consumer.mqtt;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import javax.annotation.PostConstruct;
 
 @Slf4j
 @RequiredArgsConstructor

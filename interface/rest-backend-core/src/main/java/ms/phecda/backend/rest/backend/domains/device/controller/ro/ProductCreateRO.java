@@ -1,13 +1,13 @@
 package ms.phecda.backend.rest.backend.domains.device.controller.ro;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ms.phecda.backend.core.domains.device.dao.entity.Product;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.AccessChannelEnum;
 import ms.phecda.backend.core.domains.device.dao.entity.enums.NodeTypeEnum;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @Data
 public class ProductCreateRO {

@@ -2,6 +2,7 @@ package ms.phecda.backend.core.domains.messageforwarding.internal.factory;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
@@ -15,7 +16,6 @@ import ms.phecda.backend.core.internal.util.MqttTopicUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Slf4j

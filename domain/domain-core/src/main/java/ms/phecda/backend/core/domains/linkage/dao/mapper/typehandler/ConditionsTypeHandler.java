@@ -9,6 +9,10 @@ import java.util.List;
 @Deprecated
 public class ConditionsTypeHandler extends SpecificTypeHandler<List<List<OtherCondition>>> {
 
+    public ConditionsTypeHandler(Class<?> type) {
+        super(type);
+    }
+
     @Override
     public TypeReference<List<List<OtherCondition>>> typeReference() {
         return new TypeReference<List<List<OtherCondition>>>() {

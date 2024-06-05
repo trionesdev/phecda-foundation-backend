@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.messageforwarding.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.trionesdev.commons.exception.spring.ex.BusinessException;
+import com.trionesdev.commons.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.RuleSink;

@@ -93,9 +93,11 @@ public class AlarmLog extends BaseLogicEntity {
         private ImageTypeEnum imageType;
     }
 
-    @NoArgsConstructor
-    public static class ImageInfoListTypeHandler extends CollectionTypeHandler<ImageInfo> {
 
+    public static class ImageInfoListTypeHandler extends CollectionTypeHandler<ImageInfo> {
+        public ImageInfoListTypeHandler(Class<?> type) {
+            super(type);
+        }
 
         @Override
         protected Class<ImageInfo> specificType() {

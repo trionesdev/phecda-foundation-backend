@@ -47,7 +47,9 @@ public class Alarm extends BaseLogicEntity {
     }
 
     public static class EventDataTypeHandler extends CollectionTypeHandler<Item> {
-
+        public EventDataTypeHandler(Class<?> type) {
+            super(type);
+        }
         @Override
         protected Class<Item> specificType() {
             return Item.class;
