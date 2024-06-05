@@ -2,8 +2,8 @@ package ms.phecda.infrastructure.conf.swagger;
 
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +18,7 @@ public class SwaggerConfiguration {
                 .group("PhecdaBackendAPI")
                 .pathsToMatch("/api/**")
                 .packagesToScan("ms.phecda.backend.rest.backend")
-                .addOpenApiCustomiser(authorizationOpenApiCustomiser())
+                .addOpenApiCustomizer(authorizationOpenApiCustomiser())
                 .build();
     }
 
@@ -28,11 +28,11 @@ public class SwaggerConfiguration {
                 .group("Phecda SSP API")
                 .pathsToMatch("/ssp-api/**")
                 .packagesToScan("ms.phecda.backend.rest.ssp")
-                .addOpenApiCustomiser(authorizationOpenApiCustomiser())
+                .addOpenApiCustomizer(authorizationOpenApiCustomiser())
                 .build();
     }
 
-    public OpenApiCustomiser authorizationOpenApiCustomiser() {
+    public OpenApiCustomizer authorizationOpenApiCustomiser() {
         return openApi -> openApi.schemaRequirement("AUTHORIZATION", new SecurityScheme().type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.HEADER)
                         .name(AUTHORIZATION))

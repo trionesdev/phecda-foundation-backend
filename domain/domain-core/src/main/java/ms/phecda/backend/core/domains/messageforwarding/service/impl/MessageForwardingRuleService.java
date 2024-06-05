@@ -2,7 +2,7 @@ package ms.phecda.backend.core.domains.messageforwarding.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.BooleanUtil;
-import com.trionesdev.commons.exception.spring.ex.NotFoundException;
+import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.*;

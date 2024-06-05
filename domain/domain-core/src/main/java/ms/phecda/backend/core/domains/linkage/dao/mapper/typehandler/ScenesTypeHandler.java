@@ -5,6 +5,10 @@ import ms.phecda.backend.core.domains.linkage.internal.rule.Scene;
 
 public class ScenesTypeHandler extends CollectionTypeHandler<Scene> {
 
+    public ScenesTypeHandler(Class<?> type) {
+        super(type);
+    }
+
     @Override
     protected Class<Scene> specificType() {
         return Scene.class;

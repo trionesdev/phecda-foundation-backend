@@ -44,6 +44,10 @@ public class Device extends BaseLogicEntity  {
     }
 
     public static class ProtocolListTypeHandler extends CollectionTypeHandler<Protocol> {
+        public ProtocolListTypeHandler(Class<?> type) {
+            super(type);
+        }
+
         @Override
         protected Class<Protocol> specificType() {
             return Protocol.class;

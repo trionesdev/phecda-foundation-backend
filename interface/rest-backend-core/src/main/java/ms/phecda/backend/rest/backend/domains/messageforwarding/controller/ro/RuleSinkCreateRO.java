@@ -1,8 +1,7 @@
 package ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 public class RuleSinkCreateRO {
