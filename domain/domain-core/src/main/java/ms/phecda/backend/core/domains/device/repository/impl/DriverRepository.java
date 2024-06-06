@@ -6,32 +6,32 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import ms.phecda.backend.core.domains.device.repository.criteria.ProductDriverCriteria;
 import ms.phecda.backend.core.domains.device.repository.mapper.ProductDriverMapper;
-import ms.phecda.backend.core.domains.device.repository.po.ProductDriverPO;
+import ms.phecda.backend.core.domains.device.repository.po.DriverPO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class ProductDriverRepository extends ServiceImpl<ProductDriverMapper, ProductDriverPO> {
+public class DriverRepository extends ServiceImpl<ProductDriverMapper, DriverPO> {
 
-    private LambdaQueryWrapper<ProductDriverPO> buildQueryWrapper(ProductDriverCriteria criteria) {
-        LambdaQueryWrapper<ProductDriverPO> wrapper = new LambdaQueryWrapper<>();
+    private LambdaQueryWrapper<DriverPO> buildQueryWrapper(ProductDriverCriteria criteria) {
+        LambdaQueryWrapper<DriverPO> wrapper = new LambdaQueryWrapper<>();
         if (Objects.nonNull(criteria)) {
 
         }
         return wrapper;
     }
 
-    public ProductDriverPO selectByName(String name) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<ProductDriverPO>().eq(ProductDriverPO::getName, name).last(" limit 1"));
+    public DriverPO selectByName(String name) {
+        return baseMapper.selectOne(new LambdaQueryWrapper<DriverPO>().eq(DriverPO::getName, name).last(" limit 1"));
     }
 
-    public List<ProductDriverPO> selectList(ProductDriverCriteria criteria) {
+    public List<DriverPO> selectList(ProductDriverCriteria criteria) {
         return baseMapper.selectList(buildQueryWrapper(criteria).last(" limit 500 "));
     }
 
-    public PageInfo<ProductDriverPO> selectPage(ProductDriverCriteria criteria) {
+    public PageInfo<DriverPO> selectPage(ProductDriverCriteria criteria) {
         return MpPageUtils.of(baseMapper.selectPage(MpPageUtils.page(criteria), buildQueryWrapper(criteria)));
     }
 

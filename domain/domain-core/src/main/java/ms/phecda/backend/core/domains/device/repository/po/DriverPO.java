@@ -15,10 +15,12 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "phecda_device_product_driver", autoResultMap = true)
-public class ProductDriverPO extends BaseLogicPO {
+@TableName(value = "phecda_device_driver", autoResultMap = true)
+public class DriverPO extends BaseLogicPO {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     private String name;
     private String description;
+    private String url;
+    private String version;
 }

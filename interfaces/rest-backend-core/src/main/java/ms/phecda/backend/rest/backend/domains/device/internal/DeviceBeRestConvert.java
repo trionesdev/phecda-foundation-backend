@@ -5,14 +5,16 @@ import ms.phecda.backend.core.domains.device.repository.criteria.DeviceEventLogC
 import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.device.repository.criteria.DeviceServiceLogCriteria;
 import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.repository.criteria.ProductDriverCriteria;
 import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductDriverPO;
+import ms.phecda.backend.core.domains.device.repository.po.DriverPO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceEventLogQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DevicePropertyDataQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceServiceLogQuery;
+import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductDriverQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.*;
 import org.mapstruct.Builder;
@@ -48,6 +50,12 @@ public interface DeviceBeRestConvert {
     DeviceServiceLogCriteria from(DeviceServiceLogQuery query);
 
 
-    ProductDriverPO from(ProductDriverCreateRO args);
+    //region product driver
+    DriverPO from(DriverRO.Create args);
+
+    DriverPO from(DriverRO.Update args);
+
+    ProductDriverCriteria from(ProductDriverQuery query);
+    //endregion
 
 }
