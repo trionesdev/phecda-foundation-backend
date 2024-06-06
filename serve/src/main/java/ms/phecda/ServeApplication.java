@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Slf4j
 @SpringBootApplication
 @EnableScheduling
-@MapperScan(value = {"ms.phecda.backend.core.domains.*.repository.mapper"})
+@MapperScan(value = {"ms.phecda.backend.core.domains.*.*.mapper"})
 @EnableMinioClients
 public class ServeApplication {
     public static void main(String[] args) {

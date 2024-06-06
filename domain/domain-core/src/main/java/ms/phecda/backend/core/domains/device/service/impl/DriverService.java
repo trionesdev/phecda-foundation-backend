@@ -2,9 +2,9 @@ package ms.phecda.backend.core.domains.device.service.impl;
 
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.manager.impl.ProductDriverManager;
+import ms.phecda.backend.core.domains.device.manager.impl.DriverManager;
 import ms.phecda.backend.core.domains.device.repository.criteria.ProductDriverCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.ProductDriverPO;
+import ms.phecda.backend.core.domains.device.repository.po.DriverPO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +12,10 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ProductDriverService {
-    private final ProductDriverManager productDriverManager;
+public class DriverService {
+    private final DriverManager productDriverManager;
 
-    public void createDriver(ProductDriverPO driver) {
+    public void createDriver(DriverPO driver) {
         productDriverManager.createDriver(driver);
     }
 
@@ -23,19 +23,19 @@ public class ProductDriverService {
         productDriverManager.deleteDriverById(id);
     }
 
-    public void updateDriverById(ProductDriverPO driver) {
+    public void updateDriverById(DriverPO driver) {
         productDriverManager.updateDriverById(driver);
     }
 
-    public Optional<ProductDriverPO> findDriverById(String id) {
+    public Optional<DriverPO> findDriverById(String id) {
         return productDriverManager.findDriverById(id);
     }
 
-    public List<ProductDriverPO> findDriverList(ProductDriverCriteria criteria) {
+    public List<DriverPO> findDriverList(ProductDriverCriteria criteria) {
         return productDriverManager.findDriverList(criteria);
     }
 
-    public PageInfo<ProductDriverPO> findDriverPage(ProductDriverCriteria criteria) {
+    public PageInfo<DriverPO> findDriverPage(ProductDriverCriteria criteria) {
         return productDriverManager.findDriverPage(criteria);
     }
 
