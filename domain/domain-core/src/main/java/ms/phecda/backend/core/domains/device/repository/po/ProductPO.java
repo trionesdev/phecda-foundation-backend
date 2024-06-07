@@ -36,6 +36,7 @@ public class ProductPO extends BaseLogicEntity {
     private String thingModelVersion;
     @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<ProtocolProperty> protocolProperties;
+
     private ProductStatusEnum status;
     private String driverName;
 

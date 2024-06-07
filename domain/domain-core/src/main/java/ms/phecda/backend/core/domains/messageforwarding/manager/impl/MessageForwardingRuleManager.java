@@ -7,8 +7,8 @@ import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageForwar
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSourceTopic;
 import ms.phecda.backend.core.domains.messageforwarding.dao.impl.*;
-import ms.phecda.backend.core.domains.messageforwarding.manager.dto.MessageForwardingRuleDTO;
-import ms.phecda.backend.core.domains.messageforwarding.manager.dto.MessageSourceDTO;
+import ms.phecda.backend.core.dto.messageforwarding.MessageForwardingRuleDTO;
+import ms.phecda.backend.core.dto.messageforwarding.MessageSourceDTO;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.stereotype.Service;

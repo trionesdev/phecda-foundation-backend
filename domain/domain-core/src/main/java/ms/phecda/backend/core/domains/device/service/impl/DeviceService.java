@@ -9,6 +9,7 @@ import com.trionesdev.commons.core.util.JsonUtils;
 import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
 import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.repository.dvo.DeviceStatisticsDVO;
 import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
@@ -16,13 +17,12 @@ import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog;
 import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog.Result;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 import ms.phecda.backend.core.domains.device.repository.po.enums.AccessChannelEnum;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.manager.dto.ServiceSendDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceDataManager;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.service.bo.*;
-import ms.phecda.backend.core.domains.device.internal.DeviceConvert;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService.CallType;
@@ -89,7 +89,7 @@ public class DeviceService {
 
     public Optional<DeviceExtBO> queryExtById(String id) {
         return deviceManager.queryById(id).map(t -> {
-            DeviceExtBO deviceExt = DeviceConvert.INSTANCE.from(t);
+            DeviceExtBO deviceExt = DeviceBeanConvert.INSTANCE.from(t);
             productManager.queryExtById(t.getProductId()).ifPresent(deviceExt::setProduct);
             return deviceExt;
         });
@@ -114,9 +114,9 @@ public class DeviceService {
             return PageUtils.empty();
         }
         Set<String> productIds = pageInfo.getRows().stream().map(DevicePO::getProductId).collect(Collectors.toSet());
-        Map<String, ProductDTO> productMap = productManager.queryAllByIds(productIds).stream().collect(Collectors.toMap(ProductPO::getId, v -> v, (v1, v2) -> v1));
+        Map<String, ProductExtDTO> productMap = productManager.queryAllByIds(productIds).stream().collect(Collectors.toMap(ProductPO::getId, v -> v, (v1, v2) -> v1));
         List<DeviceExtBO> deviceExtList = pageInfo.getRows().stream().map(t -> {
-            DeviceExtBO deviceExt = DeviceConvert.INSTANCE.from(t);
+            DeviceExtBO deviceExt = DeviceBeanConvert.INSTANCE.from(t);
             deviceExt.setProduct(productMap.get(t.getProductId()));
             return deviceExt;
         }).collect(Collectors.toList());
@@ -161,7 +161,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getProperties().stream().map(property -> {
-                DevicePropertyDataBO devicePropertyData = DeviceConvert.INSTANCE.from(property);
+                DevicePropertyDataBO devicePropertyData = DeviceBeanConvert.INSTANCE.from(property);
                 return devicePropertyData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
@@ -171,7 +171,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getEvents().stream().map(property -> {
-                DeviceEventDataBO deviceEventData = DeviceConvert.INSTANCE.from(property);
+                DeviceEventDataBO deviceEventData = DeviceBeanConvert.INSTANCE.from(property);
                 return deviceEventData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
@@ -181,7 +181,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getServices().stream().map(property -> {
-                DeviceServiceDataBO deviceServiceData = DeviceConvert.INSTANCE.from(property);
+                DeviceServiceDataBO deviceServiceData = DeviceBeanConvert.INSTANCE.from(property);
                 return deviceServiceData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
@@ -203,7 +203,7 @@ public class DeviceService {
         Optional<DevicePO> deviceOptional = deviceManager.queryByName(deviceName);
         DevicePO device = deviceOptional.orElse(DevicePO.builder().build());
         return productManager.findThingModel(device.getProductId()).map(thingModel ->
-                thingModel.getProperties().stream().map(property -> DeviceConvert.INSTANCE.from(property))
+                thingModel.getProperties().stream().map(property -> DeviceBeanConvert.INSTANCE.from(property))
                         .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
@@ -368,7 +368,7 @@ public class DeviceService {
 
         try {
             switch (channel) {
-                case MQTT:
+                case DRIVER:
                     String sendTopic = TopicUtils.serviceSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
                     if (CallType.ASYNC.equals(callType)) {
                         phecdaMqtt.publish(sendTopic, JSON.toJSONBytes(dto));

@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.domains.device.repository.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -15,6 +16,8 @@ import ms.phecda.backend.core.domains.device.repository.mapper.ProductMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,4 +59,12 @@ public class ProductDAO extends ServiceImpl<ProductMapper, ProductPO> {
     public ProductPO selectByKey(String key) {
         return baseMapper.selectOne(Wrappers.<ProductPO>lambdaQuery().eq(ProductPO::getKey, key).last("limit 1"));
     }
+
+    public List<ProductPO> selectListByKeys(Collection<String> keys) {
+        if (CollectionUtil.isEmpty(keys)) {
+            return Collections.emptyList();
+        }
+        return baseMapper.selectList(Wrappers.<ProductPO>lambdaQuery().in(ProductPO::getKey, keys));
+    }
+
 }

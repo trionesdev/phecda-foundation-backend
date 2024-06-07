@@ -12,7 +12,7 @@ import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO extends ProductPO {
+public class ProductExtDTO extends ProductPO {
     private String nodeTypeLabel;
     private String typeLabel;
 }

@@ -1,4 +1,4 @@
-package ms.phecda.backend.core.domains.messageforwarding.manager.dto;
+package ms.phecda.backend.core.dto.messageforwarding;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,6 @@ import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageForwar
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
 
 import java.util.Collection;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

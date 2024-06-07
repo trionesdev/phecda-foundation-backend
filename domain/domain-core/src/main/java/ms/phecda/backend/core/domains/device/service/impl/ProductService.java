@@ -1,17 +1,19 @@
 package ms.phecda.backend.core.domains.device.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
 import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
@@ -23,9 +25,12 @@ import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProp
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
+import ms.phecda.backend.core.dto.dervice.ProductDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +39,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class ProductService {
+    private final DeviceBeanConvert convert;
     private final ProductManager productManager;
     private final ProductThingModelDraftManager productThingModelDraftManager;
     private final ProductThingModelVersionManager productThingModelVersionManager;
@@ -72,8 +78,8 @@ public class ProductService {
     }
 
 
-    public Optional<ProductPO> queryProductById(String id) {
-        return productManager.queryById(id);
+    public Optional<ProductDTO> queryProductById(String id) {
+        return productManager.queryById(id).map(this::assemble);
     }
 
 
@@ -81,12 +87,16 @@ public class ProductService {
         return productManager.findByKey(key);
     }
 
-    public List<ProductDTO> queryList(ProductCriteria criteria) {
+    public List<ProductExtDTO> queryList(ProductCriteria criteria) {
         return productManager.queryList(criteria);
     }
 
-    public PageInfo<ProductDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
+    public PageInfo<ProductExtDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         return productManager.queryPage(pageNum, pageSize, criteria);
+    }
+
+    public List<ProductDTO> findProductsByKeys(Collection<String> keys) {
+        return assembleProducts(productManager.findProductsByKeys(keys));
     }
 
 
@@ -215,7 +225,7 @@ public class ProductService {
      * @return
      */
     public Optional<ThingModelProperty> queryThingModelLatestProperty(String productKey, String identifier) {
-        return productManager.findLatestThingModelPropertyByProductKey(productKey,identifier);
+        return productManager.findLatestThingModelPropertyByProductKey(productKey, identifier);
     }
 
     public Optional<ProductThingModelVersion> queryThingModel(String productId, String version) {
@@ -257,4 +267,21 @@ public class ProductService {
         }
         return key;
     }
+
+    private ProductDTO assemble(ProductPO product) {
+        if (Objects.isNull(product)) {
+            return null;
+        }
+        return convert.poToDto(product);
+    }
+
+    private List<ProductDTO> assembleProducts(List<ProductPO> records) {
+        if (CollectionUtil.isEmpty(records)) {
+            return Collections.emptyList();
+        }
+        return records.stream().map((product) -> {
+            return convert.poToDto(product);
+        }).collect(Collectors.toList());
+    }
+
 }

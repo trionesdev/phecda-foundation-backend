@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
+import ms.phecda.backend.core.internal.util.TopicUtils;
 
 @Data
 @Accessors(chain = true)
@@ -22,7 +24,8 @@ import lombok.experimental.SuperBuilder;
 )
 @JsonSubTypes(
         {
-                @JsonSubTypes.Type(value = ThingPropertyReportSourceProps.class, name = "THING_PROPERTY_REPORT")
+                @JsonSubTypes.Type(value = ThingPropertyReportSourceProps.class, name = "THING_PROPERTY_REPORT"),
+                @JsonSubTypes.Type(value = ThingEventReportSourceProps.class, name = "THING_EVENT_REPORT"),
         }
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -31,8 +34,17 @@ public abstract class SourceProps {
     private Type type;
 
     public enum Type {
-        THING_PROPERTY_REPORT
+        THING_PROPERTY_REPORT,
+        THING_EVENT_REPORT
     }
 
     public abstract String generateTopic();
+
+    @Getter
+    @AllArgsConstructor
+    public enum TopicTemplate {
+        THING_PROPERTY_POST(TopicUtils.propertyPostTopic("${productKey}", "${deviceName}"));
+        private final String template;
+    }
+
 }

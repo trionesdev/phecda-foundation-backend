@@ -1,10 +1,11 @@
 package ms.phecda.backend.core.domains.device.internal;
 
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
+import ms.phecda.backend.core.dto.dervice.ProductDTO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
@@ -26,16 +27,18 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         builder = @Builder(disableBuilder = true))
 @Named("deviceBeanConvert")
-public interface DeviceConvert {
-    DeviceConvert INSTANCE = Mappers.getMapper(DeviceConvert.class);
+public interface DeviceBeanConvert {
+    DeviceBeanConvert INSTANCE = Mappers.getMapper(DeviceBeanConvert.class);
 
     @Mappings({
             @Mapping(source = "product.nodeType.label", target = "nodeTypeLabel"),
             @Mapping(source = "product.type.label", target = "typeLabel")
     })
-    ProductDTO fromRecord(ProductPO product);
-    
-    List<ProductDTO> productDtoFromRecord(List<ProductPO> products);
+    ProductExtDTO fromRecord(ProductPO product);
+
+    ProductDTO poToDto(ProductPO product);
+
+    List<ProductExtDTO> productDtoFromRecord(List<ProductPO> products);
 
     ProductThingModelVersion from(ProductThingModelDraft args);
 

@@ -14,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KafkaSinkAction extends SinkAction {
-
     private String bootstrapServers;
     private String topic;
 

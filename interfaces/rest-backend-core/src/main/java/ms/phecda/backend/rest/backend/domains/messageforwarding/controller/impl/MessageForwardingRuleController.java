@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.*;
 import ms.phecda.backend.core.domains.messageforwarding.service.impl.MessageForwardingRuleService;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.*;
-import ms.phecda.backend.rest.backend.domains.messageforwarding.support.MessageForwardingRestConvertMapper;
+import ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingBeRestConvert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static ms.phecda.backend.rest.backend.domains.messageforwarding.support.MessageForwardingConstants.MESSAGE_FORWARDING_URI;
+import static ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingConstants.MESSAGE_FORWARDING_URI;
 
 @Tag(name = "消息转发规则")
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class MessageForwardingRuleController {
     @Operation(summary = "创建消息转发规则")
     @PostMapping(value = "forwarding-rules")
     public void createRule(@Validated @RequestBody MessageForwardingRuleCreateRO args) {
-        MessageForwardingRule rule = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+        MessageForwardingRule rule = MessageForwardingBeRestConvert.INSTANCE.from(args);
         messageForwardingRuleService.create(rule);
     }
 
@@ -39,7 +39,7 @@ public class MessageForwardingRuleController {
     public void updateById(
             @PathVariable(value = "id") String id,
             @Validated @RequestBody MessageForwardingRuleUpdateRO args) {
-        MessageForwardingRule rule = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+        MessageForwardingRule rule = MessageForwardingBeRestConvert.INSTANCE.from(args);
         rule.setId(id);
         messageForwardingRuleService.updateById(rule);
     }
