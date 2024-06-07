@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,5 +14,5 @@ import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceExtBO extends DevicePO {
-    private ProductDTO product;
+    private ProductExtDTO product;
 }

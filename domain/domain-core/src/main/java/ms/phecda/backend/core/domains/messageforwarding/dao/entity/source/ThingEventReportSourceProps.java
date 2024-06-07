@@ -1,6 +1,9 @@
 package ms.phecda.backend.core.domains.messageforwarding.dao.entity.source;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
@@ -12,7 +15,7 @@ import java.util.Objects;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThingPropertyReportSourceProps extends SourceProps {
+public class ThingEventReportSourceProps extends SourceProps {
     private String productKey;
     private String deviceName;
     private TopicTemplate topicTemplate;

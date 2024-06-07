@@ -7,13 +7,13 @@ import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
 import ms.phecda.backend.core.domains.messageforwarding.service.impl.MessageSinkService;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSinkCreateRO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSinkUpdateRO;
-import ms.phecda.backend.rest.backend.domains.messageforwarding.support.MessageForwardingRestConvertMapper;
+import ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingBeRestConvert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static ms.phecda.backend.rest.backend.domains.messageforwarding.support.MessageForwardingConstants.MESSAGE_FORWARDING_URI;
+import static ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingConstants.MESSAGE_FORWARDING_URI;
 
 @Tag(name = "消息数据目的")
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class MessageSinkController {
     @Operation(summary = "创建数据目的")
     @PostMapping(value = "sinks")
     public void createSink(@Validated @RequestBody MessageSinkCreateRO args) {
-        MessageSink messageSink = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+        MessageSink messageSink = MessageForwardingBeRestConvert.INSTANCE.from(args);
         messageSinkService.create(messageSink);
     }
 
@@ -40,7 +40,7 @@ public class MessageSinkController {
     public void updateById(
             @PathVariable(value = "id") String id,
             @Validated @RequestBody MessageSinkUpdateRO args) {
-        MessageSink messageSink = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+        MessageSink messageSink = MessageForwardingBeRestConvert.INSTANCE.from(args);
         messageSink.setId(id);
         messageSinkService.updateById(messageSink);
     }

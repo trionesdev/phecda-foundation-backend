@@ -1,4 +1,4 @@
-package ms.phecda.backend.core.domains.messageforwarding.manager.dto;
+package ms.phecda.backend.core.dto.messageforwarding;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

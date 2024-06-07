@@ -1,4 +1,4 @@
-package ms.phecda.backend.rest.backend.domains.messageforwarding.support;
+package ms.phecda.backend.rest.backend.domains.messageforwarding.internal;
 
 import ms.phecda.backend.rest.backend.internal.RestConstants;
 

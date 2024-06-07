@@ -1,6 +1,6 @@
 package ms.phecda.backend.mq.consumer.mqtt;
 
-import com.alibaba.fastjson2.JSON;
+import com.trionesdev.commons.core.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.internal.disruptor.MessageType;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 public class PhecdaMqttCallback implements MqttCallbackExtended {
     private final PhecdaMqttProperties mqttProperties;
     private final PhecdaMqtt phecdaMqtt;
-    //    private final MessageProcess messageProcess;
     private final PropertiesPostEventProducer propertiesPostEventProducer;
 
 
@@ -45,66 +44,13 @@ public class PhecdaMqttCallback implements MqttCallbackExtended {
     public void messageArrived(String topic, MqttMessage message) {
         String propertyPostTopic = TopicUtils.join(mqttProperties.getTopicPrefix(), TopicUtils.propertyPostTopic(null, null));
         if (MqttTopicUtils.isMatched(propertyPostTopic, topic)) { // 设备上报属性消息
-            MqttPropertiesPostMessage mqttMessage = JSON.parseObject(message.getPayload(), MqttPropertiesPostMessage.class);
+            MqttPropertiesPostMessage mqttMessage = JsonUtils.parse(message.getPayload(), MqttPropertiesPostMessage.class);
             PropertiesPostMessage propertiesPostMessage = mqttMessage.toProcessMessage();
             propertiesPostMessage.setType(MessageType.PROPERTIES_POST.name());
             propertiesPostEventProducer.sender(topic, propertiesPostMessage);
         }
 
-
-//        try {
-//            Optional<? extends BaseDeviceMessage> messageOptional = convertMessage(topic, message);
-//
-//            messageOptional.ifPresent(i -> {
-//                if (Objects.equals(i.getMessageType(), INVOKE_SERVICE_REPLY)) {
-//                    applicationEventPublisher.publishEvent(ServiceInvokeReplyEvent.build(i));
-//                }
-//                if (Objects.equals(i.getMessageType(), POST_PROPERTY)) {
-//                    reportPropertyEventProducer.sender((ReadPropertyMessage) i);
-//                }
-//
-//                forwardingActionFactory.messageForwarding(topic, JSONObject.toJSONString(i).getBytes());
-//            });
-//        } catch (Exception e) {
-//            log.error("handle device post message fail, topic: {}, message: {}, reason: ", topic, message, e);
-//        }
     }
-
-//    private Optional<? extends BaseDeviceMessage> convertMessage(String topic, MqttMessage message) {
-//        try {
-//            JSONObject jsonObject = JSON.parseObject(message.getPayload());
-//            if (log.isDebugEnabled()) {
-//                log.debug("[PhecdaMqttCallback] arrived message topic: {} message: {}", topic, jsonObject);
-//            }
-//
-//            Optional<BaseDeviceMessage> messageOptional = MessageType.convertMessage(jsonObject);
-//            if (messageOptional.isEmpty()) {
-//                log.warn("unknown message: {}", jsonObject);
-//                return Optional.empty();
-//            }
-//
-//            String standardTopic = topic.substring(topic.indexOf(TOPIC_BASE_PREFIX));
-//            String[] standardTopicSplitArr = standardTopic.split("/");
-//            if (standardTopicSplitArr.length < 3) {
-//                log.warn("unknown topic: {}", topic);
-//                return Optional.empty();
-//            }
-//
-//            messageOptional.ifPresent(i -> {
-//                i.setProductId(standardTopicSplitArr[1]);
-//                i.setDeviceName(standardTopicSplitArr[2]);
-//
-//                if (Objects.equals(i.getMessageType(), INVOKE_SERVICE_REPLY)) {
-//                    ((ServiceInvokeMessageReply) i).setIdentifier(standardTopicSplitArr[5]);
-//                }
-//            });
-//            return messageOptional;
-//        } catch (Exception e) {
-//            log.error("convert device post message fail, topic: {}, message: {}, reason: ", topic, message, e);
-//        }
-//
-//        return Optional.empty();
-//    }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {

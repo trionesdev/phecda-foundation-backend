@@ -22,25 +22,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "驱动")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = DeviceConstants.DEVICE_URI)
 public class DriverController {
     private final DeviceBeRestConvert convert;
-    private final DriverService productDriverService;
+    private final DriverService driverService;
 
     @Operation(summary = "新建驱动")
     @PostMapping(value = "drivers")
     public void createDriver(@Validated @RequestBody DriverRO.Create args) {
         var driver = convert.from(args);
-        productDriverService.createDriver(driver);
+        driverService.createDriver(driver);
     }
 
     @Operation(summary = "根据ID删除驱动")
     @DeleteMapping(value = "drivers/{id}")
     public void deleteDriverById(@PathVariable String id) {
-        productDriverService.deleteDriverById(id);
+        driverService.deleteDriverById(id);
     }
 
     @Operation(summary = "根据ID修改驱动")
@@ -48,13 +50,20 @@ public class DriverController {
     public void updateDriverById(@PathVariable String id, @Validated @RequestBody DriverRO.Update args) {
         var driver = convert.from(args);
         driver.setId(id);
-        productDriverService.updateDriverById(driver);
+        driverService.updateDriverById(driver);
     }
 
     @Operation(summary = "根据ID获取驱动")
     @GetMapping(value = "drivers/{id}")
     public DriverPO findDriverById(@PathVariable String id) {
-        return productDriverService.findDriverById(id).orElse(null);
+        return driverService.findDriverById(id).orElse(null);
+    }
+
+    @Operation(summary = "获取驱动列表")
+    @GetMapping(value = "drivers/list")
+    public List<DriverPO> findDriverList(ProductDriverQuery query) {
+        ProductDriverCriteria criteria = convert.from(query);
+        return driverService.findDriverList(criteria);
     }
 
     @Operation(summary = "查询驱动列表(分页)")
@@ -67,7 +76,7 @@ public class DriverController {
         ProductDriverCriteria criteria = convert.from(query);
         criteria.setPageNum(pageNum);
         criteria.setPageSize(pageSize);
-        return productDriverService.findDriverPage(criteria);
+        return driverService.findDriverPage(criteria);
     }
 
 }

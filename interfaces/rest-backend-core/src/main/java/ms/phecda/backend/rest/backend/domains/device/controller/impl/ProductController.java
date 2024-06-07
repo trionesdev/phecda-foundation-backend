@@ -4,21 +4,21 @@ import com.trionesdev.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.repository.po.enums.ProductStatusEnum;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
+import ms.phecda.backend.core.dto.dervice.ProductDTO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductCreateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductProtocolPropertiesUpdateRO;
+import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductThingModelUpsertRO;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductUpdateRO;
 import ms.phecda.backend.rest.backend.domains.device.internal.DeviceBeRestConvert;
 import ms.phecda.backend.rest.backend.domains.device.internal.DeviceConstants;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +39,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = DeviceConstants.DEVICE_URI)
 public class ProductController {
-
+    private final DeviceBeRestConvert convert;
     private final ProductService productService;
 
     @Operation(summary = "产品统计")
@@ -56,8 +56,8 @@ public class ProductController {
 
     @Operation(summary = "新建产品")
     @PostMapping(value = "products")
-    public void createProduct(@Validated @RequestBody ProductCreateRO args) {
-        ProductPO product = DeviceBeRestConvert.INSTANT.from(args);
+    public void createProduct(@Validated @RequestBody ProductRO.Create args) {
+        var product = convert.from(args);
         product.setStatus(ProductStatusEnum.DEVELOPMENT);
         productService.createProduct(product);
     }
@@ -72,8 +72,8 @@ public class ProductController {
     @PutMapping(value = "products/{id}")
     public void updateProductById(
             @PathVariable(value = "id") String id,
-            @Validated @RequestBody ProductUpdateRO args) {
-        ProductPO product = DeviceBeRestConvert.INSTANT.from(args);
+            @Validated @RequestBody ProductRO.Update args) {
+        var product = convert.from(args);
         product.setStatus(ProductStatusEnum.DEVELOPMENT);
         product.setId(id);
         productService.updateProductById(product);
@@ -81,20 +81,20 @@ public class ProductController {
 
     @Operation(summary = "根据ID获取产品")
     @GetMapping(value = "products/{id}")
-    public ProductPO queryProductById(@PathVariable(value = "id") String id) {
+    public ProductDTO queryProductById(@PathVariable(value = "id") String id) {
         return productService.queryProductById(id).orElse(null);
     }
 
     @Operation(summary = "获取产品列表")
     @GetMapping(value = "products/list")
-    public List<ProductDTO> queryProductList(ProductQuery query) {
+    public List<ProductExtDTO> queryProductList(ProductQuery query) {
         ProductCriteria criteria = DeviceBeRestConvert.INSTANT.from(query);
         return productService.queryList(criteria);
     }
 
     @Operation(summary = "查询产品列表(分页)")
     @GetMapping(value = "products/page")
-    public PageInfo<ProductDTO> queryProductPage(
+    public PageInfo<ProductExtDTO> queryProductPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             ProductQuery query) {

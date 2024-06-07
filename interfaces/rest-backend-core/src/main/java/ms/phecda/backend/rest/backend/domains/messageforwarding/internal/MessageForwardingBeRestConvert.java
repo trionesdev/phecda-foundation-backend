@@ -1,4 +1,4 @@
-package ms.phecda.backend.rest.backend.domains.messageforwarding.support;
+package ms.phecda.backend.rest.backend.domains.messageforwarding.internal;
 
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageForwardingRule;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
@@ -10,20 +10,24 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(builder = @Builder(disableBuilder = true))
-public interface MessageForwardingRestConvertMapper {
+public interface MessageForwardingBeRestConvert {
 
-    MessageForwardingRestConvertMapper INSTANCE = Mappers.getMapper(MessageForwardingRestConvertMapper.class);
+    MessageForwardingBeRestConvert INSTANCE = Mappers.getMapper(MessageForwardingBeRestConvert.class);
 
     MessageSource from(MessageSourceCreateRO args);
+
     MessageSource from(MessageSourceUpdateRO args);
 
-    MessageSourceTopic from(MessageSourceTopicCreateRO args);
+
+    MessageSourceTopic from(MessageSourceTopicRO.Create args);
 
     MessageSink from(MessageSinkCreateRO args);
+
     MessageSink from(MessageSinkUpdateRO args);
 
 
     MessageForwardingRule from(MessageForwardingRuleCreateRO args);
+
     MessageForwardingRule from(MessageForwardingRuleUpdateRO args);
 
 }

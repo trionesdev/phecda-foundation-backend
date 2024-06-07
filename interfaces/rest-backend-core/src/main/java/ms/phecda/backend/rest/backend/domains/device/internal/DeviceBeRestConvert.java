@@ -1,5 +1,6 @@
 package ms.phecda.backend.rest.backend.domains.device.internal;
 
+import ms.phecda.backend.core.domains.device.entity.Product;
 import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.repository.criteria.DeviceEventLogCriteria;
 import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
@@ -29,13 +30,15 @@ import org.mapstruct.factory.Mappers;
 public interface DeviceBeRestConvert {
     DeviceBeRestConvert INSTANT = Mappers.getMapper(DeviceBeRestConvert.class);
 
-    ProductPO from(ProductCreateRO args);
+    //region product
+    ProductPO from(ProductRO.Create args);
 
-    ProductPO from(ProductUpdateRO args);
+    ProductPO from(ProductRO.Update args);
 
     ProductCriteria from(ProductQuery query);
 
     ThingModelUpsertBO from(ProductThingModelUpsertRO args);
+    //endregion
 
     DevicePO from(DeviceCreateRO args);
 

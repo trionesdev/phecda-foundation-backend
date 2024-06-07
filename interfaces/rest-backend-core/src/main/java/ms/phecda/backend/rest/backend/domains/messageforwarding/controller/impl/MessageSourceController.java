@@ -4,31 +4,31 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSource;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSourceTopic;
 import ms.phecda.backend.core.domains.messageforwarding.service.impl.MessageSourceService;
+import ms.phecda.backend.core.dto.messageforwarding.MessageSourceTopicDTO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceCreateRO;
-import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceTopicCreateRO;
+import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceTopicRO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceUpdateRO;
-import ms.phecda.backend.rest.backend.domains.messageforwarding.support.MessageForwardingRestConvertMapper;
+import ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingBeRestConvert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static ms.phecda.backend.rest.backend.domains.messageforwarding.support.MessageForwardingConstants.MESSAGE_FORWARDING_URI;
+import static ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingConstants.MESSAGE_FORWARDING_URI;
 
 @Tag(name = "消息数据源")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = MESSAGE_FORWARDING_URI)
 public class MessageSourceController {
-
+    private final MessageForwardingBeRestConvert convert;
     private final MessageSourceService messageSourceService;
 
     @Operation(summary = "创建数据源")
     @PostMapping(value = "sources")
     public void createSource(@Validated @RequestBody MessageSourceCreateRO args) {
-        MessageSource messageSource = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+        MessageSource messageSource = convert.from(args);
         messageSourceService.create(messageSource);
     }
 
@@ -44,7 +44,7 @@ public class MessageSourceController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody MessageSourceUpdateRO args
     ) {
-        MessageSource messageSource = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+        MessageSource messageSource = MessageForwardingBeRestConvert.INSTANCE.from(args);
         messageSource.setId(id);
         messageSourceService.updateById(messageSource);
     }
@@ -65,15 +65,15 @@ public class MessageSourceController {
     @PostMapping(value = "sources/{id}/topics")
     public void createSourceTopic(
             @PathVariable(value = "id") String id,
-            @Validated @RequestBody MessageSourceTopicCreateRO args) {
-        MessageSourceTopic messageSourceTopic = MessageForwardingRestConvertMapper.INSTANCE.from(args);
+            @Validated @RequestBody MessageSourceTopicRO.Create args) {
+        var messageSourceTopic = convert.from(args);
         messageSourceTopic.setSourceId(id);
         messageSourceService.createSourceTopic(messageSourceTopic);
     }
 
     @Operation(summary = "获取消息数据源的topics")
     @GetMapping(value = "sources/{id}/topics/list")
-    public List<MessageSourceTopic> querySourceTopics(
+    public List<MessageSourceTopicDTO> querySourceTopics(
             @PathVariable(value = "id") String id
     ) {
         return messageSourceService.findSourceTopics(id);

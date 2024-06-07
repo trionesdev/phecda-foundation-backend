@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AccessChannelEnum {
-    MQTT("MQTT"),
+    DRIVER("驱动"),
     GATEWAY("平台网关");
 
     private final String label;

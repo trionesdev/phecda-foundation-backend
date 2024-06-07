@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.provider.ssp.device.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.internal.DeviceConvert;
+import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
 import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
 import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
@@ -9,6 +9,7 @@ import ms.phecda.backend.core.domains.device.service.bo.InvokeServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
+import ms.phecda.backend.core.dto.dervice.ProductDTO;
 import ms.phecda.backend.core.provider.ssp.device.DeviceProviderConvert;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
@@ -16,6 +17,7 @@ import ms.phecda.backend.core.provider.ssp.device.pdo.InvokeServiceArgPDO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,10 @@ public class DeviceProvider {
     private final ProductService productService;
 
     private final DeviceService deviceService;
+
+    public List<ProductDTO> findProductsByKeys(Collection<String> keys){
+        return productService.findProductsByKeys(keys);
+    }
 
     public ProductPDO findProductByKey(String key) {
         ProductPO product = productService.findProductByKey(key).orElse(null);
@@ -45,12 +51,12 @@ public class DeviceProvider {
     public List<DevicePDO> listById(List<String> ids) {
         DeviceCriteria criteria = DeviceCriteria.builder().ids(ids).build();
         List<DevicePO> devices = deviceService.queryList(criteria);
-        return DeviceConvert.INSTANCE.toPDOList(devices);
+        return DeviceBeanConvert.INSTANCE.toPDOList(devices);
     }
 
     public DevicePDO queryByName(String name) {
         Optional<DevicePO> deviceOptional = deviceService.queryByName(name);
-        return DeviceConvert.INSTANCE.toPDO(deviceOptional.orElse(null));
+        return DeviceBeanConvert.INSTANCE.toPDO(deviceOptional.orElse(null));
     }
 
     public void invokeService(InvokeServiceArgPDO args) {

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.core.util.PageUtils;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
 import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
@@ -13,8 +14,7 @@ import ms.phecda.backend.core.domains.device.repository.po.enums.NodeTypeEnum;
 import ms.phecda.backend.core.domains.device.repository.po.enums.ProductStatusEnum;
 import ms.phecda.backend.core.domains.device.repository.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.repository.impl.ProductThingModelVersionDAO;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductDTO;
-import ms.phecda.backend.core.domains.device.internal.DeviceConvert;
+import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import org.springframework.cache.annotation.CacheEvict;
@@ -60,19 +60,23 @@ public class ProductManager {
         return Optional.ofNullable(productDAO.getById(id));
     }
 
-    public Optional<ProductDTO> queryExtById(String id) {
-        return Optional.ofNullable(productDAO.getById(id)).map(DeviceConvert.INSTANCE::fromRecord);
+    public Optional<ProductExtDTO> queryExtById(String id) {
+        return Optional.ofNullable(productDAO.getById(id)).map(DeviceBeanConvert.INSTANCE::fromRecord);
     }
 
-    public List<ProductDTO> queryAllByIds(Collection<String> ids) {
+    public List<ProductExtDTO> queryAllByIds(Collection<String> ids) {
         return assembleCollection(productDAO.listByIds(ids));
     }
 
-    public List<ProductDTO> queryList(ProductCriteria criteria) {
+    public List<ProductExtDTO> queryList(ProductCriteria criteria) {
         return assembleCollection(productDAO.selectList(criteria));
     }
 
-    public PageInfo<ProductDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
+    public List<ProductPO> findProductsByKeys(Collection<String> keys) {
+        return productDAO.selectListByKeys(keys);
+    }
+
+    public PageInfo<ProductExtDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         PageInfo<ProductPO> pageInfo = productDAO.selectPage(pageNum, pageSize, criteria);
         return PageUtils.of(pageInfo, assembleCollection(pageInfo.getRows()));
     }
@@ -113,11 +117,11 @@ public class ProductManager {
     }
 
 
-    private List<ProductDTO> assembleCollection(List<ProductPO> records) {
+    private List<ProductExtDTO> assembleCollection(List<ProductPO> records) {
         if (CollectionUtil.isEmpty(records)) {
             return Collections.emptyList();
         }
-        return DeviceConvert.INSTANCE.productDtoFromRecord(records);
+        return DeviceBeanConvert.INSTANCE.productDtoFromRecord(records);
     }
 
     public void publish(String id) {
