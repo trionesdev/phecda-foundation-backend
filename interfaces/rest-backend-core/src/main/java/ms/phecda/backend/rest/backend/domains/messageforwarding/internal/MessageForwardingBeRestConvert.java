@@ -7,9 +7,13 @@ import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSource
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.*;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(builder = @Builder(disableBuilder = true))
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        builder = @Builder(disableBuilder = true))
+@Named("messageForwardingBeRestConvert")
 public interface MessageForwardingBeRestConvert {
 
     MessageForwardingBeRestConvert INSTANCE = Mappers.getMapper(MessageForwardingBeRestConvert.class);
