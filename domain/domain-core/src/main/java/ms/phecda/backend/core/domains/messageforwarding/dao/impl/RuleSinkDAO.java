@@ -3,7 +3,7 @@ package ms.phecda.backend.core.domains.messageforwarding.dao.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.RuleSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.RuleSink;
 import ms.phecda.backend.core.domains.messageforwarding.dao.mapper.RuleSinkMapper;
 import org.springframework.stereotype.Repository;
 

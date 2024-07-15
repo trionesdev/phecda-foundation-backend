@@ -5,7 +5,11 @@ import cn.hutool.core.util.BooleanUtil;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.*;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageForwardingRule;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSource;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.RuleSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.RuleSource;
 import ms.phecda.backend.core.domains.messageforwarding.internal.event.spring.MessageForwardingRuleChangeEvent;
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.*;
 import org.springframework.context.ApplicationEventPublisher;

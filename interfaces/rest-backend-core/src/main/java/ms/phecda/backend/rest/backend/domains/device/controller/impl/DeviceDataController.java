@@ -4,11 +4,11 @@ import com.trionesdev.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceEventLogCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceServiceLogCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceEventLog;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceEventLogPO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
 import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceDataService;
@@ -46,14 +46,14 @@ public class DeviceDataController {
 
     @Operation(summary = "设备事件管理日志分页查询")
     @GetMapping(value = "event/logs/page")
-    public PageInfo<DeviceEventLog> eventLogsPage(DeviceEventLogQuery args) {
+    public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogQuery args) {
         DeviceEventLogCriteria criteria = deviceBeRestConvert.from(args);
         return deviceDataService.eventLogsPage(criteria);
     }
 
     @Operation(summary = "设备服务日志分页查询")
     @GetMapping(value = "service/logs/page")
-    public PageInfo<DeviceServiceLog> page(DeviceServiceLogQuery args) {
+    public PageInfo<DeviceServiceLogPO> page(DeviceServiceLogQuery args) {
         DeviceServiceLogCriteria criteria = deviceBeRestConvert.from(args);
         return deviceDataService.serviceLogsPage(criteria);
     }

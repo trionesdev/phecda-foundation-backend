@@ -1,13 +1,12 @@
 package ms.phecda.backend.core.domains.messageforwarding.internal.factory.action;
 
 import cn.hutool.core.collection.CollectionUtil;
-import io.reactivex.rxjava3.core.Completable;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.SinkAction;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.KafkaSinkAction;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.sinkaction.SinkAction;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.sinkaction.KafkaSinkAction;
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.MessageSinkManager;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

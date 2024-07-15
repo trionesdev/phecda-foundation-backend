@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.messageforwarding.manager.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.RuleSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.RuleSink;
 import ms.phecda.backend.core.domains.messageforwarding.dao.impl.RuleSinkDAO;
 import org.springframework.stereotype.Service;
 

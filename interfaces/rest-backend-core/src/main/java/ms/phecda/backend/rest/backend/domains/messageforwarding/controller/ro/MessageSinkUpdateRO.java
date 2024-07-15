@@ -1,7 +1,7 @@
 package ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro;
 
 import lombok.Data;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.SinkAction;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.sinkaction.SinkAction;
 
 @Data
 public class MessageSinkUpdateRO {

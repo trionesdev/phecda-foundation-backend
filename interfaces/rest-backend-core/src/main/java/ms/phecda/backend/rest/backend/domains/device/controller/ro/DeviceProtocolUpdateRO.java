@@ -1,7 +1,7 @@
 package ms.phecda.backend.rest.backend.domains.device.controller.ro;
 
 import lombok.Data;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 
 import java.util.ArrayList;
 import java.util.List;

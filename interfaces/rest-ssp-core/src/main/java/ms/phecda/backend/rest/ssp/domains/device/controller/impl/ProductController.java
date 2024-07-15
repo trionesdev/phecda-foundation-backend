@@ -2,8 +2,8 @@ package ms.phecda.backend.rest.ssp.domains.device.controller.impl;
 
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
 import ms.phecda.backend.rest.ssp.domains.device.support.RestProductConvertMapper;
 import ms.phecda.backend.rest.ssp.internal.RestConstants;

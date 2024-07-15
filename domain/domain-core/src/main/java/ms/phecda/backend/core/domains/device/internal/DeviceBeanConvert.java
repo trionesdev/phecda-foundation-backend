@@ -1,16 +1,17 @@
 package ms.phecda.backend.core.domains.device.internal;
 
+import ms.phecda.backend.core.domains.device.internal.entity.Product;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
-import ms.phecda.backend.core.dto.dervice.ProductDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelDraft;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
@@ -35,6 +36,9 @@ public interface DeviceBeanConvert {
             @Mapping(source = "product.type.label", target = "typeLabel")
     })
     ProductExtDTO fromRecord(ProductPO product);
+
+    Product productPoToEntity(ProductPO product);
+    ProductDTO productEntityToDto(Product product);
 
     ProductDTO poToDto(ProductPO product);
 

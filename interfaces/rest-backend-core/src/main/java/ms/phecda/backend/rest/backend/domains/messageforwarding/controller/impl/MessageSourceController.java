@@ -3,9 +3,9 @@ package ms.phecda.backend.rest.backend.domains.messageforwarding.controller.impl
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSource;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSource;
 import ms.phecda.backend.core.domains.messageforwarding.service.impl.MessageSourceService;
-import ms.phecda.backend.core.dto.messageforwarding.MessageSourceTopicDTO;
+import ms.phecda.backend.core.domains.messageforwarding.dto.MessageSourceTopicDTO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceCreateRO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceTopicRO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSourceUpdateRO;

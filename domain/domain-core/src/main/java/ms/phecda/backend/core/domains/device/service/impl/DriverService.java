@@ -3,8 +3,8 @@ package ms.phecda.backend.core.domains.device.service.impl;
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.manager.impl.DriverManager;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductDriverCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.DriverPO;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductDriverCriteria;
+import ms.phecda.backend.core.domains.device.dao.po.DriverPO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

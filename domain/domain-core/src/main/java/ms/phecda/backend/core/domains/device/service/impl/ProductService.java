@@ -7,12 +7,14 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelUpsertCmd;
 import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelDraft;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.internal.entity.Product;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelDraftManager;
@@ -25,7 +27,7 @@ import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProp
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
-import ms.phecda.backend.core.dto.dervice.ProductDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final DeviceBeanConvert convert;
     private final ProductManager productManager;
-    private final ProductThingModelDraftManager productThingModelDraftManager;
+//    private final ProductThingModelDraftManager productThingModelDraftManager;
     private final ProductThingModelVersionManager productThingModelVersionManager;
 
     public List<ValueTypeOption> valueTypeOptions() {
@@ -104,102 +106,12 @@ public class ProductService {
         return productThingModelDraftManager.queryByProductId(productId);
     }
 
-    public void upsertThingModel(String productId, ThingModelUpsertBO thingModelUpsert) {
-        ProductThingModelDraft ptmSnap = productThingModelDraftManager.queryByProductId(productId)
-                .orElse(ProductThingModelDraft.builder()
-                        .productId(productId)
-                        .thingModel(new ThingModel())
-                        .build());
-        if (StrUtil.isBlank(thingModelUpsert.getIdentifier())) {
-            if (Objects.nonNull(thingModelUpsert.getProperty()) &&
-                    ptmSnap.getThingModel()
-                            .getProperties()
-                            .stream()
-                            .anyMatch(t -> Objects.equals(thingModelUpsert.getProperty()
-                                    .getIdentifier(), t.getIdentifier()))) {
-                throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
-            }
-            if (Objects.nonNull(thingModelUpsert.getService()) &&
-                    ptmSnap.getThingModel()
-                            .getServices()
-                            .stream()
-                            .anyMatch(t -> Objects.equals(thingModelUpsert.getService()
-                                    .getIdentifier(), t.getIdentifier()))) {
-                throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
-            }
-            if (Objects.nonNull(thingModelUpsert.getEvent()) &&
-                    ptmSnap.getThingModel()
-                            .getEvents()
-                            .stream()
-                            .anyMatch(t -> Objects.equals(thingModelUpsert.getEvent()
-                                    .getIdentifier(), t.getIdentifier()))) {
-                throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
-            }
-            switch (thingModelUpsert.getAbilityType()) {
-                case PROPERTY:
-                    ptmSnap.getThingModel().getProperties().add(thingModelUpsert.getProperty());
-                    break;
-                case SERVICE:
-                    ptmSnap.getThingModel().getServices().add(thingModelUpsert.getService());
-                    break;
-                case EVENT:
-                    ptmSnap.getThingModel().getEvents().add(thingModelUpsert.getEvent());
-                default:
-                    break;
-            }
-        } else {
-            switch (thingModelUpsert.getAbilityType()) {
-                case PROPERTY:
-                    ThingModelProperty tmp = thingModelUpsert.getProperty();
-                    if (Objects.nonNull(tmp)) {
-                        List<ThingModelProperty> properties = ptmSnap.getThingModel().getProperties().stream().map(t -> {
-                            if (Objects.equals(t.getIdentifier(), thingModelUpsert.getIdentifier())) {
-                                return tmp;
-                            } else {
-                                return t;
-                            }
-                        }).collect(Collectors.toList());
-                        ptmSnap.getThingModel().setProperties(properties);
-                    }
-                    break;
-                case SERVICE:
-                    ThingModelService tms = thingModelUpsert.getService();
-                    if (Objects.nonNull(tms)) {
-                        List<ThingModelService> services = ptmSnap.getThingModel().getServices().stream().map(t -> {
-                            if (Objects.equals(t.getIdentifier(), thingModelUpsert.getIdentifier())) {
-                                return tms;
-                            } else {
-                                return t;
-                            }
-                        }).collect(Collectors.toList());
-                        ptmSnap.getThingModel().setServices(services);
-                    }
-                    break;
-                case EVENT:
-                    ThingModelEvent tme = thingModelUpsert.getEvent();
-                    if (Objects.nonNull(tme)) {
-                        List<ThingModelEvent> events = ptmSnap.getThingModel().getEvents().stream().map(t -> {
-                            if (Objects.equals(t.getIdentifier(), thingModelUpsert.getIdentifier())) {
-                                return tme;
-                            } else {
-                                return t;
-                            }
-                        }).collect(Collectors.toList());
-                        ptmSnap.getThingModel().setEvents(events);
-                    }
-                    break;
-            }
-        }
-        productThingModelDraftManager.upsertByProductId(ptmSnap);
+    public void upsertThingModel(String productId, ProductThingModelUpsertCmd upsertCmd) {
+        productManager.upsertThingModel(productId,upsertCmd);
     }
 
     public void deleteThingModel(String productId, String identifier) {
-        productThingModelDraftManager.queryByProductId(productId).ifPresent(t -> {
-            t.getThingModel().getProperties().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
-            t.getThingModel().getServices().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
-            t.getThingModel().getEvents().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
-            productThingModelDraftManager.upsertByProductId(t);
-        });
+        productManager.removeThingModelAbility(productId,identifier);
     }
 
     /**
@@ -207,11 +119,8 @@ public class ProductService {
      *
      * @param productId
      */
-    public void publishThingModel(String productId) {
-        ProductPO product = productManager.queryById(productId).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
-        productThingModelDraftManager.publish(productId);
-        productManager.cleanLatestThingModelPropertiesCache(product);//清空缓存
-
+    public void releaseThingModel(String productId) {
+        productManager.releaseThingModel(productId);
     }
 
     public List<ThingModelProperty> queryThingModelLatestPropertiesByProductKey(String productKey) {
@@ -232,7 +141,7 @@ public class ProductService {
         if (StrUtil.isBlank(version)) {
             version = productManager.queryById(productId)
                     .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"))
-                    .getThingModelVersion();
+                    .get();
         }
         return productThingModelVersionManager.findByProductVersion(productId, version);
     }

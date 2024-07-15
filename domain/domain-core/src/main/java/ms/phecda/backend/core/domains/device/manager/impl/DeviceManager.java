@@ -2,10 +2,10 @@ package ms.phecda.backend.core.domains.device.manager.impl;
 
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
-import ms.phecda.backend.core.domains.device.repository.dvo.DeviceStatisticsDVO;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
-import ms.phecda.backend.core.domains.device.repository.impl.DeviceDAO;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;

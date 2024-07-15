@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.messageforwarding.dao.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSource;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSource;
 import ms.phecda.backend.core.domains.messageforwarding.dao.mapper.MessageSourceMapper;
 import org.springframework.stereotype.Repository;
 

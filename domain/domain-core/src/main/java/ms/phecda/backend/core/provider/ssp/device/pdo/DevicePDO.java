@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.provider.ssp.device.pdo;
 
 import lombok.Data;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO.Protocol;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO.Protocol;
 
 import java.util.List;
 
