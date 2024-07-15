@@ -1,8 +1,8 @@
 package ms.phecda.backend.rest.ssp.domains.device.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 import ms.phecda.backend.core.domains.device.service.bo.InvokeServiceArgBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;

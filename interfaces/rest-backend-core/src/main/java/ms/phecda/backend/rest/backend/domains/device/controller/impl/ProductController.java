@@ -6,15 +6,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.repository.po.enums.ProductStatusEnum;
-import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelDraft;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductStatus;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.dto.dervice.ProductDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductProtocolPropertiesUpdateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductRO;
@@ -58,7 +57,7 @@ public class ProductController {
     @PostMapping(value = "products")
     public void createProduct(@Validated @RequestBody ProductRO.Create args) {
         var product = convert.from(args);
-        product.setStatus(ProductStatusEnum.DEVELOPMENT);
+        product.setStatus(ProductStatus.DEVELOPMENT);
         productService.createProduct(product);
     }
 
@@ -74,7 +73,7 @@ public class ProductController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody ProductRO.Update args) {
         var product = convert.from(args);
-        product.setStatus(ProductStatusEnum.DEVELOPMENT);
+        product.setStatus(ProductStatus.DEVELOPMENT);
         product.setId(id);
         productService.updateProductById(product);
     }
@@ -88,7 +87,7 @@ public class ProductController {
     @Operation(summary = "获取产品列表")
     @GetMapping(value = "products/list")
     public List<ProductExtDTO> queryProductList(ProductQuery query) {
-        ProductCriteria criteria = DeviceBeRestConvert.INSTANT.from(query);
+        ProductCriteria criteria = convert.from(query);
         return productService.queryList(criteria);
     }
 
@@ -113,7 +112,7 @@ public class ProductController {
     public void upsertThingModelDraft(
             @PathVariable(value = "productId") String productId,
             @Validated @RequestBody ProductThingModelUpsertRO args) {
-        ThingModelUpsertBO thingModelUpsertBO = DeviceBeRestConvert.INSTANT.from(args);
+        var thingModelUpsertBO = convert.from(args);
         productService.upsertThingModel(productId, thingModelUpsertBO);
     }
 
@@ -128,8 +127,8 @@ public class ProductController {
 
     @Operation(summary = "发布物模型(草稿)")
     @PutMapping(value = "products/{productId}/thing-model-draft/publish")
-    public void publishThingModelDraft(@PathVariable(value = "productId") String productId) {
-        productService.publishThingModel(productId);
+    public void releaseThingModelDraft(@PathVariable(value = "productId") String productId) {
+        productService.releaseThingModel(productId);
     }
 
     @Operation(summary = "获取产品物模型")

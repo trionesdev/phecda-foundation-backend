@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.messageforwarding.manager.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSource;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSource;
 import ms.phecda.backend.core.domains.messageforwarding.dao.impl.MessageSourceDAO;
 import org.springframework.stereotype.Service;
 

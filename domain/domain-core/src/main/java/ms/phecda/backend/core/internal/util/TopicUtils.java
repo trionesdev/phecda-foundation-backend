@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import java.util.Optional;
 
 public class TopicUtils {
-    public static String TOPIC_PREFIX = "phecda/";
+    public static String TOPIC_PREFIX = "";
 
     public static String propertyPostTopic(String productKey, String deviceName) {
         return TOPIC_PREFIX + Optional.ofNullable(productKey).orElse("+") + "/" + Optional.ofNullable(deviceName).orElse("+") + "/thing/property/post";

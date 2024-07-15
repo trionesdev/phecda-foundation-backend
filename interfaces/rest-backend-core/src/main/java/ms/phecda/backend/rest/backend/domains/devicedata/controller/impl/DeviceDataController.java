@@ -4,7 +4,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
 import ms.phecda.backend.core.domains.devicedata.service.impl.DeviceDataService;
 import ms.phecda.backend.rest.backend.domains.devicedata.controller.query.DeviceDataQuery;

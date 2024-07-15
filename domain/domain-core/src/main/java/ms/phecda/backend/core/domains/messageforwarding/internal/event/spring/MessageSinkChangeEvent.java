@@ -1,7 +1,7 @@
 package ms.phecda.backend.core.domains.messageforwarding.internal.event.spring;
 
 import lombok.Getter;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
 import org.springframework.context.ApplicationEvent;
 
 @Getter

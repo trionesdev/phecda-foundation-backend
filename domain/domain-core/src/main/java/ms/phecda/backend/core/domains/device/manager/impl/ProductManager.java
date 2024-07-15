@@ -4,19 +4,25 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.core.util.PageUtils;
+import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelUpsertCmd;
 import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.repository.po.enums.NodeTypeEnum;
-import ms.phecda.backend.core.domains.device.repository.po.enums.ProductStatusEnum;
-import ms.phecda.backend.core.domains.device.repository.impl.ProductDAO;
-import ms.phecda.backend.core.domains.device.repository.impl.ProductThingModelVersionDAO;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.internal.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.enums.NodeType;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductStatus;
+import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductType;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
+import ms.phecda.backend.core.domains.device.repository.ProductRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -33,16 +39,18 @@ import static ms.phecda.backend.core.domains.device.internal.DeviceCacheConstant
 @RequiredArgsConstructor
 @Service
 public class ProductManager {
+    private final DeviceBeanConvert convert;
     private final ProductDAO productDAO;
     private final ProductThingModelVersionDAO productThingModelVersionDAO;
+    private final ProductRepository productRepository;
 
     public ProductStatisticsDVO queryStatistics() {
         return productDAO.selectStatistics();
     }
 
     public void create(ProductPO product) {
-        if (Objects.equals(NodeTypeEnum.GATEWAY, product.getNodeType())) {
-            product.setType(ProductPO.Type.GATEWAY);
+        if (Objects.equals(NodeType.GATEWAY, product.getNodeType())) {
+            product.setType(ProductType.GATEWAY);
         }
         productDAO.save(product);
     }
@@ -56,8 +64,8 @@ public class ProductManager {
     }
 
 
-    public Optional<ProductPO> queryById(String id) {
-        return Optional.ofNullable(productDAO.getById(id));
+    public Optional<ProductDTO> queryById(String id) {
+        return productRepository.findById(id).map(convert::productEntityToDto);
     }
 
     public Optional<ProductExtDTO> queryExtById(String id) {
@@ -79,6 +87,34 @@ public class ProductManager {
     public PageInfo<ProductExtDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
         PageInfo<ProductPO> pageInfo = productDAO.selectPage(pageNum, pageSize, criteria);
         return PageUtils.of(pageInfo, assembleCollection(pageInfo.getRows()));
+    }
+
+    public void upsertThingModel(String id, ProductThingModelUpsertCmd upsertCmd){
+        productRepository.findById(id).ifPresent(product -> {
+            var upsert = Product.ThingModelUpsert.builder().build();
+            product.upsertThingModel(upsert);
+            productRepository.upsertThingModel(product);
+        });
+    }
+
+    public void removeThingModelAbility(String id,String identifier){
+        productRepository.findById(id).ifPresent(product -> {
+            product.removeThingModelAbility(identifier);
+            productRepository.upsertThingModel(product);
+        });
+    }
+
+    public void releaseThingModel(String id){
+       var product = productRepository.findById(id).orElseThrow(()->new NotFoundException("PRODUCT_NOT_FOUND"));
+       productRepository.releaseThingModel(product);
+    }
+
+    public Optional<ThingModel> findThingModel(String productId,String version) {
+        if (StrUtil.isNotBlank(version)){
+            return Optional.ofNullable(productRepository.findVesionThingModel(productId,version));
+        }else {
+            return productRepository.findById(productId).map(Product::getThingModelCurrent);
+        }
     }
 
     @Cacheable(value = {PRODUCT_NAMES}, key = "'" + PRODUCT_KEY_PREFIX + "'+#key", unless = "#result==null")
@@ -125,11 +161,11 @@ public class ProductManager {
     }
 
     public void publish(String id) {
-        productDAO.updateStatus(id, ProductStatusEnum.RELEASE);
+        productDAO.updateStatus(id, ProductStatus.RELEASE);
     }
 
     public void revokePublish(String id) {
-        productDAO.updateStatus(id, ProductStatusEnum.DEVELOPMENT);
+        productDAO.updateStatus(id, ProductStatus.DEVELOPMENT);
     }
 
 

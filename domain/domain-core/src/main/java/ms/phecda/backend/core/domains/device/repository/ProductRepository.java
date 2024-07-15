@@ -1,0 +1,50 @@
+package ms.phecda.backend.core.domains.device.repository;
+
+import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
+import ms.phecda.backend.core.domains.device.internal.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Repository
+public class ProductRepository {
+    private final DeviceBeanConvert convert;
+    private final ProductDAO productDAO;
+    private final ProductThingModelVersionDAO thingModelVersionDAO;
+
+    public Optional<Product> findById(String id){
+        return Optional.ofNullable(productDAO.getById(id)).map(t->{
+            var product = convert.productPoToEntity(t);
+            if (StrUtil.isNotBlank(product.getThingModelVersion())){
+                Optional.ofNullable(thingModelVersionDAO.selectByProductVersion(product.getId(),product.getThingModelVersion())).map(ProductThingModelVersion::getThingModel).ifPresent(product::setThingModelCurrent);
+            }
+            return product;
+        });
+    }
+
+    public void upsertThingModel(Product product){
+        var productPO = ProductPO.builder().id(product.getId()).thingModel(product.getThingModelDraft()).build();
+        productDAO.updateById(productPO);
+    }
+
+    @Transactional
+    public void releaseThingModel(Product product){
+        var version = ProductThingModelVersion.builder().productId(product.getId()).thingModel(product.getThingModelDraft()).build();
+        thingModelVersionDAO.save(version);
+        productDAO.updateVersion(product.getId(),version.getId());
+    }
+
+    public ThingModel findVesionThingModel(String productId,String version){
+        return Optional.ofNullable(thingModelVersionDAO.selectByProductVersion(productId,version)).map(ProductThingModelVersion::getThingModel).orElse(null);
+    }
+
+}

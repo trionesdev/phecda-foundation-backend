@@ -3,7 +3,11 @@ package ms.phecda.backend.rest.backend.domains.messageforwarding.controller.impl
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.*;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageForwardingRule;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSource;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.RuleSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.RuleSource;
 import ms.phecda.backend.core.domains.messageforwarding.service.impl.MessageForwardingRuleService;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.*;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.internal.MessageForwardingBeRestConvert;

@@ -1,9 +1,9 @@
 package ms.phecda.backend.core.domains.messageforwarding.internal;
 
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageForwardingRule;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSourceTopic;
-import ms.phecda.backend.core.dto.messageforwarding.MessageForwardingRuleDTO;
-import ms.phecda.backend.core.dto.messageforwarding.MessageSourceTopicDTO;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageForwardingRule;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSourceTopic;
+import ms.phecda.backend.core.domains.messageforwarding.dto.MessageForwardingRuleDTO;
+import ms.phecda.backend.core.domains.messageforwarding.dto.MessageSourceTopicDTO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

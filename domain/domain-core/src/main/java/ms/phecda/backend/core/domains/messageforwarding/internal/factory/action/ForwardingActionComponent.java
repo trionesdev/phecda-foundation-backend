@@ -1,6 +1,6 @@
 package ms.phecda.backend.core.domains.messageforwarding.internal.factory.action;
 
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.SinkAction;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.sinkaction.SinkAction;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;

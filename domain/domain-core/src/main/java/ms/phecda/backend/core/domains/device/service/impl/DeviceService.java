@@ -10,15 +10,15 @@ import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceCriteria;
-import ms.phecda.backend.core.domains.device.repository.dvo.DeviceStatisticsDVO;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog.Result;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.po.enums.AccessChannelEnum;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.DeviceStatisticsDVO;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO.Result;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.internal.enums.AccessChannel;
 import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
-import ms.phecda.backend.core.domains.device.manager.dto.ServiceSendDTO;
+import ms.phecda.backend.core.domains.device.manager.dto.ServiceSendCmd;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceDataManager;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
@@ -317,7 +317,7 @@ public class DeviceService {
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
-        ServiceSendDTO dto = ServiceSendDTO.builder()
+        ServiceSendCmd dto = ServiceSendCmd.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
 //                .method(service.getIdentifier())
@@ -338,7 +338,7 @@ public class DeviceService {
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
-        ServiceSendDTO dto = ServiceSendDTO.builder()
+        ServiceSendCmd dto = ServiceSendCmd.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
                 .productKey(productKey)
@@ -351,10 +351,10 @@ public class DeviceService {
     }
 
 
-    public ServiceInvokeReplyMessage invokeService(ProductPO product, CallType callType, ServiceSendDTO dto, Map<String, String> tags) {
-        AccessChannelEnum channel = product.getAccessChannel();
+    public ServiceInvokeReplyMessage invokeService(ProductPO product, CallType callType, ServiceSendCmd dto, Map<String, String> tags) {
+        AccessChannel channel = product.getAccessChannel();
 
-        DeviceServiceLog serviceLog = DeviceServiceLog.builder()
+        DeviceServiceLogPO serviceLog = DeviceServiceLogPO.builder()
                 .messageId(dto.getId())
                 .productId(product.getId())
                 .deviceName(dto.getDeviceName())

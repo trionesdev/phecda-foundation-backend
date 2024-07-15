@@ -3,8 +3,8 @@ package ms.phecda.backend.core.domains.messageforwarding.dao.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.SinkAction;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.sinkaction.SinkAction;
 import ms.phecda.backend.core.domains.messageforwarding.dao.mapper.MessageSinkMapper;
 
 import java.util.Collection;
