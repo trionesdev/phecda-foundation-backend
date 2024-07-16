@@ -104,7 +104,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
 
     public void saveMessage(PropertiesPostMessage message) {
         try {
-            ProductPO product = productService.findProductByKey(message.getProductKey()).orElse(null);
+            var product = productService.findProductByKey(message.getProductKey()).orElse(null);
             if (Objects.isNull(product)) {
                 log.warn("product {} not exist", message.getProductKey());
                 return;

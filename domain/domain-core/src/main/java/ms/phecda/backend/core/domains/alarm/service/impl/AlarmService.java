@@ -84,7 +84,7 @@ public class AlarmService {
 
     //region alarm
     public void createAlarm(AlarmCreateArgBO alarmCreateArg) {
-        ProductPDO productPDO = deviceProvider.findProductByKey(alarmCreateArg.getProductKey());
+        var productPDO = deviceProvider.findProductByKey(alarmCreateArg.getProductKey());
         if (productPDO == null) {
             return;
         }

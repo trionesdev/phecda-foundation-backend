@@ -39,7 +39,7 @@ public class ProductPO extends BaseLogicEntity {
     @TableField(typeHandler = ProtocolListTypeHandler.class)
     private List<ProtocolProperty> protocolProperties;
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private ThingModel thingModel = new ThingModel();
+    private ThingModel thingModel;
 
     private ProductStatus status;
     private String driverName;

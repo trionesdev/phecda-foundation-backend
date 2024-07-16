@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 
 @EqualsAndHashCode(callSuper = true)

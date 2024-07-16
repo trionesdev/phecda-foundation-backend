@@ -12,7 +12,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.DeviceStatisticsMessag
 import ms.phecda.backend.core.domains.device.dao.po.DeviceEventLogPO;
 import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
 import ms.phecda.backend.core.domains.device.dao.po.DeviceStatisticsMessageDailyPO;
-import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
+import ms.phecda.backend.core.domains.device.dto.DevicePropertyDataDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceDataManager;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;

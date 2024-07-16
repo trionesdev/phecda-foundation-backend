@@ -13,5 +13,5 @@ import java.util.List;
 public class ThingModel {
     private List<ThingModelEvent> events = Lists.newArrayList();
     private List<ThingModelProperty> properties = Lists.newArrayList();
-    private List<ThingModelService> services = Lists.newArrayList();
+    private List<ThingModelCommand> services = Lists.newArrayList();
 }

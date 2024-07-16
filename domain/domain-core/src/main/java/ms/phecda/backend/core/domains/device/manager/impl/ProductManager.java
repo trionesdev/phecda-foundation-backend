@@ -19,7 +19,7 @@ import ms.phecda.backend.core.domains.device.internal.enums.ProductStatus;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDAO;
 import ms.phecda.backend.core.domains.device.internal.enums.ProductType;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.repository.ProductRepository;
@@ -48,19 +48,21 @@ public class ProductManager {
         return productDAO.selectStatistics();
     }
 
-    public void create(ProductPO product) {
+    public void create(Product product) {
         if (Objects.equals(NodeType.GATEWAY, product.getNodeType())) {
             product.setType(ProductType.GATEWAY);
         }
-        productDAO.save(product);
+        product.setStatus(ProductStatus.DEVELOPMENT);
+        productRepository.save(product);
     }
 
-    public void deleteById(ProductPO product) {
-        productDAO.removeById(product);
+    public void deleteById(String id) {
+       var product = productRepository.findById(id).orElseThrow(()->new NotFoundException("PRODUCT_NOT_FOUND"));
+       productRepository.deleteProduct(product);
     }
 
-    public void updateById(ProductPO product) {
-        productDAO.updateById(product);
+    public void updateById(Product product) {
+        productRepository.updateById(product);
     }
 
 
@@ -91,7 +93,10 @@ public class ProductManager {
 
     public void upsertThingModel(String id, ProductThingModelUpsertCmd upsertCmd){
         productRepository.findById(id).ifPresent(product -> {
-            var upsert = Product.ThingModelUpsert.builder().build();
+            var upsert = Product.ThingModelUpsert.builder().identifier(upsertCmd.getIdentifier())
+                    .abilityType(upsertCmd.getAbilityType()).property(upsertCmd.getProperty()).event(upsertCmd.getEvent())
+                    .service(upsertCmd.getService())
+                    .build();
             product.upsertThingModel(upsert);
             productRepository.upsertThingModel(product);
         });
@@ -102,6 +107,10 @@ public class ProductManager {
             product.removeThingModelAbility(identifier);
             productRepository.upsertThingModel(product);
         });
+    }
+
+    public Optional<ThingModel> findThingModelDraft(String productId) {
+        return productRepository.findById(productId).map(Product::getThingModelDraft);
     }
 
     public void releaseThingModel(String id){
@@ -118,8 +127,8 @@ public class ProductManager {
     }
 
     @Cacheable(value = {PRODUCT_NAMES}, key = "'" + PRODUCT_KEY_PREFIX + "'+#key", unless = "#result==null")
-    public Optional<ProductPO> findByKey(String key) {
-        return Optional.ofNullable(productDAO.selectByKey(key));
+    public Optional<ProductDTO> findByKey(String key) {
+        return productRepository.findByKey(key).map(convert::productEntityToDto);
     }
 
     public Optional<ThingModel> findThingModel(String productId) {
@@ -133,13 +142,16 @@ public class ProductManager {
     }
 
     public Optional<ThingModel> findThingModelByKey(String productKey) {
-        return Optional.ofNullable(productDAO.selectByKey(productKey)).map(product -> {
-            if (StrUtil.isNotBlank(product.getThingModelVersion())) {
-                return productThingModelVersionDAO.selectByProductVersion(product.getId(), product.getThingModelVersion());
-            } else {
-                return null;
-            }
-        }).map(ProductThingModelVersion::getThingModel);
+        return productRepository.findByKey(productKey).map(Product::getThingModelCurrent);
+    }
+
+    public Optional<ThingModel> findThingModelByKey(String productKey,String version) {
+        var product = productRepository.findByKey(productKey).orElseThrow(()->new NotFoundException("PRODUCT_NOT_FOUND"));
+        if (StrUtil.isNotBlank(version)){
+            return Optional.ofNullable(productRepository.findVesionThingModel(product.getId(),version));
+        }{
+            return Optional.ofNullable(product.getThingModelCurrent());
+        }
     }
 
     @Cacheable(value = THING_MODEL_LATEST_PROPERTIES_NAMES, key = "'" + THING_MODEL_LATEST_PROPERTIES_KEY_PREFIX + "'+#productKey")

@@ -9,7 +9,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCrit
 import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
 import ms.phecda.backend.core.domains.device.dao.po.DeviceEventLogPO;
 import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
-import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
+import ms.phecda.backend.core.domains.device.dto.DevicePropertyDataDTO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceDataService;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceEventLogQuery;

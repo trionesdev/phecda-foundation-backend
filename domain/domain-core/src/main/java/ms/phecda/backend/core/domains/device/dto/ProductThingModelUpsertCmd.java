@@ -2,9 +2,9 @@ package ms.phecda.backend.core.domains.device.dto;
 
 import lombok.Data;
 import ms.phecda.backend.core.domains.device.internal.enums.AbilityType;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
 
 @Data
 public class ProductThingModelUpsertCmd {
@@ -12,5 +12,5 @@ public class ProductThingModelUpsertCmd {
     private String identifier;
     private ThingModelProperty property;
     private ThingModelEvent event;
-    private ThingModelService service;
+    private ThingModelCommand service;
 }
