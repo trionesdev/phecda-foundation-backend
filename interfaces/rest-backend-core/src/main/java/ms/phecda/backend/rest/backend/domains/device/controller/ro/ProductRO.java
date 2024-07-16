@@ -5,8 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO.ProtocolProperty;
 import ms.phecda.backend.core.domains.device.internal.enums.AccessChannel;
 import ms.phecda.backend.core.domains.device.internal.enums.NodeType;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductRO {
 
@@ -19,7 +24,7 @@ public class ProductRO {
         @NotNull
         private NodeType nodeType;
         private AccessChannel accessChannel;
-        private ProductPO.Type type;
+        private ProductType type;
         private String driverName;
     }
 
@@ -32,7 +37,13 @@ public class ProductRO {
         @NotNull
         private NodeType nodeType;
         private AccessChannel accessChannel;
-        private ProductPO.Type type;
+        private ProductType type;
         private String driverName;
     }
+
+    @Data
+    public static class ProtocolPropertiesUpdate{
+        private List<ProtocolProperty> protocolProperties = new ArrayList<>();
+    }
+
 }

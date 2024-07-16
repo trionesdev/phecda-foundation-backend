@@ -21,6 +21,20 @@ public class ProductRepository {
     private final ProductDAO productDAO;
     private final ProductThingModelVersionDAO thingModelVersionDAO;
 
+    public void save(Product product){
+        productDAO.save(convert.productEntityToPo(product));
+    }
+
+    @Transactional
+    public void deleteProduct(Product product){
+        productDAO.removeById(product.getId());
+        thingModelVersionDAO.deleteByProductId(product.getId());
+    }
+
+    public void updateById(Product product){
+        productDAO.updateById(convert.productEntityToPo(product));
+    }
+
     public Optional<Product> findById(String id){
         return Optional.ofNullable(productDAO.getById(id)).map(t->{
             var product = convert.productPoToEntity(t);
@@ -30,6 +44,19 @@ public class ProductRepository {
             return product;
         });
     }
+
+    public Optional<Product> findByKey(String key){
+        return Optional.ofNullable(productDAO.selectByKey(key)).map(t->{
+            var product = convert.productPoToEntity(t);
+            if (StrUtil.isNotBlank(product.getThingModelVersion())){
+                Optional.ofNullable(thingModelVersionDAO.selectByProductVersion(product.getId(),product.getThingModelVersion())).map(ProductThingModelVersion::getThingModel).ifPresent(product::setThingModelCurrent);
+            }
+            return product;
+        });
+    }
+
+
+
 
     public void upsertThingModel(Product product){
         var productPO = ProductPO.builder().id(product.getId()).thingModel(product.getThingModelDraft()).build();

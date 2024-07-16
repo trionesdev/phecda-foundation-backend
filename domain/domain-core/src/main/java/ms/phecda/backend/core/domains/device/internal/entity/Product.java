@@ -15,7 +15,7 @@ import ms.phecda.backend.core.domains.device.internal.enums.ProductType;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,15 +31,17 @@ public class Product {
     private ProductType type;
     private String thingModelVersion;
     private List<ProtocolProperty> protocolProperties;
-    private ThingModel thingModelDraft = new ThingModel();
-    private ThingModel thingModelCurrent = new ThingModel();
+    private ThingModel thingModelDraft  ;
+    private ThingModel thingModelCurrent  ;
 
     private ProductStatus status;
     private String driverName;
 
-
     public void upsertThingModel(ThingModelUpsert upsertCmd) {
-        if (StrUtil.isNotBlank(upsertCmd.getIdentifier())){
+        if (Objects.isNull(thingModelDraft)){
+            thingModelDraft = new ThingModel();
+        }
+        if (StrUtil.isBlank(upsertCmd.getIdentifier())){
             if (Objects.nonNull(upsertCmd.getProperty()) &&
                     thingModelDraft.getProperties()
                             .stream()
@@ -89,9 +91,9 @@ public class Product {
                     }
                     break;
                 case SERVICE:
-                    ThingModelService tms = upsertCmd.getService();
+                    ThingModelCommand tms = upsertCmd.getService();
                     if (Objects.nonNull(tms)) {
-                        List<ThingModelService> services = thingModelDraft.getServices().stream().map(t -> {
+                        List<ThingModelCommand> services = thingModelDraft.getServices().stream().map(t -> {
                             if (Objects.equals(t.getIdentifier(), upsertCmd.getIdentifier())) {
                                 return tms;
                             } else {
@@ -128,7 +130,7 @@ public class Product {
         private String identifier;
         private ThingModelProperty property;
         private ThingModelEvent event;
-        private ThingModelService service;
+        private ThingModelCommand service;
     }
 
     public void removeThingModelAbility(String identifier){

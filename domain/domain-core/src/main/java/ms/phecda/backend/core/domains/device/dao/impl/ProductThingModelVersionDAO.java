@@ -12,4 +12,8 @@ public class ProductThingModelVersionDAO extends ServiceImpl<ProductThingModelVe
         return lambdaQuery().eq(ProductThingModelVersion::getId, version).eq(ProductThingModelVersion::getProductId, productId).one();
     }
 
+    public void deleteByProductId(String productId) {
+        lambdaUpdate().eq(ProductThingModelVersion::getProductId, productId).remove();
+    }
+
 }

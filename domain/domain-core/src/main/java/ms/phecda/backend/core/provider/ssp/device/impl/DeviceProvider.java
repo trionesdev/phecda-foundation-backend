@@ -33,9 +33,8 @@ public class DeviceProvider {
         return productService.findProductsByKeys(keys);
     }
 
-    public ProductPDO findProductByKey(String key) {
-        ProductPO product = productService.findProductByKey(key).orElse(null);
-        return deviceProviderConvert.from(product);
+    public ProductDTO findProductByKey(String key) {
+        return productService.findProductByKey(key).orElse(null);
     }
 
     public List<ThingModelPropertyPDO> findThingModelPropertiesByKey(String productKey) {

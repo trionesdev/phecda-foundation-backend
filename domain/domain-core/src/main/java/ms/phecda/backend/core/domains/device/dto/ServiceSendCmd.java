@@ -1,4 +1,4 @@
-package ms.phecda.backend.core.domains.device.manager.dto;
+package ms.phecda.backend.core.domains.device.dto;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

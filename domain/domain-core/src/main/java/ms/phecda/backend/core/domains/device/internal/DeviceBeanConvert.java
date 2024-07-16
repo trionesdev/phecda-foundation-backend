@@ -1,7 +1,8 @@
 package ms.phecda.backend.core.domains.device.internal;
 
 import ms.phecda.backend.core.domains.device.internal.entity.Product;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
@@ -14,7 +15,6 @@ import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelDraft;
 import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelService;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -37,8 +37,13 @@ public interface DeviceBeanConvert {
     })
     ProductExtDTO fromRecord(ProductPO product);
 
+    @Mappings({
+            @Mapping(source = "thingModel",target = "thingModelDraft")
+    })
     Product productPoToEntity(ProductPO product);
     ProductDTO productEntityToDto(Product product);
+    ProductPO productEntityToPo(Product product);
+    Product productDtoToEntity(ProductDTO product);
 
     ProductDTO poToDto(ProductPO product);
 
@@ -52,7 +57,7 @@ public interface DeviceBeanConvert {
 
     DeviceEventDataBO from(ThingModelEvent args);
 
-    DeviceServiceDataBO from(ThingModelService args);
+    DeviceServiceDataBO from(ThingModelCommand args);
 
     List<DevicePDO> toPDOList(List<DevicePO> devices);
 

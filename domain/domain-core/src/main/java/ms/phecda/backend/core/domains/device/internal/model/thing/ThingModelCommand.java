@@ -13,11 +13,11 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThingModelService extends ThingModelAbility {
+public class ThingModelCommand extends ThingModelAbility {
     private CallType callType;
     private Boolean required;
     private List<Param> inputParams;
-    private List<Param> outputParams;
+    private List<Param> outputData;
 
     public enum CallType {
         ASYNC,

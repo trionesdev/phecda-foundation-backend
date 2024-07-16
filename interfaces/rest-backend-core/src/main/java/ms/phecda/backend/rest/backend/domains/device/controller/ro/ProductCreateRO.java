@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.internal.enums.AccessChannel;
 import ms.phecda.backend.core.domains.device.internal.enums.NodeType;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductType;
 
 
 @Data
@@ -19,6 +19,6 @@ public class ProductCreateRO {
     private NodeType nodeType;
     @NotNull
     private AccessChannel accessChannel;
-    private ProductPO.Type type;
+    private ProductType type;
     private String driverName;
 }

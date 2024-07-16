@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.internal.enums.NodeType;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductType;
 
 
 @Data
@@ -16,6 +17,6 @@ public class ProductUpdateRO {
     private String key;
     @NotNull
     private NodeType nodeType;
-    private ProductPO.Type type;
+    private ProductType type;
     private String driverName;
 }

@@ -1,7 +1,7 @@
 package ms.phecda.backend.rest.ssp.domains.device.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
@@ -30,7 +30,7 @@ public class ProductController implements ProductRest {
 
     @Override
     public ProductThingModelVersionRep queryThingModel(String productId) {
-        ProductThingModelVersion productThingModelVersion = productService.queryThingModel(productId, null).orElse(null);
-        return RestProductConvertMapper.INSTANCE.from(productThingModelVersion);
+        var thingModel = productService.queryThingModel(productId, null).orElse(null);
+        return null;
     }
 }

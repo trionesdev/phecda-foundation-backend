@@ -9,7 +9,9 @@ import ms.phecda.backend.core.domains.device.dao.criteria.ProductDriverCriteria;
 import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 import ms.phecda.backend.core.domains.device.dao.po.DriverPO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.dto.ProductThingModelUpsertCmd;
+import ms.phecda.backend.core.domains.device.internal.entity.Product;
 import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DeviceEventLogQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.DevicePropertyDataQuery;
@@ -31,9 +33,9 @@ public interface DeviceBeRestConvert {
     DeviceBeRestConvert INSTANT = Mappers.getMapper(DeviceBeRestConvert.class);
 
     //region product
-    ProductPO from(ProductRO.Create args);
+    ProductDTO from(ProductRO.Create args);
 
-    ProductPO from(ProductRO.Update args);
+    ProductDTO from(ProductRO.Update args);
 
     ProductCriteria from(ProductQuery query);
 
