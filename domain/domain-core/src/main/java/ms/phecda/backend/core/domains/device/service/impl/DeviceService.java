@@ -181,7 +181,7 @@ public class DeviceService {
     public List<DeviceServiceDataBO> queryDeviceThingModelServicesData(String deviceId) {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
-            return thingModel.getServices().stream().map(property -> {
+            return thingModel.getCommands().stream().map(property -> {
                 DeviceServiceDataBO deviceServiceData = DeviceBeanConvert.INSTANCE.from(property);
                 return deviceServiceData;
             }).collect(Collectors.toList());
@@ -314,7 +314,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(id).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         ProductDTO product = productManager.queryById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
-        ThingModelCommand service = thingModel.getServices().stream()
+        ThingModelCommand service = thingModel.getCommands().stream()
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
@@ -335,7 +335,7 @@ public class DeviceService {
     public ServiceInvokeReplyMessage invokeService(String productKey, String deviceName, InvokeServiceArgBO args) {
         ProductDTO product = productManager.findByKey(productKey).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
-        ThingModelCommand service = thingModel.getServices().stream()
+        ThingModelCommand service = thingModel.getCommands().stream()
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));

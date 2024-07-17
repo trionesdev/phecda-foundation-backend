@@ -50,7 +50,7 @@ public class Product {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
             }
             if (Objects.nonNull(upsertCmd.getService()) &&
-                    thingModelDraft.getServices()
+                    thingModelDraft.getCommands()
                             .stream()
                             .anyMatch(t -> Objects.equals(upsertCmd.getService()
                                     .getIdentifier(), t.getIdentifier()))) {
@@ -67,8 +67,8 @@ public class Product {
                 case PROPERTY:
                     thingModelDraft.getProperties().add(upsertCmd.getProperty());
                     break;
-                case SERVICE:
-                    thingModelDraft.getServices().add(upsertCmd.getService());
+                case COMMAND:
+                    thingModelDraft.getCommands().add(upsertCmd.getService());
                     break;
                 case EVENT:
                     thingModelDraft.getEvents().add(upsertCmd.getEvent());
@@ -90,17 +90,17 @@ public class Product {
                         thingModelDraft.setProperties(properties);
                     }
                     break;
-                case SERVICE:
+                case COMMAND:
                     ThingModelCommand tms = upsertCmd.getService();
                     if (Objects.nonNull(tms)) {
-                        List<ThingModelCommand> services = thingModelDraft.getServices().stream().map(t -> {
+                        List<ThingModelCommand> commands = thingModelDraft.getCommands().stream().map(t -> {
                             if (Objects.equals(t.getIdentifier(), upsertCmd.getIdentifier())) {
                                 return tms;
                             } else {
                                 return t;
                             }
                         }).collect(Collectors.toList());
-                        thingModelDraft.setServices(services);
+                        thingModelDraft.setCommands(commands);
                     }
                     break;
                 case EVENT:
@@ -136,7 +136,7 @@ public class Product {
     public void removeThingModelAbility(String identifier){
         if (Objects.nonNull(thingModelDraft)){
             thingModelDraft.getProperties().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
-            thingModelDraft.getServices().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
+            thingModelDraft.getCommands().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
             thingModelDraft.getEvents().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
         }
     }
