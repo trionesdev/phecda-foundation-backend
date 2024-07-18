@@ -8,7 +8,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ValueTypeArray extends ValueType{
-    private ValueTypeEnum childValueType;
+    private ValueTypeEnum subValueType;
     private List<ValueType> valueSpecs;
     private Integer size;
 }

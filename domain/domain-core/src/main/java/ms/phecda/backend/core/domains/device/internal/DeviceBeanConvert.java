@@ -37,9 +37,6 @@ public interface DeviceBeanConvert {
     })
     ProductExtDTO fromRecord(ProductPO product);
 
-    @Mappings({
-            @Mapping(source = "thingModel",target = "thingModelDraft")
-    })
     Product productPoToEntity(ProductPO product);
     ProductDTO productEntityToDto(Product product);
     ProductPO productEntityToPo(Product product);

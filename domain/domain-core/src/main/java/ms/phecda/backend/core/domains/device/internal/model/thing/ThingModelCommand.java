@@ -3,6 +3,7 @@ package ms.phecda.backend.core.domains.device.internal.model.thing;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -16,11 +17,15 @@ import java.util.List;
 public class ThingModelCommand extends ThingModelAbility {
     private CallType callType;
     private Boolean required;
-    private List<Param> inputParams;
-    private List<Param> outputData;
+    private List<ValueItem> inputData;
+    private List<ValueItem> outputData;
 
+    @AllArgsConstructor
+    @Getter
     public enum CallType {
-        ASYNC,
-        SYNC
+        ASYNC("Async"),
+        SYNC("Sync");
+
+        private final String value;
     }
 }

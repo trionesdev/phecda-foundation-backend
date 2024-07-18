@@ -59,7 +59,7 @@ public class ProductRepository {
 
 
     public void upsertThingModel(Product product){
-        var productPO = ProductPO.builder().id(product.getId()).thingModel(product.getThingModelDraft()).build();
+        var productPO = ProductPO.builder().id(product.getId()).thingModelDraft(product.getThingModelDraft()).build();
         productDAO.updateById(productPO);
     }
 
