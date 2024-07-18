@@ -21,11 +21,13 @@ public class ProductDTO {
     private String id;
     private String name;
     private String key;
+    private String description;
     private NodeType nodeType;
     private AccessChannel accessChannel;
     private ProductType type;
     private List<ProtocolProperty> protocolProperties;
-    private ThingModel thingModel;
+    private ThingModel thingModelDraft  ;
+    private ThingModel thingModelCurrent  ;
 
     private ProductStatus status;
     private String driverName;

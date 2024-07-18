@@ -15,7 +15,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Param {
+public class ValueItem {
     private String identifier;
     private String name;
     private ValueTypeEnum valueType;

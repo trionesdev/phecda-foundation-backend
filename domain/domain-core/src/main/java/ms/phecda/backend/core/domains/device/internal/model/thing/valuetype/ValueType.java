@@ -26,6 +26,7 @@ import lombok.experimental.SuperBuilder;
                 @JsonSubTypes.Type(value = ValueTypeBool.class, name = "BOOL"),
                 @JsonSubTypes.Type(value = ValueTypeString.class, name = "STRING"),
                 @JsonSubTypes.Type(value = ValueTypeStruct.class, name = "STRUCT"),
+                @JsonSubTypes.Type(value = ValueTypeArray.class, name = "ARRAY"),
         }
 )
 public abstract class ValueType {
