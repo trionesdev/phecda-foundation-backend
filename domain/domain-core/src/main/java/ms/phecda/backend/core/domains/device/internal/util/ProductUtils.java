@@ -1,96 +1,44 @@
-package ms.phecda.backend.core.domains.device.dto;
+package ms.phecda.backend.core.domains.device.internal.util;
 
 import cn.hutool.core.collection.CollectionUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.DeviceCommand;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.DeviceEvent;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.DeviceProperty;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.ValueItem;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.ValueProperties;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand.CallType;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueType;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeArray;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Data
-@SuperBuilder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProductProfileDTO {
-    private String productKey;
-    private String manufacturer;
-    private String description;
-    private List<String> labels;
-    private List<DeviceProperty> deviceProperties;
-    private List<DeviceCommand> deviceCommands;
-    private List<DeviceEvent> deviceEvents;
+public class ProductUtils {
 
-
-    @Data
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class DeviceProperty{
-        private String identifier;
-        private String name;
-        private String description;
-        private ValueProperties properties;
+    public static String valueType(ValueTypeEnum valueType, ValueType valueSpec){
+        return switch (valueType) {
+            case INT, LONG, FLOAT, DOUBLE, BOOL, STRING, STRUCT -> valueType.getValue();
+            case ARRAY -> {
+                if (Objects.nonNull(valueSpec)) {
+                    ValueTypeArray valueArraySpec = (ValueTypeArray) valueSpec;
+                    yield Optional.ofNullable(valueArraySpec.getSubValueType()).map(t -> t.getValue() + valueType.getValue()).orElse(valueType.getValue());
+                }
+                yield valueType.getValue();
+            }
+        };
     }
 
-    @Data
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class DeviceCommand{
-        private String identifier;
-        private String name;
-        private String description;
-        private String callType;
-        private List<ValueItem> inputData;
-        private List<ValueItem> outputData;
-    }
-
-    @Data
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class DeviceEvent{
-        private String identifier;
-        private String name;
-        private String description;
-        private String type;
-        private List<ValueItem> outputData;
-    }
-
-    @Data
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ValueItem{
-        private String identifier;
-        private String name;
-        private ValueProperties properties;
-    }
-
-    @Data
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ValueProperties{
-        private String valueType;
-        private String readWrite;
-    }
-
-    public static ProductProfileDTO fromProduct(ProductDTO product){
-        var profile = ProductProfileDTO.builder().productKey(product.getKey()).description(product.getDescription()).build();
+    public static ProductThingModelProfileDTO toProductProfile(ProductDTO product) {
+        var profile = ProductThingModelProfileDTO.builder().productKey(product.getKey()).description(product.getDescription()).build();
         var currentThingModel = product.getThingModelCurrent();
         if (Objects.nonNull(currentThingModel) ){
             if (CollectionUtil.isNotEmpty(currentThingModel.getProperties())){
-               var deviceProperties = currentThingModel.getProperties().stream().map(thingProperty -> {
+                var deviceProperties = currentThingModel.getProperties().stream().map(thingProperty -> {
                     var property = DeviceProperty.builder().identifier(thingProperty.getIdentifier()).name(thingProperty.getName()).description(thingProperty.getDescription())
                             .properties(
                                     ValueProperties.builder().valueType(valueType(thingProperty.getValueType(), thingProperty.getValueSpec())).readWrite(Optional.ofNullable(thingProperty.getRw()).map(Enum::name).orElse(null)).build()
@@ -139,19 +87,6 @@ public class ProductProfileDTO {
             }
         }
         return profile;
-    }
-
-    public static String valueType(ValueTypeEnum valueType, ValueType valueSpec){
-        return switch (valueType) {
-            case INT, LONG, FLOAT, DOUBLE, BOOL, STRING, STRUCT -> valueType.getValue();
-            case ARRAY -> {
-                if (Objects.nonNull(valueSpec)) {
-                    ValueTypeArray valueArraySpec = (ValueTypeArray) valueSpec;
-                    yield Optional.ofNullable(valueArraySpec.getSubValueType()).map(t -> t.getValue() + valueType.getValue()).orElse(valueType.getValue());
-                }
-                yield valueType.getValue();
-            }
-        };
     }
 
 }

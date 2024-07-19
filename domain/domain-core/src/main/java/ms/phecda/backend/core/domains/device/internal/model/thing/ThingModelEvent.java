@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.domains.device.internal.model.thing;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ThingModelEvent extends ThingModelAbility {
     private Type type;
     private List<ValueItem> outputData;

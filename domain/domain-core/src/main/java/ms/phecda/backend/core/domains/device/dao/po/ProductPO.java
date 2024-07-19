@@ -31,6 +31,8 @@ public class ProductPO extends BaseLogicEntity {
     private String id;
     private String name;
     private String key;
+    private String manufacturer;
+    private String description;
     private NodeType nodeType;
     private AccessChannel accessChannel;
     private ProductType type;

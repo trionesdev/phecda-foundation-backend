@@ -66,7 +66,7 @@ public class ProductManager {
     }
 
 
-    public Optional<ProductDTO> queryById(String id) {
+    public Optional<ProductDTO> findById(String id) {
         return productRepository.findById(id).map(convert::productEntityToDto);
     }
 
@@ -130,6 +130,9 @@ public class ProductManager {
     public Optional<ProductDTO> findByKey(String key) {
         return productRepository.findByKey(key).map(convert::productEntityToDto);
     }
+
+
+
 
     public Optional<ThingModel> findThingModel(String productId) {
         return Optional.ofNullable(productDAO.getById(productId)).map(product -> {
