@@ -1,6 +1,12 @@
 package ms.phecda.backend.rest.backend.domains.device.controller.impl;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.util.JsonUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +22,7 @@ import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductThingModelUpsertRO;
+import ms.phecda.backend.rest.backend.domains.device.controller.vo.ProductProfileVO;
 import ms.phecda.backend.rest.backend.domains.device.internal.DeviceBeRestConvert;
 import ms.phecda.backend.rest.backend.domains.device.internal.DeviceConstants;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.List;
 
@@ -166,4 +174,24 @@ public class ProductController {
     public void revokePublishProduct(@PathVariable(value = "productId") String productId) {
         productService.revokePublishProduct(productId);
     }
+
+    @Operation(summary = "产品物模型配置文档")
+    @GetMapping(value = "products/{id}/thing-model-profile")
+    public ProductProfileVO productProfile(@PathVariable String id){
+        return productService.productProfile(id).map(productProfileDTO -> {
+            try {
+                var objectMapper = new ObjectMapper();
+                objectMapper.setSerializationInclusion(Include.NON_NULL);
+                String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productProfileDTO);
+                var yamlObjectMapper = new ObjectMapper(new YAMLFactory());
+                yamlObjectMapper.setSerializationInclusion(Include.NON_NULL);
+                String yaml = yamlObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productProfileDTO);
+                return ProductProfileVO.builder().json(json).yaml(yaml).build();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).orElse(null);
+    }
+
 }

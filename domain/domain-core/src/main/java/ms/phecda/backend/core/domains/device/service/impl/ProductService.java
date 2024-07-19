@@ -4,21 +4,16 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.page.PageInfo;
-import com.trionesdev.commons.exception.BusinessException;
-import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO;
 import ms.phecda.backend.core.domains.device.dto.ProductThingModelUpsertCmd;
-import ms.phecda.backend.core.domains.device.dto.ThingModelDTO;
 import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
 import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
-import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
-import ms.phecda.backend.core.domains.device.internal.entity.Product;
-import ms.phecda.backend.core.domains.device.internal.enums.ProductStatus;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
+import ms.phecda.backend.core.domains.device.internal.util.ProductUtils;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductThingModelVersionManager;
 import ms.phecda.backend.core.domains.device.internal.util.DeviceUtils;
@@ -74,7 +69,7 @@ public class ProductService {
 
 
     public Optional<ProductDTO> queryProductById(String id) {
-        return productManager.queryById(id).map(this::assemble);
+        return productManager.findById(id).map(this::assemble);
     }
 
 
@@ -168,6 +163,10 @@ public class ProductService {
         return records.stream().map((product) -> {
             return convert.poToDto(product);
         }).collect(Collectors.toList());
+    }
+
+    public Optional<ProductThingModelProfileDTO> productProfile(String id){
+        return  productManager.findById(id).map(ProductUtils::toProductProfile);
     }
 
 }

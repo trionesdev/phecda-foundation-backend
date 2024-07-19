@@ -21,6 +21,8 @@ public class ProductRO {
         private String name;
         @Pattern(regexp = "^(?:[a-zA-Z].*)?$", message = "ProductKey必须是英文字母开头")
         private String key;
+        private String manufacturer;
+        private String description;
         @NotNull
         private NodeType nodeType;
         private AccessChannel accessChannel;
@@ -34,6 +36,8 @@ public class ProductRO {
         private String name;
         @Pattern(regexp = "^(?:[a-zA-Z].*)?$", message = "ProductKey必须是英文字母开头")
         private String key;
+        private String manufacturer;
+        private String description;
         @NotNull
         private NodeType nodeType;
         private AccessChannel accessChannel;
