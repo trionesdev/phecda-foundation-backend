@@ -1,6 +1,6 @@
 package ms.phecda.backend.rest.ssp.domains.device.support;
 
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 import ms.phecda.backend.core.messageaccess.model.ServiceInvokeReplyMessage;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.DeviceRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.ServiceInvokeReplyRep;

@@ -1,9 +1,9 @@
 package ms.phecda.backend.rest.backend.domains.messageforwarding.internal;
 
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageForwardingRule;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSource;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSourceTopic;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageForwardingRule;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSource;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSourceTopic;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.*;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;

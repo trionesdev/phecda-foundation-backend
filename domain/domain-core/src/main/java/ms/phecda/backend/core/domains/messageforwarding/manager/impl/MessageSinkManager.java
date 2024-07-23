@@ -1,10 +1,8 @@
 package ms.phecda.backend.core.domains.messageforwarding.manager.impl;
 
-import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.KafkaSinkAction;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.sinkaction.SinkAction;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.sinkaction.SinkAction;
 import ms.phecda.backend.core.domains.messageforwarding.dao.impl.MessageSinkDAO;
 import org.springframework.stereotype.Service;
 

@@ -7,8 +7,8 @@ import com.google.common.collect.Maps;
 import com.lmax.disruptor.EventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceDataService;
 import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
@@ -104,7 +104,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
 
     public void saveMessage(PropertiesPostMessage message) {
         try {
-            ProductPO product = productService.findProductByKey(message.getProductKey()).orElse(null);
+            var product = productService.findProductByKey(message.getProductKey()).orElse(null);
             if (Objects.isNull(product)) {
                 log.warn("product {} not exist", message.getProductKey());
                 return;

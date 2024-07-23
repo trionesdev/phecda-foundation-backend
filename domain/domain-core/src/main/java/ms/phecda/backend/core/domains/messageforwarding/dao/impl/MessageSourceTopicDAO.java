@@ -2,7 +2,7 @@ package ms.phecda.backend.core.domains.messageforwarding.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSourceTopic;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSourceTopic;
 import ms.phecda.backend.core.domains.messageforwarding.dao.mapper.MessageSourceTopicMapper;
 import org.springframework.stereotype.Repository;
 

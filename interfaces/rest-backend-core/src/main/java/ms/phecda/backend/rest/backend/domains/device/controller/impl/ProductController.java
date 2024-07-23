@@ -1,24 +1,28 @@
 package ms.phecda.backend.rest.backend.domains.device.controller.impl;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.core.util.JsonUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import ms.phecda.backend.core.domains.device.internal.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductCriteria;
-import ms.phecda.backend.core.domains.device.repository.dvo.ProductStatisticsDVO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelDraft;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.repository.po.enums.ProductStatusEnum;
-import ms.phecda.backend.core.domains.device.service.bo.ThingModelUpsertBO;
+import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
+import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
+import ms.phecda.backend.core.domains.device.internal.enums.ProductStatus;
 import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.dto.dervice.ProductDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.rest.backend.domains.device.controller.query.ProductQuery;
-import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductProtocolPropertiesUpdateRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductRO;
 import ms.phecda.backend.rest.backend.domains.device.controller.ro.ProductThingModelUpsertRO;
+import ms.phecda.backend.rest.backend.domains.device.controller.vo.ProductProfileVO;
 import ms.phecda.backend.rest.backend.domains.device.internal.DeviceBeRestConvert;
 import ms.phecda.backend.rest.backend.domains.device.internal.DeviceConstants;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.List;
 
@@ -58,7 +63,6 @@ public class ProductController {
     @PostMapping(value = "products")
     public void createProduct(@Validated @RequestBody ProductRO.Create args) {
         var product = convert.from(args);
-        product.setStatus(ProductStatusEnum.DEVELOPMENT);
         productService.createProduct(product);
     }
 
@@ -74,7 +78,7 @@ public class ProductController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody ProductRO.Update args) {
         var product = convert.from(args);
-        product.setStatus(ProductStatusEnum.DEVELOPMENT);
+        product.setStatus(ProductStatus.DEVELOPMENT);
         product.setId(id);
         productService.updateProductById(product);
     }
@@ -88,7 +92,7 @@ public class ProductController {
     @Operation(summary = "获取产品列表")
     @GetMapping(value = "products/list")
     public List<ProductExtDTO> queryProductList(ProductQuery query) {
-        ProductCriteria criteria = DeviceBeRestConvert.INSTANT.from(query);
+        ProductCriteria criteria = convert.from(query);
         return productService.queryList(criteria);
     }
 
@@ -104,7 +108,7 @@ public class ProductController {
 
     @Operation(summary = "获取物模型(草稿)")
     @GetMapping(value = "products/{productId}/thing-model-draft")
-    public ProductThingModelDraft findProductThingModelDraft(@PathVariable(value = "productId") String productId) {
+    public ThingModel findProductThingModelDraft(@PathVariable(value = "productId") String productId) {
         return productService.findProductThingModelDraft(productId).orElse(null);
     }
 
@@ -113,7 +117,7 @@ public class ProductController {
     public void upsertThingModelDraft(
             @PathVariable(value = "productId") String productId,
             @Validated @RequestBody ProductThingModelUpsertRO args) {
-        ThingModelUpsertBO thingModelUpsertBO = DeviceBeRestConvert.INSTANT.from(args);
+        var thingModelUpsertBO = convert.from(args);
         productService.upsertThingModel(productId, thingModelUpsertBO);
     }
 
@@ -127,14 +131,14 @@ public class ProductController {
     }
 
     @Operation(summary = "发布物模型(草稿)")
-    @PutMapping(value = "products/{productId}/thing-model-draft/publish")
-    public void publishThingModelDraft(@PathVariable(value = "productId") String productId) {
-        productService.publishThingModel(productId);
+    @PutMapping(value = "products/{productId}/thing-model-draft/release")
+    public void releaseThingModelDraft(@PathVariable(value = "productId") String productId) {
+        productService.releaseThingModel(productId);
     }
 
     @Operation(summary = "获取产品物模型")
     @GetMapping(value = "products/{productId}/thing-model")
-    public ProductThingModelVersion queryThingModel(
+    public ThingModel queryThingModel(
             @PathVariable(value = "productId") String productId,
             @RequestParam(value = "version", required = false) String version) {
         return productService.queryThingModel(productId, version).orElse(null);
@@ -142,7 +146,7 @@ public class ProductController {
 
     @Operation(summary = "根据KEY获取产品物模型")
     @GetMapping(value = "products/key/{key}/thing-model")
-    public ProductThingModelVersion queryThingModelByKey(
+    public ThingModel queryThingModelByKey(
             @PathVariable(value = "key") String key,
             @RequestParam(value = "version", required = false) String version) {
         return productService.queryThingModelByKey(key, version).orElse(null);
@@ -153,11 +157,10 @@ public class ProductController {
     @PutMapping(value = "products/{productId}/protocol-properties")
     public void updateProductProtocolProperties(
             @PathVariable(value = "productId") String productId,
-            @RequestBody ProductProtocolPropertiesUpdateRO args) {
-        productService.updateProductById(ProductPO.builder()
-                .id(productId)
-                .protocolProperties(args.getProtocolProperties())
-                .build());
+            @RequestBody ProductRO.ProtocolPropertiesUpdate args) {
+
+        var product =  ProductDTO.builder().id(productId).protocolProperties(args.getProtocolProperties()).build();
+        productService.updateProductById(product);
     }
 
     @Operation(summary = "发布产品")
@@ -171,4 +174,24 @@ public class ProductController {
     public void revokePublishProduct(@PathVariable(value = "productId") String productId) {
         productService.revokePublishProduct(productId);
     }
+
+    @Operation(summary = "产品物模型配置文档")
+    @GetMapping(value = "products/{id}/thing-model-profile")
+    public ProductProfileVO productProfile(@PathVariable String id){
+        return productService.productProfile(id).map(productProfileDTO -> {
+            try {
+                var objectMapper = new ObjectMapper();
+                objectMapper.setSerializationInclusion(Include.NON_NULL);
+                String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productProfileDTO);
+                var yamlObjectMapper = new ObjectMapper(new YAMLFactory());
+                yamlObjectMapper.setSerializationInclusion(Include.NON_NULL);
+                String yaml = yamlObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productProfileDTO);
+                return ProductProfileVO.builder().json(json).yaml(yaml).build();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).orElse(null);
+    }
+
 }

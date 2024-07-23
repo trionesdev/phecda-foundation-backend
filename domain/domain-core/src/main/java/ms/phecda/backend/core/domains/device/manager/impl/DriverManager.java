@@ -2,9 +2,9 @@ package ms.phecda.backend.core.domains.device.manager.impl;
 
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.repository.criteria.ProductDriverCriteria;
-import ms.phecda.backend.core.domains.device.repository.impl.DriverRepository;
-import ms.phecda.backend.core.domains.device.repository.po.DriverPO;
+import ms.phecda.backend.core.domains.device.dao.criteria.ProductDriverCriteria;
+import ms.phecda.backend.core.domains.device.dao.impl.DriverDAO;
+import ms.phecda.backend.core.domains.device.dao.po.DriverPO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class DriverManager {
-    private final DriverRepository driverRepository;
+    private final DriverDAO driverRepository;
 
     public void createDriver(DriverPO driver) {
         driverRepository.save(driver);

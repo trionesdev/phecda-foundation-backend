@@ -3,7 +3,7 @@ package ms.phecda.backend.rest.backend.domains.messageforwarding.controller.impl
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.messageforwarding.dao.entity.MessageSink;
+import ms.phecda.backend.core.domains.messageforwarding.dao.po.MessageSink;
 import ms.phecda.backend.core.domains.messageforwarding.service.impl.MessageSinkService;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSinkCreateRO;
 import ms.phecda.backend.rest.backend.domains.messageforwarding.controller.ro.MessageSinkUpdateRO;

@@ -5,14 +5,14 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceEventLogCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceServiceLogCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceStatisticsMessageDailyCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceEventLog;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceStatisticsMessageDaily;
-import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceStatisticsMessageDailyCriteria;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceEventLogPO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceStatisticsMessageDailyPO;
+import ms.phecda.backend.core.domains.device.dto.DevicePropertyDataDTO;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceDataManager;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -47,18 +47,18 @@ public class DeviceDataService {
     private final RedissonClient redissonClient;
 
     //region event
-    public PageInfo<DeviceEventLog> eventLogsPage(DeviceEventLogCriteria criteria) {
+    public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogCriteria criteria) {
         return deviceDataManager.eventLogsPage(criteria);
     }
     //endregion
 
 
     //region service
-    public PageInfo<DeviceServiceLog> serviceLogsPage(DeviceServiceLogCriteria criteria) {
+    public PageInfo<DeviceServiceLogPO> serviceLogsPage(DeviceServiceLogCriteria criteria) {
         return deviceDataManager.serviceLogsPage(criteria);
     }
 
-    public void saveServiceLog(DeviceServiceLog entity) {
+    public void saveServiceLog(DeviceServiceLogPO entity) {
         deviceDataManager.saveServiceLog(entity);
     }
 
@@ -128,8 +128,8 @@ public class DeviceDataService {
      */
     public void statisticsMessageDaily() {
         LocalDate targetDate = LocalDate.now().minusDays(1);
-        List<DeviceStatisticsMessageDaily> records = deviceDataManager.findList(DeviceStatisticsMessageDailyCriteria.builder()
-                .type(DeviceStatisticsMessageDaily.Type.PROPERTIES_POST.name()).date(targetDate).build());
+        List<DeviceStatisticsMessageDailyPO> records = deviceDataManager.findList(DeviceStatisticsMessageDailyCriteria.builder()
+                .type(DeviceStatisticsMessageDailyPO.Type.PROPERTIES_POST.name()).date(targetDate).build());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = targetDate.format(formatter);
         if (CollUtil.isNotEmpty(records)) {
@@ -142,8 +142,8 @@ public class DeviceDataService {
             boolean isLocked = lock.tryLock(10, 10, TimeUnit.SECONDS);
             if (isLocked) {
                 String count = stringRedisTemplate.opsForValue().get(PROPERTIES_POST_STATISTICS_PREFIX + formattedDate);
-                DeviceStatisticsMessageDaily record = DeviceStatisticsMessageDaily.builder()
-                        .type(DeviceStatisticsMessageDaily.Type.PROPERTIES_POST.name())
+                DeviceStatisticsMessageDailyPO record = DeviceStatisticsMessageDailyPO.builder()
+                        .type(DeviceStatisticsMessageDailyPO.Type.PROPERTIES_POST.name())
                         .date(targetDate)
                         .quantity(Objects.isNull(count) ? 0L : Long.parseLong(count))
                         .build();
@@ -159,12 +159,12 @@ public class DeviceDataService {
 
     public DevicePropertiesPostStatisticsBO queryDevicePropertiesPostStatistics() {
         DeviceStatisticsMessageDailyCriteria criteriaTotal = DeviceStatisticsMessageDailyCriteria.builder()
-                .type(DeviceStatisticsMessageDaily.Type.PROPERTIES_POST.name())
+                .type(DeviceStatisticsMessageDailyPO.Type.PROPERTIES_POST.name())
                 .build();
         Long total = deviceDataManager.getQuantitySum(criteriaTotal);
 
         DeviceStatisticsMessageDailyCriteria criteriaMouthTotal = DeviceStatisticsMessageDailyCriteria.builder()
-                .type(DeviceStatisticsMessageDaily.Type.PROPERTIES_POST.name())
+                .type(DeviceStatisticsMessageDailyPO.Type.PROPERTIES_POST.name())
                 .startTime(LocalDateTime.now().withDayOfMonth(1).atZone(ZoneId.systemDefault()).toInstant())
                 .endTime(Instant.now())
                 .build();

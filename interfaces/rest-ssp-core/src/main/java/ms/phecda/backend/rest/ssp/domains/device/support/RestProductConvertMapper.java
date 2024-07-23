@@ -1,8 +1,8 @@
 package ms.phecda.backend.rest.ssp.domains.device.support;
 
 import com.alibaba.fastjson2.JSONObject;
-import ms.phecda.backend.core.domains.device.repository.po.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.manager.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
+import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.ProductRep;
 import ms.phecda.backend.rest.ssp.sdk.device.rep.ProductThingModelVersionRep;
 import org.mapstruct.Builder;

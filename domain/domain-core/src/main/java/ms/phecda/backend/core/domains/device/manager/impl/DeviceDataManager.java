@@ -7,23 +7,23 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceEventLogCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DevicePropertyDataCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceServiceLogCriteria;
-import ms.phecda.backend.core.domains.device.repository.criteria.DeviceStatisticsMessageDailyCriteria;
-import ms.phecda.backend.core.domains.device.repository.po.DevicePO;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceEventLog;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceServiceLog;
-import ms.phecda.backend.core.domains.device.repository.po.DeviceStatisticsMessageDaily;
-import ms.phecda.backend.core.domains.device.repository.po.ProductPO;
-import ms.phecda.backend.core.domains.device.repository.impl.DeviceDAO;
-import ms.phecda.backend.core.domains.device.repository.impl.DeviceEventLogDAO;
-import ms.phecda.backend.core.domains.device.repository.impl.DevicePropertyDataDAO;
-import ms.phecda.backend.core.domains.device.repository.impl.DeviceServiceLogDAO;
-import ms.phecda.backend.core.domains.device.repository.impl.DeviceStatisticsMessageDailyDAO;
-import ms.phecda.backend.core.domains.device.repository.impl.ProductDAO;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceEventLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
+import ms.phecda.backend.core.domains.device.dao.criteria.DeviceStatisticsMessageDailyCriteria;
+import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceEventLogPO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
+import ms.phecda.backend.core.domains.device.dao.po.DeviceStatisticsMessageDailyPO;
+import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.dao.impl.DeviceDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.DeviceEventLogDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.DevicePropertyDataDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.DeviceServiceLogDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.DeviceStatisticsMessageDailyDAO;
+import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
-import ms.phecda.backend.core.domains.device.manager.dto.DevicePropertyDataDTO;
+import ms.phecda.backend.core.domains.device.dto.DevicePropertyDataDTO;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.springframework.stereotype.Service;
 
@@ -45,23 +45,23 @@ public class DeviceDataManager {
     private final DeviceStatisticsMessageDailyDAO deviceStatisticsMessageDailyDAO;
 
 
-    public PageInfo<DeviceEventLog> eventLogsPage(DeviceEventLogCriteria criteria) {
-        Page<DeviceEventLog> page = deviceEventLogDAO.page(criteria);
+    public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogCriteria criteria) {
+        Page<DeviceEventLogPO> page = deviceEventLogDAO.page(criteria);
         return MpPageUtils.of(page);
     }
 
 
-    public PageInfo<DeviceServiceLog> serviceLogsPage(DeviceServiceLogCriteria criteria) {
-        Page<DeviceServiceLog> page = deviceServiceLogDAO.page(criteria);
+    public PageInfo<DeviceServiceLogPO> serviceLogsPage(DeviceServiceLogCriteria criteria) {
+        Page<DeviceServiceLogPO> page = deviceServiceLogDAO.page(criteria);
 
         return MpPageUtils.of(page);
     }
 
-    public void saveServiceLog(DeviceServiceLog entity) {
+    public void saveServiceLog(DeviceServiceLogPO entity) {
         deviceServiceLogDAO.save(entity);
     }
 
-    public void updateServiceLog(DeviceServiceLog entity) {
+    public void updateServiceLog(DeviceServiceLogPO entity) {
         deviceServiceLogDAO.updateById(entity);
     }
 
@@ -115,11 +115,11 @@ public class DeviceDataManager {
 
     //endregion
 
-    public void saveStatisticsMessageDaily(DeviceStatisticsMessageDaily record) {
+    public void saveStatisticsMessageDaily(DeviceStatisticsMessageDailyPO record) {
         deviceStatisticsMessageDailyDAO.save(record);
     }
 
-    public List<DeviceStatisticsMessageDaily> findList(DeviceStatisticsMessageDailyCriteria criteria) {
+    public List<DeviceStatisticsMessageDailyPO> findList(DeviceStatisticsMessageDailyCriteria criteria) {
         return deviceStatisticsMessageDailyDAO.selectList(criteria);
     }
 
