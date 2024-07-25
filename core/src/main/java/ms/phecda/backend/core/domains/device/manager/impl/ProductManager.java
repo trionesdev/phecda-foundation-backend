@@ -13,7 +13,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
-import ms.phecda.backend.core.domains.device.internal.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.internal.enums.NodeType;
 import ms.phecda.backend.core.domains.device.internal.enums.ProductStatus;
 import ms.phecda.backend.core.domains.device.dao.impl.ProductDAO;
@@ -66,8 +66,8 @@ public class ProductManager {
     }
 
 
-    public Optional<ProductDTO> findById(String id) {
-        return productRepository.findById(id).map(convert::productEntityToDto);
+    public Optional<Product> findById(String id) {
+        return productRepository.findById(id);
     }
 
     public Optional<ProductExtDTO> queryExtById(String id) {

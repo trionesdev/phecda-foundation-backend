@@ -17,6 +17,7 @@ import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO;
 import ms.phecda.backend.core.domains.device.dao.po.DeviceServiceLogPO.Result;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.internal.enums.AccessChannel;
 import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.dto.ServiceSendCmd;
@@ -312,7 +313,7 @@ public class DeviceService {
      */
     public ServiceInvokeReplyMessage invokeService(String id, InvokeServiceArgBO args) {
         DevicePO device = deviceManager.queryById(id).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-        ProductDTO product = productManager.findById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        Product product = productManager.findById(device.getProductId()).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
         ThingModelCommand service = thingModel.getCommands().stream()
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))

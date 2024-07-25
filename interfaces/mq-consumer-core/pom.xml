@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>domain-core</artifactId>
+            <artifactId>core</artifactId>
         </dependency>
     </dependencies>
 </project>
