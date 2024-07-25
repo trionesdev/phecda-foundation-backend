@@ -1,4 +1,4 @@
-package ms.phecda.backend.core.domains.device.internal.entity;
+package ms.phecda.backend.core.domains.device.internal.aggregate.entity;
 
 import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.exception.BusinessException;

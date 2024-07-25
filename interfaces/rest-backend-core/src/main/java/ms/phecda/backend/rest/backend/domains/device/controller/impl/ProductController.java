@@ -3,14 +3,11 @@ package ms.phecda.backend.rest.backend.domains.device.controller.impl;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.trionesdev.commons.core.page.PageInfo;
-import com.trionesdev.commons.core.util.JsonUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import ms.phecda.backend.core.domains.device.internal.entity.Product;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeOption;
 import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
@@ -35,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.List;
 

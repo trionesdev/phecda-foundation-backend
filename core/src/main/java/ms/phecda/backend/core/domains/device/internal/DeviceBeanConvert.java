@@ -1,6 +1,6 @@
 package ms.phecda.backend.core.domains.device.internal;
 
-import ms.phecda.backend.core.domains.device.internal.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceEventDataBO;

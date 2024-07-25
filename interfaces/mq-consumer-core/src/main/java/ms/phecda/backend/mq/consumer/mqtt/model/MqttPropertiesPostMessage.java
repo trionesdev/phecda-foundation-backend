@@ -14,7 +14,7 @@ public class MqttPropertiesPostMessage {
     private String id;
     private String deviceName;
     private String productKey;
-    private String sourceName;
+    private String identifier;
     private Long ts;
     private Map<String, Reading> readings = new HashMap<>();
     private Map<String, Object> tags;
@@ -36,7 +36,7 @@ public class MqttPropertiesPostMessage {
         processMessage.setId(this.getId());
         processMessage.setDeviceName(this.getDeviceName());
         processMessage.setProductKey(this.getProductKey());
-        processMessage.setSourceName(this.getSourceName());
+        processMessage.setIdentifier(this.getIdentifier());
         processMessage.setTs(this.getTs());
         processMessage.setTags(this.getTags());
         if (MapUtil.isNotEmpty(this.getReadings())){

@@ -7,7 +7,7 @@ import ms.phecda.backend.core.domains.device.dao.impl.ProductThingModelVersionDA
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelVersion;
 import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
-import ms.phecda.backend.core.domains.device.internal.entity.Product;
+import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

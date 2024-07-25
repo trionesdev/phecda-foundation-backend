@@ -20,7 +20,7 @@ public class PropertiesPostMessage {
     private String productId;
     private String deviceName;
     private String deviceId;
-    private String sourceName;
+    private String identifier;
     private Long ts;
     private Map<String, Reading> readings = new HashMap<>();
     private Map<String, Object> tags;

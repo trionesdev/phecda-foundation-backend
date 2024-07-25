@@ -14,7 +14,7 @@
         <module>serve</module>
         <module>infrastructure</module>
 <!--        <module>edge</module>-->
-        <module>domain</module>
+        <module>core</module>
         <module>interfaces</module>
         <module>interfaces/mq-consumer-core</module>
     </modules>
@@ -86,7 +86,7 @@
             </dependency>
             <dependency>
                 <groupId>ms.phecda</groupId>
-                <artifactId>domain-core</artifactId>
+                <artifactId>core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
