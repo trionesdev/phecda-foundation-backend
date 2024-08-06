@@ -126,9 +126,8 @@ public class ProductManager {
         }
     }
 
-    @Cacheable(value = {PRODUCT_NAMES}, key = "'" + PRODUCT_KEY_PREFIX + "'+#key", unless = "#result==null")
-    public Optional<ProductDTO> findByKey(String key) {
-        return productRepository.findByKey(key).map(convert::productEntityToDto);
+    public Optional<Product> findByKey(String key) {
+        return productRepository.findByKey(key);
     }
 
 
