@@ -13,9 +13,9 @@
     <artifactId>interfaces</artifactId>
 
     <modules>
-        <module>rest-backend-core</module>
-        <module>rest-ssp-core</module>
-        <module>rest-ssp-core-sdk</module>
+        <module>rest-backend</module>
+        <module>rest-ssp</module>
+        <module>rest-ssp-sdk</module>
     </modules>
 
     <properties>
