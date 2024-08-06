@@ -1,5 +1,6 @@
 package ms.phecda.backend.core.domains.device.internal;
 
+import ms.phecda.backend.core.domains.device.dto.DeviceDTO;
 import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand;
@@ -59,4 +60,5 @@ public interface DeviceBeanConvert {
     List<DevicePDO> toPDOList(List<DevicePO> devices);
 
     DevicePDO toPDO(DevicePO device);
+    DeviceDTO devicePoToDto(DevicePO device);
 }
