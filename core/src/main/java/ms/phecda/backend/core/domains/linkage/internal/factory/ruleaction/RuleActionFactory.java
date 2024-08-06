@@ -15,7 +15,6 @@ import ms.phecda.backend.core.domains.linkage.internal.rule.action.ActionTrigger
 import ms.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaAction;
 import ms.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaRuleActionComponent;
 import ms.phecda.backend.core.domains.device.provider.impl.DeviceProvider;
-import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.jeasy.rules.api.Facts;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
