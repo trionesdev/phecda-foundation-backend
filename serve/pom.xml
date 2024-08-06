@@ -15,15 +15,15 @@
     <dependencies>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>rest-backend-core</artifactId>
+            <artifactId>rest-backend</artifactId>
         </dependency>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>rest-ssp-core</artifactId>
+            <artifactId>rest-ssp</artifactId>
         </dependency>
         <dependency>
             <groupId>ms.phecda</groupId>
-            <artifactId>mq-consumer-core</artifactId>
+            <artifactId>mq-consumer</artifactId>
         </dependency>
     </dependencies>
 

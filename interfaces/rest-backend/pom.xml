@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Phecda:Be:RestBackend</name>
-    <artifactId>rest-backend-core</artifactId>
+    <artifactId>rest-backend</artifactId>
 
 
     <dependencies>

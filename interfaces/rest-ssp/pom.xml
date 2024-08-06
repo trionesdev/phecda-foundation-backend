@@ -8,7 +8,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>rest-ssp-core</artifactId>
+    <artifactId>rest-ssp</artifactId>
     <packaging>jar</packaging>
 
     <name>Phecda:Be:RestSsp</name>
