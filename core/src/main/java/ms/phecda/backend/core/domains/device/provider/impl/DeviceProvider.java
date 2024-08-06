@@ -2,27 +2,15 @@ package ms.phecda.backend.core.domains.device.provider.impl;
 
 import lombok.RequiredArgsConstructor;
 import ms.phecda.backend.core.domains.device.dto.DeviceDTO;
+import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.core.domains.device.internal.DeviceBeanConvert;
-import ms.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
-import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
-import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
+import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
 import ms.phecda.backend.core.domains.device.manager.impl.DeviceManager;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
-import ms.phecda.backend.core.domains.device.service.bo.InvokeServiceArgBO;
-import ms.phecda.backend.core.domains.device.service.impl.DeviceService;
-import ms.phecda.backend.core.domains.device.service.impl.ProductService;
-import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelProperty;
-import ms.phecda.backend.core.domains.device.dto.ProductDTO;
-import ms.phecda.backend.core.provider.ssp.device.DeviceProviderConvert;
-import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
-import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
-import ms.phecda.backend.core.provider.ssp.device.pdo.InvokeServiceArgPDO;
-import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor

@@ -9,7 +9,6 @@ import ms.phecda.backend.core.domains.device.service.bo.DeviceExtBO;
 import ms.phecda.backend.core.domains.device.service.bo.DevicePropertyDataBO;
 import ms.phecda.backend.core.domains.device.service.bo.DeviceServiceDataBO;
 import ms.phecda.backend.core.domains.device.dto.ProductDTO;
-import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.device.dao.po.DevicePO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductThingModelDraft;
@@ -57,8 +56,5 @@ public interface DeviceBeanConvert {
 
     DeviceServiceDataBO from(ThingModelCommand args);
 
-    List<DevicePDO> toPDOList(List<DevicePO> devices);
-
-    DevicePDO toPDO(DevicePO device);
     DeviceDTO devicePoToDto(DevicePO device);
 }

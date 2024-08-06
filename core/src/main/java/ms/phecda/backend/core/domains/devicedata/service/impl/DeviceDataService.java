@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import ms.phecda.backend.core.domains.device.provider.impl.DeviceProvider;
-import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -53,7 +52,7 @@ public class DeviceDataService {
     public List<Map<String, Object>> queryRawData(String deviceName,List<String> fields, long startTime, long endTime) {
         var devicePDO = deviceProvider.queryByName(deviceName);
         if (Objects.isNull(devicePDO)) {
-            throw new NotFoundException("not found device");
+            throw new NotFoundException("DEVICE_NOT_FOUND");
         }
 
         String devicePath = path(devicePDO.getProductId(), deviceName);
@@ -69,7 +68,7 @@ public class DeviceDataService {
     public List<Map<String, Object>> queryLastData(String deviceName, List<String> fields) {
         var devicePDO = deviceProvider.queryByName(deviceName);
         if (Objects.isNull(devicePDO)) {
-            throw new NotFoundException("not found device");
+            throw new NotFoundException("DEVICE_NOT_FOUND");
         }
 
         String devicePath = path(devicePDO.getProductId(), deviceName);
@@ -124,7 +123,7 @@ public class DeviceDataService {
         if (CollectionUtils.isNotEmpty(rawDataList)) {
             var devicePDO = deviceProvider.queryByName(criteria.getDeviceName());
             if (Objects.isNull(devicePDO)) {
-                throw new NotFoundException("not found device");
+                throw new NotFoundException("DEVICE_NOT_FOUND");
             }
 
             for (Map<String, Object> rwaData : rawDataList) {
@@ -149,7 +148,7 @@ public class DeviceDataService {
         try {
             var devicePDO = deviceProvider.queryByName(deviceName);
             if (Objects.isNull(devicePDO)) {
-                throw new NotFoundException("not found device");
+                throw new NotFoundException("DEVICE_NOT_FOUND");
             }
 
             SessionDataSetWrapper sessionDataSet = sessionPool.executeQueryStatement("select last " + propertyIdentifier
