@@ -14,7 +14,7 @@ import ms.phecda.backend.core.domains.messageforwarding.manager.impl.MessageSour
 import ms.phecda.backend.core.domains.messageforwarding.manager.impl.RuleSourceManager;
 import ms.phecda.backend.core.domains.device.dto.ProductDTO;
 import ms.phecda.backend.core.domains.messageforwarding.dto.MessageSourceTopicDTO;
-import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
+import ms.phecda.backend.core.domains.device.provider.impl.DeviceProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

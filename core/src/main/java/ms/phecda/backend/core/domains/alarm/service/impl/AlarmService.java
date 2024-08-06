@@ -12,8 +12,7 @@ import ms.phecda.backend.core.domains.alarm.manager.dto.AlarmDTO;
 import ms.phecda.backend.core.domains.alarm.manager.impl.AlarmManager;
 import ms.phecda.backend.core.domains.alarm.service.bo.AlarmCreateArgBO;
 import ms.phecda.backend.core.domains.alarm.service.bo.AlarmStatisticsBO;
-import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
-import ms.phecda.backend.core.provider.ssp.device.pdo.ProductPDO;
+import ms.phecda.backend.core.domains.device.provider.impl.DeviceProvider;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

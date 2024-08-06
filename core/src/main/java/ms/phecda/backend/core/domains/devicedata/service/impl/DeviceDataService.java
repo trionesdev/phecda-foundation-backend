@@ -6,7 +6,7 @@ import com.trionesdev.commons.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ms.phecda.backend.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
-import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
+import ms.phecda.backend.core.domains.device.provider.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.DevicePDO;
 import ms.phecda.backend.core.domains.devicedata.service.bo.DeviceDataBO;
 import ms.phecda.backend.core.domains.device.internal.util.IotDbUtils;
@@ -51,7 +51,7 @@ public class DeviceDataService {
     }
 
     public List<Map<String, Object>> queryRawData(String deviceName,List<String> fields, long startTime, long endTime) {
-        DevicePDO devicePDO = deviceProvider.queryByName(deviceName);
+        var devicePDO = deviceProvider.queryByName(deviceName);
         if (Objects.isNull(devicePDO)) {
             throw new NotFoundException("not found device");
         }
@@ -67,7 +67,7 @@ public class DeviceDataService {
     }
 
     public List<Map<String, Object>> queryLastData(String deviceName, List<String> fields) {
-        DevicePDO devicePDO = deviceProvider.queryByName(deviceName);
+        var devicePDO = deviceProvider.queryByName(deviceName);
         if (Objects.isNull(devicePDO)) {
             throw new NotFoundException("not found device");
         }
@@ -122,7 +122,7 @@ public class DeviceDataService {
     private List<DeviceDataBO> convertToBO(List<Map<String, Object>> rawDataList, DevicePropertyDataCriteria criteria) {
         List<DeviceDataBO> deviceDataBOS = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(rawDataList)) {
-            DevicePDO devicePDO = deviceProvider.queryByName(criteria.getDeviceName());
+            var devicePDO = deviceProvider.queryByName(criteria.getDeviceName());
             if (Objects.isNull(devicePDO)) {
                 throw new NotFoundException("not found device");
             }
@@ -147,7 +147,7 @@ public class DeviceDataService {
 
     public DeviceDataBO getLatestData(String deviceName, String propertyIdentifier) {
         try {
-            DevicePDO devicePDO = deviceProvider.queryByName(deviceName);
+            var devicePDO = deviceProvider.queryByName(deviceName);
             if (Objects.isNull(devicePDO)) {
                 throw new NotFoundException("not found device");
             }

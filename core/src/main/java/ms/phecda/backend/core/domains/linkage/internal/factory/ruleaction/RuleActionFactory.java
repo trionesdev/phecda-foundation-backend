@@ -14,7 +14,7 @@ import ms.phecda.backend.core.domains.linkage.internal.rule.action.ActionTrigger
 import ms.phecda.backend.core.domains.linkage.internal.rule.action.ActionTrigger.TriggerMode;
 import ms.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaAction;
 import ms.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaRuleActionComponent;
-import ms.phecda.backend.core.provider.ssp.device.impl.DeviceProvider;
+import ms.phecda.backend.core.domains.device.provider.impl.DeviceProvider;
 import ms.phecda.backend.core.provider.ssp.device.pdo.thingmodel.ThingModelPropertyPDO;
 import org.jeasy.rules.api.Facts;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -108,7 +108,7 @@ public class RuleActionFactory {
         Map<String, ActionArgs.Reading> readingMap = facts.get(FACT_READINGS);
         if (MapUtil.isNotEmpty(readingMap)) {
             readingMap.forEach((k, v) -> {
-                ThingModelPropertyPDO property = deviceProvider.findThingModelPropertyByKey(facts.get(FACT_PRODUCT_KEY), v.getIdentifier());
+                var property = deviceProvider.findThingModelPropertyByKey(facts.get(FACT_PRODUCT_KEY), v.getIdentifier());
                 if (Objects.nonNull(property)) {
                     v.setLabel(property.getName());
                 }
