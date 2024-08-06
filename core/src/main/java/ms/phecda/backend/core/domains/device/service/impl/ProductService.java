@@ -12,6 +12,7 @@ import ms.phecda.backend.core.domains.device.dao.criteria.ProductCriteria;
 import ms.phecda.backend.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import ms.phecda.backend.core.domains.device.dao.po.ProductPO;
 import ms.phecda.backend.core.domains.device.dto.ProductExtDTO;
+import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModel;
 import ms.phecda.backend.core.domains.device.internal.util.ProductUtils;
 import ms.phecda.backend.core.domains.device.manager.impl.ProductManager;
@@ -74,7 +75,7 @@ public class ProductService {
 
 
     public Optional<ProductDTO> findProductByKey(String key) {
-        return productManager.findByKey(key);
+        return productManager.findByKey(key).map(this::assemble);
     }
 
     public List<ProductExtDTO> queryList(ProductCriteria criteria) {
@@ -149,11 +150,11 @@ public class ProductService {
         return key;
     }
 
-    private ProductDTO assemble(ProductDTO product) {
+    private ProductDTO assemble(Product product) {
         if (Objects.isNull(product)) {
             return null;
         }
-        return product;
+        return convert.productEntityToDto(product);
     }
 
     private List<ProductDTO> assembleProducts(List<ProductPO> records) {

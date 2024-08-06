@@ -334,7 +334,7 @@ public class DeviceService {
 
 
     public ServiceInvokeReplyMessage invokeService(String productKey, String deviceName, InvokeServiceArgBO args) {
-        ProductDTO product = productManager.findByKey(productKey).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        Product product = productManager.findByKey(productKey).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
         ThingModel thingModel = productManager.findThingModel(product.getId()).orElseThrow(() -> new NotFoundException("THING_MODEL_NOT_FOUND"));
         ThingModelCommand service = thingModel.getCommands().stream()
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
@@ -353,7 +353,7 @@ public class DeviceService {
     }
 
 
-    public ServiceInvokeReplyMessage invokeService(ProductDTO product, CallType callType, ServiceSendCmd dto, Map<String, String> tags) {
+    public ServiceInvokeReplyMessage invokeService(Product product, CallType callType, ServiceSendCmd dto, Map<String, String> tags) {
         AccessChannel channel = product.getAccessChannel();
 
         DeviceServiceLogPO serviceLog = DeviceServiceLogPO.builder()

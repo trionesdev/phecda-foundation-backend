@@ -8,6 +8,7 @@ import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.Dev
 import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.DeviceProperty;
 import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.ValueItem;
 import ms.phecda.backend.core.domains.device.dto.ProductThingModelProfileDTO.ValueProperties;
+import ms.phecda.backend.core.domains.device.internal.aggregate.entity.Product;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelCommand.CallType;
 import ms.phecda.backend.core.domains.device.internal.model.thing.ThingModelEvent;
 import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueType;
@@ -33,7 +34,7 @@ public class ProductUtils {
         };
     }
 
-    public static ProductThingModelProfileDTO toProductProfile(ProductDTO product) {
+    public static ProductThingModelProfileDTO toProductProfile(Product product) {
         var profile = ProductThingModelProfileDTO.builder().productKey(product.getKey()).description(product.getDescription()).build();
         var currentThingModel = product.getThingModelCurrent();
         if (Objects.nonNull(currentThingModel) ){
