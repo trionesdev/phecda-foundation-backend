@@ -1,0 +1,19 @@
+package com.trionesdev.phecda.backend.rest.backend.domains.alarm.support;
+
+import com.trionesdev.phecda.backend.core.domains.alarm.dao.criteria.AlarmLogCriteria;
+import com.trionesdev.phecda.backend.core.domains.alarm.dao.entity.AlarmLog;
+import com.trionesdev.phecda.backend.rest.backend.domains.alarm.controller.query.AlarmLogQuery;
+import com.trionesdev.phecda.backend.rest.backend.domains.alarm.controller.ro.AlarmLogRO;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper(builder = @Builder(disableBuilder = true))
+public interface AlarmRestConvertMapper {
+    AlarmRestConvertMapper INSTANCE = Mappers.getMapper(AlarmRestConvertMapper.class);
+
+    AlarmLog from(AlarmLogRO args);
+
+    AlarmLogCriteria from(AlarmLogQuery query);
+
+}

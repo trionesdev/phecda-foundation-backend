@@ -1,6 +1,7 @@
 package ms.phecda.backend.core.domains.devicedata.service.impl;
 
 import com.google.common.collect.Lists;
+import com.trionesdev.phecda.backend.core.domains.devicedata.service.impl.DeviceDataService;
 import ms.phecda.BaseTest;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.junit.jupiter.api.Test;

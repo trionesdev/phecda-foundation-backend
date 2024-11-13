@@ -1,6 +1,6 @@
 package ms.phecda.backend;
 
-import ms.phecda.backend.core.internal.util.MqttTopicUtils;
+import com.trionesdev.phecda.backend.core.internal.util.MqttTopicUtils;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;

@@ -1,0 +1,18 @@
+package com.trionesdev.phecda.backend.core.domains.device.service.bo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import com.trionesdev.phecda.backend.core.domains.device.dto.ProductExtDTO;
+import com.trionesdev.phecda.backend.core.domains.device.dao.po.DevicePO;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+public class DeviceExtBO extends DevicePO {
+    private ProductExtDTO product;
+}
