@@ -1,0 +1,34 @@
+package com.trionesdev.phecda.infrastructure.conf.convert;
+
+import com.trionesdev.commons.exception.TrionesException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+@Component
+public class StringToInstantConverter implements Converter<String, Instant> {
+    @Override
+    public Instant convert(String source) {
+        if (StringUtils.isBlank(source)) {
+            return null;
+        }
+
+        Instant result = null;
+        try {
+            boolean ifNumber = source.matches("[0-9]+");
+            if (ifNumber) {
+                result = Instant.ofEpochMilli(Long.parseLong(source));
+            } else {
+                result = ZonedDateTime.parse(source, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+            }
+        } catch (Exception e) {
+            throw new TrionesException("Convert String To Instant Fail", e);
+        }
+
+        return result;
+    }
+}

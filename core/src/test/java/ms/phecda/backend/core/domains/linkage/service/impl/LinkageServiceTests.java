@@ -2,22 +2,23 @@ package ms.phecda.backend.core.domains.linkage.service.impl;
 
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.util.JsonUtils;
+import com.trionesdev.phecda.backend.core.domains.linkage.service.impl.LinkageSceneService;
 import ms.phecda.BaseTest;
-import ms.phecda.backend.core.domains.linkage.dao.entity.LinkageScene;
-import ms.phecda.backend.core.domains.linkage.internal.factory.ruleaction.RuleActionFactory;
-import ms.phecda.backend.core.domains.linkage.internal.rule.OperatorEnum;
-import ms.phecda.backend.core.domains.linkage.internal.rule.Scene;
-import ms.phecda.backend.core.domains.linkage.internal.rule.action.AlarmAction;
-import ms.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaAction;
-import ms.phecda.backend.core.domains.linkage.internal.rule.statecondition.ConditionTypeEnum;
-import ms.phecda.backend.core.domains.linkage.internal.rule.statecondition.StateCondition;
-import ms.phecda.backend.core.domains.linkage.internal.rule.statecondition.ThingPropertyValueCondition;
-import ms.phecda.backend.core.domains.linkage.internal.rule.trigger.EventTrigger;
-import ms.phecda.backend.core.domains.linkage.internal.rule.trigger.ThingPropertyReportTrigger;
-import ms.phecda.backend.core.domains.linkage.internal.rule.trigger.TriggerTypeEnum;
-import ms.phecda.backend.core.domains.linkage.internal.util.LinkageSceneUtils;
-import ms.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
-import ms.phecda.infrastructure.conf.cache.CacheTemplate;
+import com.trionesdev.phecda.backend.core.domains.linkage.dao.po.LinkageScenePO;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.factory.ruleaction.RuleActionFactory;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.OperatorEnum;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.Scene;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.action.AlarmAction;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.action.PhecdaAction;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.statecondition.ConditionTypeEnum;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.statecondition.StateCondition;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.statecondition.ThingPropertyValueCondition;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.trigger.EventTrigger;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.trigger.ThingPropertyReportTrigger;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.rule.trigger.TriggerTypeEnum;
+import com.trionesdev.phecda.backend.core.domains.linkage.internal.util.LinkageSceneUtils;
+import com.trionesdev.phecda.backend.core.domains.device.internal.model.thing.valuetype.ValueTypeEnum;
+import com.trionesdev.phecda.infrastructure.conf.cache.CacheTemplate;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;
@@ -55,7 +56,7 @@ public class LinkageServiceTests extends BaseTest {
 
         PhecdaAction phecdaAction = AlarmAction.builder().type(PhecdaAction.TypeEnum.ALARM).build();
 
-        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
+        LinkageScenePO linkageScene = LinkageScenePO.builder().id("test-rule")
                 .scenes(Lists.newArrayList(
                         Scene.builder()
                                 .eventTrigger( ThingPropertyReportTrigger.builder()

@@ -1,0 +1,99 @@
+package com.trionesdev.phecda.backend.rest.backend.domains.edge.controller.impl;
+
+import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import com.trionesdev.phecda.backend.core.domains.edge.dao.criteria.NodeCriteria;
+import com.trionesdev.phecda.backend.core.domains.edge.dao.entity.Node;
+import com.trionesdev.phecda.backend.core.domains.edge.service.impl.NodeDeviceService;
+import com.trionesdev.phecda.backend.core.domains.edge.service.impl.NodeService;
+import com.trionesdev.phecda.backend.rest.backend.domains.edge.controller.query.NodeQuery;
+import com.trionesdev.phecda.backend.rest.backend.domains.edge.controller.ro.NodeUpdateRO;
+import com.trionesdev.phecda.backend.rest.backend.domains.edge.support.EdgeConstants;
+import com.trionesdev.phecda.backend.rest.backend.domains.edge.support.NodeConvertMapper;
+import com.trionesdev.phecda.backend.rest.backend.domains.edge.controller.ro.NodeCreateRO;
+import com.trionesdev.phecda.backend.rest.backend.domains.edge.controller.vo.NodeVO;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@Tag(name = "边缘节点")
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(value = EdgeConstants.EDGE_URI)
+public class NodeController {
+    private final NodeService nodeService;
+    private final NodeDeviceService nodeDeviceService;
+
+    @Operation(summary = "列表")
+    @GetMapping(value = "nodes/list")
+    public List<NodeVO> list() {
+        List<Node> list = nodeService.list();
+        return NodeConvertMapper.INSTANT.toVoList(list);
+    }
+
+    @Operation(summary = "分页查询")
+    @GetMapping(value = "nodes/page")
+    public PageInfo<NodeVO> tree(@Validated NodeQuery args) {
+        NodeCriteria criteria = NodeConvertMapper.INSTANT.from(args);
+
+        PageInfo<Node> page = nodeService.page(criteria);
+        List<NodeVO> rows = NodeConvertMapper.INSTANT.toVoList(page.getRows());
+        return MpPageUtils.of(page, rows);
+    }
+
+    @Operation(summary = "保存")
+    @PostMapping(value = "nodes")
+    public void save(@Validated @RequestBody NodeCreateRO args) {
+        Node entity = NodeConvertMapper.INSTANT.from(args);
+        nodeService.save(entity);
+    }
+
+    @Operation(summary = "根据ID更新")
+    @PutMapping(value = "nodes")
+    public void update(@Validated @RequestBody NodeUpdateRO args) {
+        Node entity = NodeConvertMapper.INSTANT.from(args);
+        nodeService.updateById(entity);
+    }
+
+    @Operation(summary = "根据ID获取详细信息")
+    @GetMapping(value = "nodes/{id}")
+    public NodeVO getById(@PathVariable("id") String id) {
+        Node node = nodeService.getById(id);
+        return NodeConvertMapper.INSTANT.from(node);
+    }
+
+    @Operation(summary = "删除")
+    @Parameter(name = "id", description = "id")
+    @DeleteMapping(value = "nodes/{id}")
+    public void delete(@PathVariable("id") String id) {
+        nodeService.removeById(id);
+    }
+
+    @Operation(summary = "添加边缘终端设备")
+    @PostMapping(value = "nodes/{id}/device/{ids}")
+    public void addNodeDevice(
+            @PathVariable(value = "id") String nodeId,
+            @PathVariable(value = "ids") List<String> deviceIds) {
+        nodeDeviceService.add(nodeId, deviceIds);
+    }
+
+    @Operation(summary = "删除边缘终端设备（只是移除与节点之间的关系）")
+    @DeleteMapping(value = "nodes/{id}/device/{ids}")
+    public void removeNodeDevice(
+            @PathVariable(value = "id") String nodeId,
+            @PathVariable(value = "ids") List<String> deviceIds) {
+        nodeDeviceService.remove(nodeId, deviceIds);
+    }
+}

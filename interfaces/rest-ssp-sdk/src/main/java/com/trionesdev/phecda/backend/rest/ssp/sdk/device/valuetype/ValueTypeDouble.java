@@ -1,0 +1,14 @@
+package com.trionesdev.phecda.backend.rest.ssp.sdk.device.valuetype;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ValueTypeDouble extends ValueType {
+    private Double max;
+    private Double min;
+    private Double step;
+    private String unit;
+    private String unitName;
+}

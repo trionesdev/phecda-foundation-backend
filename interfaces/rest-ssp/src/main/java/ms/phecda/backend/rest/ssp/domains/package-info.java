@@ -1,1 +1,0 @@
-package ms.phecda.backend.rest.ssp.domains;
