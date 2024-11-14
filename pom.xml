@@ -16,6 +16,7 @@
         <module>core</module>
         <module>interfaces</module>
         <module>interfaces/mq-consumer</module>
+        <module>model</module>
     </modules>
 
     <artifactId>phecda-foundation</artifactId>
@@ -73,38 +74,37 @@
             </dependency>
 
             <dependency>
-                <groupId>ms.phecda</groupId>
-                <artifactId>edge-edgex</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <groupId>com.trionesdev.phecda</groupId>
+                <artifactId>model</artifactId>
+                <version>${project.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>ms.phecda</groupId>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>ms.phecda</groupId>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>ms.phecda</groupId>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>rest-tenant</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>ms.phecda</groupId>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>phecda-rest-ssp-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>ms.phecda</groupId>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>rest-ssp</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>ms.phecda</groupId>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>mq-consumer</artifactId>
                 <version>${project.version}</version>
             </dependency>
