@@ -2,6 +2,7 @@ package com.trionesdev.phecda.foundation.rest.ssp.domains.device.support;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductThingModelVersion;
+import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductExtDTO;
 import com.trionesdev.phecda.foundation.rest.ssp.sdk.device.rep.ProductRep;
 import com.trionesdev.phecda.foundation.rest.ssp.sdk.device.rep.ProductThingModelVersionRep;
@@ -16,7 +17,7 @@ import java.util.Objects;
 public interface RestProductConvertMapper {
     RestProductConvertMapper INSTANCE = Mappers.getMapper(RestProductConvertMapper.class);
 
-    List<ProductRep> from(List<ProductExtDTO> args);
+    List<ProductRep> from(List<ProductDTO> args);
 
     default ProductThingModelVersionRep from(ProductThingModelVersion args) {
         if (Objects.isNull(args)) {

@@ -7,7 +7,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelProfileDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelUpsertCmd;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceBeanConvert;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class ProductService {
-    private final DeviceBeanConvert convert;
+    private final DeviceDomainConvert convert;
     private final ProductManager productManager;
     private final ProductThingModelVersionManager productThingModelVersionManager;
 
@@ -78,8 +78,17 @@ public class ProductService {
         return productManager.findByKey(key).map(this::assemble);
     }
 
-    public List<ProductExtDTO> queryList(ProductCriteria criteria) {
-        return productManager.queryList(criteria);
+    private List<ProductDTO> assembleProducts(Collection<Product> products) {
+        if (CollectionUtil.isEmpty(products)) {
+            return Collections.emptyList();
+        }
+        return products.stream().map(product -> {
+            return convert.productEntityToDto(product);
+        }).collect(Collectors.toList());
+    }
+
+    public List<ProductDTO> queryList(ProductCriteria criteria) {
+        return assembleProducts(productManager.queryList(criteria));
     }
 
     public PageInfo<ProductExtDTO> queryPage(Integer pageNum, Integer pageSize, ProductCriteria criteria) {
@@ -96,11 +105,11 @@ public class ProductService {
     }
 
     public void upsertThingModel(String productId, ProductThingModelUpsertCmd upsertCmd) {
-        productManager.upsertThingModel(productId,upsertCmd);
+        productManager.upsertThingModel(productId, upsertCmd);
     }
 
     public void deleteThingModel(String productId, String identifier) {
-        productManager.removeThingModelAbility(productId,identifier);
+        productManager.removeThingModelAbility(productId, identifier);
     }
 
     /**
@@ -127,11 +136,11 @@ public class ProductService {
     }
 
     public Optional<ThingModel> queryThingModel(String productId, String version) {
-        return productManager.findThingModel(productId,version);
+        return productManager.findThingModel(productId, version);
     }
 
     public Optional<ThingModel> queryThingModelByKey(String key, String version) {
-        return productManager.findThingModelByKey(key,version);
+        return productManager.findThingModelByKey(key, version);
     }
 
     public void publishProduct(String productId) {
@@ -166,8 +175,8 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
 
-    public Optional<ProductThingModelProfileDTO> productProfile(String id){
-        return  productManager.findById(id).map(ProductUtils::toProductProfile);
+    public Optional<ProductThingModelProfileDTO> productProfile(String id) {
+        return productManager.findById(id).map(ProductUtils::toProductProfile);
     }
 
 }

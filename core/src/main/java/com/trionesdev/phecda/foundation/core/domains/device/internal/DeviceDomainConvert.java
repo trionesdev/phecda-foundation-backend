@@ -28,8 +28,8 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         builder = @Builder(disableBuilder = true))
 @Named("deviceBeanConvert")
-public interface DeviceBeanConvert {
-    DeviceBeanConvert INSTANCE = Mappers.getMapper(DeviceBeanConvert.class);
+public interface DeviceDomainConvert {
+    DeviceDomainConvert INSTANCE = Mappers.getMapper(DeviceDomainConvert.class);
 
     @Mappings({
             @Mapping(source = "product.nodeType.label", target = "nodeTypeLabel"),

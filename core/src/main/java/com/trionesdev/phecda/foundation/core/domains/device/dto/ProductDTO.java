@@ -34,6 +34,9 @@ public class ProductDTO {
     private String driverName;
     private Driver driver;
 
+    private String nodeTypeLabel;
+    private String typeLabel;
+
     @Data
     public static class Driver {
         private String name;

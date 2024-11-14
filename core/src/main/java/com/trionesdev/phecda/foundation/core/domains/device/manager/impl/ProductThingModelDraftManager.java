@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.foundation.core.domains.device.manager.impl;
 
+import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceBeanConvert;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductThingModelDraft;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductThingModelVersion;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.ProductDAO;
@@ -35,7 +35,7 @@ public class ProductThingModelDraftManager {
     public void publish(String productId) {
         ProductThingModelDraft draft = productThingModelDraftDAO.selectByProductId(productId);
         if (Objects.nonNull(draft)) {
-            ProductThingModelVersion version = DeviceBeanConvert.INSTANCE.from(draft);
+            ProductThingModelVersion version = DeviceDomainConvert.INSTANCE.from(draft);
             version.setId(null);
             productThingModelVersionDAO.save(version);
             productDAO.updateVersion(productId, version.getId());
