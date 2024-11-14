@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.foundation.rest.ssp.domains.device.controller.impl;
 
+import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductExtDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductCriteria;
@@ -23,7 +24,7 @@ public class ProductController implements ProductRest {
     @Override
     public List<ProductRep> findAll() {
         ProductCriteria criteria = ProductCriteria.builder().build();
-        List<ProductExtDTO> products = productService.queryList(criteria);
+        List<ProductDTO> products = productService.queryList(criteria);
         return RestProductConvertMapper.INSTANCE.from(products);
     }
 

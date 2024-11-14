@@ -11,7 +11,7 @@ import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.*;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.*;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceBeanConvert;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
@@ -89,7 +89,7 @@ public class DeviceService {
 
     public Optional<DeviceExtDTO> queryExtById(String id) {
         return deviceManager.queryById(id).map(t -> {
-            DeviceExtDTO deviceExt = DeviceBeanConvert.INSTANCE.from(t);
+            DeviceExtDTO deviceExt = DeviceDomainConvert.INSTANCE.from(t);
             productManager.queryExtById(t.getProductId()).ifPresent(deviceExt::setProduct);
             return deviceExt;
         });
@@ -116,7 +116,7 @@ public class DeviceService {
         Set<String> productIds = pageInfo.getRows().stream().map(DevicePO::getProductId).collect(Collectors.toSet());
         Map<String, ProductExtDTO> productMap = productManager.queryAllByIds(productIds).stream().collect(Collectors.toMap(ProductPO::getId, v -> v, (v1, v2) -> v1));
         List<DeviceExtDTO> deviceExtList = pageInfo.getRows().stream().map(t -> {
-            DeviceExtDTO deviceExt = DeviceBeanConvert.INSTANCE.from(t);
+            DeviceExtDTO deviceExt = DeviceDomainConvert.INSTANCE.from(t);
             deviceExt.setProduct(productMap.get(t.getProductId()));
             return deviceExt;
         }).collect(Collectors.toList());
@@ -161,7 +161,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getProperties().stream().map(property -> {
-                DevicePropertyDataBO devicePropertyData = DeviceBeanConvert.INSTANCE.from(property);
+                DevicePropertyDataBO devicePropertyData = DeviceDomainConvert.INSTANCE.from(property);
                 return devicePropertyData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
@@ -171,7 +171,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getEvents().stream().map(property -> {
-                DeviceEventDataBO deviceEventData = DeviceBeanConvert.INSTANCE.from(property);
+                DeviceEventDataBO deviceEventData = DeviceDomainConvert.INSTANCE.from(property);
                 return deviceEventData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
@@ -181,7 +181,7 @@ public class DeviceService {
         DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getCommands().stream().map(property -> {
-                DeviceServiceDataBO deviceServiceData = DeviceBeanConvert.INSTANCE.from(property);
+                DeviceServiceDataBO deviceServiceData = DeviceDomainConvert.INSTANCE.from(property);
                 return deviceServiceData;
             }).collect(Collectors.toList());
         }).orElse(Collections.emptyList());
@@ -203,7 +203,7 @@ public class DeviceService {
         Optional<DevicePO> deviceOptional = deviceManager.queryByName(deviceName);
         DevicePO device = deviceOptional.orElse(DevicePO.builder().build());
         return productManager.findThingModel(device.getProductId()).map(thingModel ->
-                thingModel.getProperties().stream().map(property -> DeviceBeanConvert.INSTANCE.from(property))
+                thingModel.getProperties().stream().map(property -> DeviceDomainConvert.INSTANCE.from(property))
                         .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 

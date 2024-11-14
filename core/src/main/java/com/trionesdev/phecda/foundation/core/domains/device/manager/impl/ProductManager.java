@@ -5,9 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelUpsertCmd;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceBeanConvert;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
@@ -38,7 +38,7 @@ import static com.trionesdev.phecda.foundation.core.domains.device.internal.Devi
 @RequiredArgsConstructor
 @Service
 public class ProductManager {
-    private final DeviceBeanConvert convert;
+    private final DeviceDomainConvert convert;
     private final ProductDAO productDAO;
     private final ProductThingModelVersionDAO productThingModelVersionDAO;
     private final ProductRepository productRepository;
@@ -56,8 +56,8 @@ public class ProductManager {
     }
 
     public void deleteById(String id) {
-       var product = productRepository.findById(id).orElseThrow(()->new NotFoundException("PRODUCT_NOT_FOUND"));
-       productRepository.deleteProduct(product);
+        var product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        productRepository.deleteProduct(product);
     }
 
     public void updateById(Product product) {
@@ -70,15 +70,15 @@ public class ProductManager {
     }
 
     public Optional<ProductExtDTO> queryExtById(String id) {
-        return Optional.ofNullable(productDAO.getById(id)).map(DeviceBeanConvert.INSTANCE::fromRecord);
+        return Optional.ofNullable(productDAO.getById(id)).map(DeviceDomainConvert.INSTANCE::fromRecord);
     }
 
     public List<ProductExtDTO> queryAllByIds(Collection<String> ids) {
         return assembleCollection(productDAO.listByIds(ids));
     }
 
-    public List<ProductExtDTO> queryList(ProductCriteria criteria) {
-        return assembleCollection(productDAO.selectList(criteria));
+    public List<Product> queryList(ProductCriteria criteria) {
+        return productRepository.findList(criteria);
     }
 
     public List<ProductPO> findProductsByKeys(Collection<String> keys) {
@@ -90,7 +90,7 @@ public class ProductManager {
         return PageUtils.of(pageInfo, assembleCollection(pageInfo.getRows()));
     }
 
-    public void upsertThingModel(String id, ProductThingModelUpsertCmd upsertCmd){
+    public void upsertThingModel(String id, ProductThingModelUpsertCmd upsertCmd) {
         productRepository.findById(id).ifPresent(product -> {
             var upsert = Product.ThingModelUpsert.builder().identifier(upsertCmd.getIdentifier())
                     .abilityType(upsertCmd.getAbilityType()).property(upsertCmd.getProperty()).event(upsertCmd.getEvent())
@@ -101,26 +101,43 @@ public class ProductManager {
         });
     }
 
-    public void removeThingModelAbility(String id,String identifier){
+    /**
+     * 根据标识移除某个能力
+     *
+     * @param id
+     * @param identifier
+     */
+    public void removeThingModelAbility(String id, String identifier) {
         productRepository.findById(id).ifPresent(product -> {
             product.removeThingModelAbility(identifier);
             productRepository.upsertThingModel(product);
         });
     }
 
+    /**
+     * 获取产品物模型草稿
+     *
+     * @param productId
+     * @return
+     */
     public Optional<ThingModel> findThingModelDraft(String productId) {
         return productRepository.findById(productId).map(Product::getThingModelDraft);
     }
 
-    public void releaseThingModel(String id){
-       var product = productRepository.findById(id).orElseThrow(()->new NotFoundException("PRODUCT_NOT_FOUND"));
-       productRepository.releaseThingModel(product);
+    /**
+     * 物模型上线
+     *
+     * @param id
+     */
+    public void releaseThingModel(String id) {
+        var product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        productRepository.releaseThingModel(product);
     }
 
-    public Optional<ThingModel> findThingModel(String productId,String version) {
-        if (StrUtil.isNotBlank(version)){
-            return Optional.ofNullable(productRepository.findVesionThingModel(productId,version));
-        }else {
+    public Optional<ThingModel> findThingModel(String productId, String version) {
+        if (StrUtil.isNotBlank(version)) {
+            return Optional.ofNullable(productRepository.findVesionThingModel(productId, version));
+        } else {
             return productRepository.findById(productId).map(Product::getThingModelCurrent);
         }
     }
@@ -128,8 +145,6 @@ public class ProductManager {
     public Optional<Product> findByKey(String key) {
         return productRepository.findByKey(key);
     }
-
-
 
 
     public Optional<ThingModel> findThingModel(String productId) {
@@ -142,15 +157,29 @@ public class ProductManager {
         }).map(ProductThingModelVersion::getThingModel);
     }
 
+    /**
+     * 根据ProductKey获取物模型
+     *
+     * @param productKey
+     * @return
+     */
     public Optional<ThingModel> findThingModelByKey(String productKey) {
         return productRepository.findByKey(productKey).map(Product::getThingModelCurrent);
     }
 
-    public Optional<ThingModel> findThingModelByKey(String productKey,String version) {
-        var product = productRepository.findByKey(productKey).orElseThrow(()->new NotFoundException("PRODUCT_NOT_FOUND"));
-        if (StrUtil.isNotBlank(version)){
-            return Optional.ofNullable(productRepository.findVesionThingModel(product.getId(),version));
-        }{
+    /**
+     * 根据ProductKey获取物模型
+     *
+     * @param productKey
+     * @param version
+     * @return
+     */
+    public Optional<ThingModel> findThingModelByKey(String productKey, String version) {
+        var product = productRepository.findByKey(productKey).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        if (StrUtil.isNotBlank(version)) {
+            return Optional.ofNullable(productRepository.findVesionThingModel(product.getId(), version));
+        }
+        {
             return Optional.ofNullable(product.getThingModelCurrent());
         }
     }
@@ -170,7 +199,7 @@ public class ProductManager {
         if (CollectionUtil.isEmpty(records)) {
             return Collections.emptyList();
         }
-        return DeviceBeanConvert.INSTANCE.productDtoFromRecord(records);
+        return DeviceDomainConvert.INSTANCE.productDtoFromRecord(records);
     }
 
     public void publish(String id) {

@@ -3,7 +3,7 @@ package com.trionesdev.phecda.foundation.core.domains.device.provider.impl;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DeviceDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductDTO;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceBeanConvert;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
 import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceManager;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.ProductManager;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class DeviceProvider {
-    private final DeviceBeanConvert convert;
+    private final DeviceDomainConvert convert;
     private final ProductManager productManager;
 
     private final DeviceManager deviceManager;

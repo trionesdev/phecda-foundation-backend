@@ -33,17 +33,37 @@ public class Product {
     private ProductType type;
     private String thingModelVersion;
     private List<ProtocolProperty> protocolProperties;
-    private ThingModel thingModelDraft  ;
-    private ThingModel thingModelCurrent  ;
+    private ThingModel thingModelDraft;
+    private ThingModel thingModelCurrent;
 
     private ProductStatus status;
     private String driverName;
 
+    private String nodeTypeLabel;
+    private String typeLabel;
+
+    public String getNodeTypeLabel() {
+        if (Objects.nonNull(nodeType)) {
+            return nodeType.getLabel();
+        } else return nodeTypeLabel;
+    }
+
+    public String getTypeLabel() {
+        if (Objects.nonNull(type)) {
+            return type.getLabel();
+        }
+        return typeLabel;
+    }
+
+    /**
+     * 更新物模型
+     * @param upsertCmd
+     */
     public void upsertThingModel(ThingModelUpsert upsertCmd) {
-        if (Objects.isNull(thingModelDraft)){
+        if (Objects.isNull(thingModelDraft)) {
             thingModelDraft = new ThingModel();
         }
-        if (StrUtil.isBlank(upsertCmd.getIdentifier())){
+        if (StrUtil.isBlank(upsertCmd.getIdentifier())) {
             if (Objects.nonNull(upsertCmd.getProperty()) &&
                     thingModelDraft.getProperties()
                             .stream()
@@ -77,7 +97,7 @@ public class Product {
                 default:
                     break;
             }
-        }else {
+        } else {
             switch (upsertCmd.getAbilityType()) {
                 case PROPERTY:
                     ThingModelProperty tmp = upsertCmd.getProperty();
@@ -127,7 +147,7 @@ public class Product {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ThingModelUpsert{
+    public static class ThingModelUpsert {
         private AbilityType abilityType;
         private String identifier;
         private ThingModelProperty property;
@@ -135,8 +155,8 @@ public class Product {
         private ThingModelCommand service;
     }
 
-    public void removeThingModelAbility(String identifier){
-        if (Objects.nonNull(thingModelDraft)){
+    public void removeThingModelAbility(String identifier) {
+        if (Objects.nonNull(thingModelDraft)) {
             thingModelDraft.getProperties().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
             thingModelDraft.getCommands().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
             thingModelDraft.getEvents().removeIf((property) -> Objects.equals(identifier, property.getIdentifier()));
