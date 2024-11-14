@@ -1,0 +1,14 @@
+package com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+
+@Data
+public class AlarmLevelUpdateRO {
+    @NotNull
+    private String name;
+    @NotNull
+    private String identifier;
+    private String description;
+}

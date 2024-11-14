@@ -1,9 +1,9 @@
-package ms.phecda.backend.core.domains.device.service;
+package ms.phecda.foundation.core.domains.device.service;
 
 import ms.phecda.BaseTest;
-import com.trionesdev.phecda.backend.core.domains.device.dao.criteria.DeviceCriteria;
-import com.trionesdev.phecda.backend.core.domains.device.internal.enums.NodeType;
-import com.trionesdev.phecda.backend.core.domains.device.service.impl.DeviceService;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceCriteria;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.NodeType;
+import com.trionesdev.phecda.foundation.core.domains.device.service.impl.DeviceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
