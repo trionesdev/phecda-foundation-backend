@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory.action;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action;
 
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkAction;
 

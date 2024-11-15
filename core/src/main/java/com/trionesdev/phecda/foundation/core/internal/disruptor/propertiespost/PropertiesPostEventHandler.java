@@ -16,7 +16,7 @@ import com.trionesdev.phecda.foundation.core.domains.device.service.impl.DeviceS
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.ProductService;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.impl.LinkageSceneService;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory.ForwardingActionFactory;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.jeasy.rules.api.Facts;
 import org.springframework.stereotype.Component;

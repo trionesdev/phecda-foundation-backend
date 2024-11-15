@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory.action;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
@@ -45,7 +45,6 @@ public class KafkaForwardingAction extends AbsForwardingAction {
 
     /**
      * 查询所有的kafka的落库信息，并进行初始化实例
-     *
      */
     public void kafkaSync() {
         List<MessageSinkPO> sinks = messageSinkManager.findOnlineByType(SinkActionType.KAFKA);
@@ -73,17 +72,23 @@ public class KafkaForwardingAction extends AbsForwardingAction {
 
     @Override
     public void write(SinkAction sinkAction, byte[] data) {
-        KafkaSinkAction action = (KafkaSinkAction) sinkAction;
-        KafkaTemplate<String, Object> kafkaTemplate = kafkaTemplateMap.get(action.getId());
-        if (Objects.isNull(kafkaTemplate)) {
-            log.error("[KafkaForwardingAction] kafka instance not found ,sink id :{}", action.getId());
+        try {
+            KafkaSinkAction action = (KafkaSinkAction) sinkAction;
+            KafkaTemplate<String, Object> kafkaTemplate = kafkaTemplateMap.get(action.getId());
+            if (Objects.isNull(kafkaTemplate)) {
+                log.error("[KafkaForwardingAction] kafka instance not found ,sink id :{} create once again", action.getId());
+                kafkaTemplate = createTemplate(action);
+                kafkaTemplateMap.put(action.getId(), kafkaTemplate);
+            }
+            CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(action.getTopic(), data);
+            future.thenAccept(t -> {
+                log.info("[KafkaForwardingAction] kafka send success ,sink id :{}", action.getId());
+            }).exceptionally(t -> {
+                log.error("[KafkaForwardingAction] kafka send fail ,sink id :{}", action.getId(), t);
+                return null;
+            });
+        } catch (Exception e) {
+            log.error("[KafkaForwardingAction] kafka send fail ,sink id :{}", sinkAction.getId(), e);
         }
-        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(action.getTopic(), data);
-        future.thenAccept(t -> {
-            log.info("[KafkaForwardingAction] kafka send success ,sink id :{}", action.getId());
-        }).exceptionally(t -> {
-            log.error("[KafkaForwardingAction] kafka send fail ,sink id :{}", action.getId(), t);
-            return null;
-        });
     }
 }

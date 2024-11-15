@@ -1,10 +1,11 @@
-package com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction;
+package com.trionesdev.phecda.foundation.core.domains.linkage.service.factory;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.po.LinkageScenePO;
+import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.ruleaction.PhecdaRuleActionHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.LinkageProperties;
@@ -38,14 +39,14 @@ public class RuleActionFactory {
     private final LinkageProperties linkageProperties;
     private final StringRedisTemplate stringRedisTemplate;
     private final DeviceProvider deviceProvider;
-    private final Map<PhecdaAction.TypeEnum, PhecdaRuleAction> actionMap = new HashMap<>();
+    private final Map<PhecdaAction.TypeEnum, PhecdaRuleActionHandler> actionMap = new HashMap<>();
 
-    private final List<PhecdaRuleAction> actions;
+    private final List<PhecdaRuleActionHandler> handlers;
 
     @PostConstruct
     public void init() {
-        if (CollectionUtil.isNotEmpty(actions)) {
-            actions.forEach(action -> {
+        if (CollectionUtil.isNotEmpty(handlers)) {
+            handlers.forEach(action -> {
                 PhecdaRuleActionComponent component = AnnotationUtils.getAnnotation(action.getClass(), PhecdaRuleActionComponent.class);
                 if (Objects.nonNull(component)) {
                     actionMap.put(component.type(), action);
@@ -54,7 +55,7 @@ public class RuleActionFactory {
         }
     }
 
-    public PhecdaRuleAction getAction(PhecdaAction.TypeEnum type) {
+    public PhecdaRuleActionHandler getAction(PhecdaAction.TypeEnum type) {
         return actionMap.get(type);
     }
 

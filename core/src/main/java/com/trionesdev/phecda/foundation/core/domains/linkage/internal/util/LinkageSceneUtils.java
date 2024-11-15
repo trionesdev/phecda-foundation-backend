@@ -5,7 +5,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.po.LinkageScenePO;
-import com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.RuleActionFactory;
+import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.RuleActionFactory;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.PhecdaRule;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.Scene;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;

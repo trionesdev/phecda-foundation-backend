@@ -1,7 +1,6 @@
-package com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.impl;
+package com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.ruleaction;
 
 import cn.hutool.core.map.MapUtil;
-import com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.PhecdaRuleAction;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.NotificationAction;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.PhecdaAction;
@@ -13,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @PhecdaRuleActionComponent(type = TypeEnum.NOTIFICATION)
-public class NotificationActionImpl implements PhecdaRuleAction {
+public class NotificationActionHandler implements PhecdaRuleActionHandler {
     @Override
     public void execute(ActionArgs actionArgs, PhecdaAction phecdaAction) {
         NotificationAction notificationAction = (NotificationAction) phecdaAction;

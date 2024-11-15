@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
@@ -8,12 +8,11 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkAction;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory.action.ForwardingActionComponent;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.ForwardingActionComponent;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSource;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageForwardingRuleManager;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory.action.AbsForwardingAction;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.AbsForwardingAction;
 import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -78,6 +77,7 @@ public class ForwardingActionFactory {
                     for (MessageSink sink : forwarding.getSinks()) {
                         sink.getAction().setId(sink.getId());
                         write(sink.getAction(), message);
+                        break;
                     }
                 }
             }
