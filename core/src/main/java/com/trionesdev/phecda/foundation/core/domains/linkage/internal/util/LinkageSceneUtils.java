@@ -5,6 +5,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.po.LinkageScenePO;
+import com.trionesdev.phecda.foundation.core.domains.linkage.internal.aggregate.entity.LinkageScene;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.RuleActionFactory;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.PhecdaRule;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.Scene;
@@ -57,7 +58,7 @@ public class LinkageSceneUtils {
         return StrUtil.join("||", sceneTriggerConditions);
     }
 
-    public static Rule createRule(LinkageScenePO linkageScene, RuleActionFactory factory) {
+    public static Rule createRule(LinkageScene linkageScene, RuleActionFactory factory) {
         if (!BooleanUtil.isTrue(linkageScene.getEnabled())) {
             return null;
         }
@@ -85,7 +86,7 @@ public class LinkageSceneUtils {
                 });
     }
 
-    public static Boolean continuous(LinkageScenePO scene) {
+    public static Boolean continuous(LinkageScene scene) {
         if (CollectionUtil.isEmpty(scene.getActions())) {
             return false;
         }

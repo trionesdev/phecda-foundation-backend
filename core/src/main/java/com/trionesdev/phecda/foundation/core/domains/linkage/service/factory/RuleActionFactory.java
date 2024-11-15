@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.po.LinkageScenePO;
+import com.trionesdev.phecda.foundation.core.domains.linkage.internal.aggregate.entity.LinkageScene;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.ruleaction.PhecdaRuleActionHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class RuleActionFactory {
         return actionMap.get(type);
     }
 
-    public Boolean canActionTrigger(LinkageScenePO linkageScene) {
+    public Boolean canActionTrigger(LinkageScene linkageScene) {
         ActionTrigger actionTrigger = linkageScene.getActionTrigger();
         if (actionTrigger.getTriggerMode() == TriggerMode.SINGLE) {
             return meetActionInterval(linkageScene);
@@ -88,7 +89,7 @@ public class RuleActionFactory {
      * @param linkageScene
      * @return
      */
-    public boolean meetActionInterval(LinkageScenePO linkageScene) {
+    public boolean meetActionInterval(LinkageScene linkageScene) {
         long actionInterval = Optional.of(linkageScene.getActionTrigger()).map(ActionTrigger::getInterval).orElse(linkageProperties.getDefaultActionInterval());
         if (NumberUtil.compare(actionInterval, 0) > 0) {
             String previousTime = stringRedisTemplate.opsForValue().get(RuleUtils.ruleIntervalKey(linkageScene.getId()));

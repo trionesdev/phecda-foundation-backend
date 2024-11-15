@@ -2,7 +2,7 @@ server:
   port: 8200
 spring:
   application:
-    name: phecda-backend
+    name: phecda-foundation-backend
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
