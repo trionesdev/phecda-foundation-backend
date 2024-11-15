@@ -15,6 +15,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.SendResult;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,10 @@ public class KafkaForwardingAction extends AbsForwardingAction {
         kafkaSync();
     }
 
+    /**
+     * 查询所有的kafka的落库信息，并进行初始化实例
+     *
+     */
     public void kafkaSync() {
         List<MessageSinkPO> sinks = messageSinkManager.findOnlineByType(SinkActionType.KAFKA);
         if (CollectionUtil.isNotEmpty(sinks)) {
