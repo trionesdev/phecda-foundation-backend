@@ -100,6 +100,7 @@ public class LinkageSceneService {
 
     /**
      * 删除场景
+     *
      * @param id
      */
     public void deleteScene(String id) {
@@ -107,6 +108,12 @@ public class LinkageSceneService {
         linkageSceneManager.deleteById(id);
     }
 
+    /**
+     * 场景启用禁用变更
+     *
+     * @param id
+     * @param enabled
+     */
     public void sceneEnabledChange(String id, Boolean enabled) {
         linkageSceneManager.queryById(id).ifPresent(t -> {
             LinkageScenePO linkageScene = LinkageScenePO.builder().id(id).enabled(enabled).build();
