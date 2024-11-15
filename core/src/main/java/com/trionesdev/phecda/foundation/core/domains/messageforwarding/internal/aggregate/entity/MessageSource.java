@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.dto;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageSourceDTO {
+public class MessageSource {
     private String id;
     private List<Topic> topics;
 

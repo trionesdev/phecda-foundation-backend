@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
     private String id;
     private String name;

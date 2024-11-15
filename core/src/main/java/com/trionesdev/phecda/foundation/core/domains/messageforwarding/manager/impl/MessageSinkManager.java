@@ -37,12 +37,6 @@ public class MessageSinkManager {
     }
 
     public List<MessageSinkPO> findOnlineByType(SinkActionType type) {
-//        MessageSink messageSink = MessageSink.builder()
-//                .id("121212")
-//                .type(SinkAction.TypeEnum.KAFKA)
-//                .action(KafkaSinkAction.builder().bootstrapServers("192.168.10.206:9092").topic("kafka-test").build())
-//                .build();
-//        return Lists.newArrayList(messageSink);
         return messageSinkDAO.selectListByType(type);
     }
 

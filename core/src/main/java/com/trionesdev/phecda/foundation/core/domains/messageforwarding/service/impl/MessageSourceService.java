@@ -3,12 +3,12 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Sets;
 import com.trionesdev.commons.exception.BusinessException;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourceTopicPO;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSource;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourceTopic;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSource;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourcePO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSourcePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.ThingPropertyReportSourceProps;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.MessageForwardingBeanConvert;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.MessageForwardingDomainConvert;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSourceManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSourceTopicManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.RuleSourceManager;
@@ -27,42 +27,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class MessageSourceService {
-    private final MessageForwardingBeanConvert convert;
+    private final MessageForwardingDomainConvert convert;
     private final MessageSourceManager messageSourceManager;
     private final MessageSourceTopicManager messageSourceTopicManager;
     private final RuleSourceManager ruleSourceManager;
     private final DeviceProvider deviceProvider;
 
-    public void create(MessageSource record) {
+    public void create(MessageSourcePO record) {
         messageSourceManager.create(record);
     }
 
     public void deleteById(String id) {
-        List<RuleSource> ruleSources = ruleSourceManager.findListBySourceId(id);
+        List<RuleSourcePO> ruleSources = ruleSourceManager.findListBySourceId(id);
         if (CollectionUtil.isNotEmpty(ruleSources)) {
             throw new BusinessException("MESSAGE_SOURCE_USED");
         }
         messageSourceManager.deleteById(id);
     }
 
-    public void updateById(MessageSource record) {
+    public void updateById(MessageSourcePO record) {
         messageSourceManager.updateById(record);
     }
 
-    public MessageSource findById(String id) {
+    public MessageSourcePO findById(String id) {
         return messageSourceManager.findById(id);
     }
 
-    public List<MessageSource> findAll() {
+    public List<MessageSourcePO> findAll() {
         return messageSourceManager.findAll();
     }
 
-    public void createSourceTopic(MessageSourceTopic sourceTopic) {
+    public void createSourceTopic(MessageSourceTopicPO sourceTopic) {
         messageSourceTopicManager.create(sourceTopic);
     }
 
     public List<MessageSourceTopicDTO> findSourceTopics(String sourceId) {
-        List<MessageSourceTopic> topics = messageSourceTopicManager.findSourceTopics(sourceId);
+        List<MessageSourceTopicPO> topics = messageSourceTopicManager.findSourceTopics(sourceId);
         return assembleTopics(topics);
     }
 
@@ -70,12 +70,12 @@ public class MessageSourceService {
         messageSourceTopicManager.deleteById(topicId);
     }
 
-    private List<MessageSourceTopicDTO> assembleTopics(List<MessageSourceTopic> topics) {
+    private List<MessageSourceTopicDTO> assembleTopics(List<MessageSourceTopicPO> topics) {
         if (CollectionUtil.isEmpty(topics)) {
             return Collections.emptyList();
         }
         Set<String> productKeys = Sets.newHashSet();
-        for (MessageSourceTopic topic : topics) {
+        for (MessageSourceTopicPO topic : topics) {
             if (topic.getProperties() instanceof ThingPropertyReportSourceProps) {
                 productKeys.add(((ThingPropertyReportSourceProps) topic.getProperties()).getProductKey());
             }

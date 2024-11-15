@@ -2,8 +2,8 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.messageforwarding.i
 
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageForwardingRulePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSource;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourceTopic;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourcePO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourceTopicPO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.messageforwarding.controller.ro.*;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -18,12 +18,12 @@ public interface MessageForwardingBeRestConvert {
 
     MessageForwardingBeRestConvert INSTANCE = Mappers.getMapper(MessageForwardingBeRestConvert.class);
 
-    MessageSource from(MessageSourceCreateRO args);
+    MessageSourcePO from(MessageSourceCreateRO args);
 
-    MessageSource from(MessageSourceUpdateRO args);
+    MessageSourcePO from(MessageSourceUpdateRO args);
 
 
-    MessageSourceTopic from(MessageSourceTopicRO.Create args);
+    MessageSourceTopicPO from(MessageSourceTopicRO.Create args);
 
     MessageSinkPO from(MessageSinkCreateRO args);
 

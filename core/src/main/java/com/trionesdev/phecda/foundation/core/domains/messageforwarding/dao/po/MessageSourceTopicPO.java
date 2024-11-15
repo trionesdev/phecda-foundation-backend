@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.trionesdev.commons.mybatisplus.entity.BaseLogicEntity;
+import com.trionesdev.commons.mybatisplus.po.BaseLogicPO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.SourceProps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.SourceProps;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,7 +21,7 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TableName(value = "phecda_mf_message_source_topic", autoResultMap = true)
-public class MessageSourceTopic extends BaseLogicEntity {
+public class MessageSourceTopicPO extends BaseLogicPO {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
     private String sourceId;

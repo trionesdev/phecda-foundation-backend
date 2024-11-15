@@ -54,7 +54,7 @@ public class MessageForwardingRuleService {
         applicationEventPublisher.publishEvent(new MessageForwardingRuleChangeEvent(this, ruleSnap));
     }
 
-    public void addRuleSource(RuleSource ruleSource) {
+    public void addRuleSource(RuleSourcePO ruleSource) {
         MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSource.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
         ruleSourceManager.create(ruleSource);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
@@ -62,7 +62,7 @@ public class MessageForwardingRuleService {
         }
     }
 
-    public void deleteRuleSource(RuleSource ruleSource) {
+    public void deleteRuleSource(RuleSourcePO ruleSource) {
         MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSource.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
         ruleSourceManager.delete(ruleSource);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
@@ -70,15 +70,15 @@ public class MessageForwardingRuleService {
         }
     }
 
-    public List<MessageSource> findRuleSources(String ruleId) {
-        List<RuleSource> ruleSources = ruleSourceManager.findListByRuleId(ruleId);
+    public List<MessageSourcePO> findRuleSources(String ruleId) {
+        List<RuleSourcePO> ruleSources = ruleSourceManager.findListByRuleId(ruleId);
         if (CollectionUtil.isEmpty(ruleSources)) {
             return Collections.emptyList();
         }
-        return messageSourceManager.findListByIds(ruleSources.stream().map(RuleSource::getSourceId).collect(Collectors.toList()));
+        return messageSourceManager.findListByIds(ruleSources.stream().map(RuleSourcePO::getSourceId).collect(Collectors.toList()));
     }
 
-    public void addRuleSink(RuleSink ruleSink) {
+    public void addRuleSink(RuleSinkPO ruleSink) {
         MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSink.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
         ruleSinkManager.create(ruleSink);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
@@ -86,7 +86,7 @@ public class MessageForwardingRuleService {
         }
     }
 
-    public void deleteRuleSink(RuleSink ruleSink) {
+    public void deleteRuleSink(RuleSinkPO ruleSink) {
         MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSink.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
         ruleSinkManager.delete(ruleSink);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
@@ -95,10 +95,10 @@ public class MessageForwardingRuleService {
     }
 
     public List<MessageSinkPO> findRuleSinks(String ruleId) {
-        List<RuleSink> ruleSinks = ruleSinkManager.findListByRuleId(ruleId);
+        List<RuleSinkPO> ruleSinks = ruleSinkManager.findListByRuleId(ruleId);
         if (CollectionUtil.isEmpty(ruleSinks)) {
             return Collections.emptyList();
         }
-        return messageSinkManager.findListByIds(ruleSinks.stream().map(RuleSink::getSinkId).collect(Collectors.toList()));
+        return messageSinkManager.findListByIds(ruleSinks.stream().map(RuleSinkPO::getSinkId).collect(Collectors.toList()));
     }
 }

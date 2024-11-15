@@ -57,9 +57,9 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
             if (log.isDebugEnabled()) {
                 log.debug("[PropertiesPostEventHandler#onEvent]  {} {}", JSON.toJSONString(event.getMessage()), l);
             }
-            // message forwarding
+            // message forwarding 消息转发处理
             forwardingActionFactory.messageForwarding(event.getTopic(), JSON.toJSONBytes(message));
-            // file rule
+            // file rule 规则处理
             ruleFire(event.getMessage());
             // save data
             saveMessage(event.getMessage());
@@ -115,9 +115,6 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
                 return;
             }
 
-//            List<ThingModelProperty> properties = productService.queryThingModelLatestPropertiesByProductKey(product.getKey());
-//            Map<String, ValueTypeEnum> identifierAndTypeMap = properties.stream()
-//                    .collect(Collectors.toMap(ThingModelProperty::getIdentifier, ThingModelProperty::getValueType));
 
             Map<Long, List<TSDataType>> typesMap = Maps.newHashMap();
             Map<Long, List<String>> measurementsMap = Maps.newHashMap();

@@ -3,7 +3,7 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.messageforwarding.c
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSource;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourcePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.impl.MessageSourceService;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dto.MessageSourceTopicDTO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.messageforwarding.controller.ro.MessageSourceCreateRO;
@@ -28,7 +28,7 @@ public class MessageSourceController {
     @Operation(summary = "创建数据源")
     @PostMapping(value = "sources")
     public void createSource(@Validated @RequestBody MessageSourceCreateRO args) {
-        MessageSource messageSource = convert.from(args);
+        MessageSourcePO messageSource = convert.from(args);
         messageSourceService.create(messageSource);
     }
 
@@ -44,20 +44,20 @@ public class MessageSourceController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody MessageSourceUpdateRO args
     ) {
-        MessageSource messageSource = MessageForwardingBeRestConvert.INSTANCE.from(args);
+        MessageSourcePO messageSource = MessageForwardingBeRestConvert.INSTANCE.from(args);
         messageSource.setId(id);
         messageSourceService.updateById(messageSource);
     }
 
     @Operation(summary = "获取消息数据源列表")
     @GetMapping(value = "sources/list")
-    public List<MessageSource> queryAll() {
+    public List<MessageSourcePO> queryAll() {
         return messageSourceService.findAll();
     }
 
     @Operation(summary = "根据ID获取消息数据源")
     @GetMapping(value = "sources/{id}")
-    public MessageSource querySourceById(@PathVariable(value = "id") String id) {
+    public MessageSourcePO querySourceById(@PathVariable(value = "id") String id) {
         return messageSourceService.findById(id);
     }
 
