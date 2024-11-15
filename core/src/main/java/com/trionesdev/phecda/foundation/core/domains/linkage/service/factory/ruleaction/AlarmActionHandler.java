@@ -1,15 +1,14 @@
-package com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.impl;
+package com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.ruleaction;
 
 import cn.hutool.core.map.MapUtil;
 import com.trionesdev.commons.core.util.JsonUtils;
+import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.AlarmAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.Alarm;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmCreateArgBO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.impl.AlarmService;
-import com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.PhecdaRuleAction;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;
-import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.AlarmAction;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.PhecdaAction;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.PhecdaRuleActionComponent;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @PhecdaRuleActionComponent(type = PhecdaAction.TypeEnum.ALARM)
-public class AlarmActionImpl implements PhecdaRuleAction {
+public class AlarmActionHandler implements PhecdaRuleActionHandler {
     private final AlarmService alarmService;
 
     @Override

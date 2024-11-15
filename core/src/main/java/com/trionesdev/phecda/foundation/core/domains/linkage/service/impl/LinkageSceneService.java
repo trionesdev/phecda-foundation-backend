@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.criteria.LinkageSceneCriteria;
 import com.trionesdev.phecda.foundation.core.domains.linkage.manager.impl.LinkageSceneManager;
-import com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.RuleActionFactory;
+import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.RuleActionFactory;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.RuleUtils;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.util.LinkageSceneUtils;
 import org.jeasy.rules.api.Facts;

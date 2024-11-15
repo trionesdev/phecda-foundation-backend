@@ -5,7 +5,7 @@ import com.trionesdev.commons.core.util.JsonUtils;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.impl.LinkageSceneService;
 import ms.phecda.BaseTest;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.po.LinkageScenePO;
-import com.trionesdev.phecda.foundation.core.domains.linkage.internal.factory.ruleaction.RuleActionFactory;
+import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.RuleActionFactory;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.OperatorEnum;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.Scene;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.AlarmAction;

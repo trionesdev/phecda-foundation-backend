@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.redis;
 
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.factory.action.KafkaForwardingAction;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.KafkaForwardingAction;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.impl.MessageSinkService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
