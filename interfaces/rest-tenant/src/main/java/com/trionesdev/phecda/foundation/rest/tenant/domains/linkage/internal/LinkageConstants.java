@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.rest.tenant.domains.linkage.support;
+package com.trionesdev.phecda.foundation.rest.tenant.domains.linkage.internal;
 
 import com.trionesdev.phecda.foundation.rest.tenant.internal.RestConstants;
 

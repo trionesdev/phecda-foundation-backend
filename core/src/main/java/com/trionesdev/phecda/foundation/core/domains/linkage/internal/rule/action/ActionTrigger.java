@@ -15,8 +15,8 @@ import lombok.experimental.SuperBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ActionTrigger {
     private TriggerMode triggerMode;
-    private Integer duration;
-    private Long interval;
+    private Integer duration; //持续事时间
+    private Long interval; //间隔时间
 
     @Getter
     @AllArgsConstructor
