@@ -5,6 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductCreateRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductUpdateRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProtocolPropertiesUpdateRO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +17,9 @@ import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeOption;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductExtDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.ProductStatisticsDVO;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductStatus;
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.ProductService;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductDTO;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.ProductQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductThingModelUpsertRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.vo.ProductProfileVO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceBeRestConvert;
@@ -57,7 +59,7 @@ public class ProductController {
 
     @Operation(summary = "新建产品")
     @PostMapping(value = "products")
-    public void createProduct(@Validated @RequestBody ProductRO.Create args) {
+    public void createProduct(@Validated @RequestBody ProductCreateRO args) {
         var product = convert.from(args);
         productService.createProduct(product);
     }
@@ -72,9 +74,8 @@ public class ProductController {
     @PutMapping(value = "products/{id}")
     public void updateProductById(
             @PathVariable(value = "id") String id,
-            @Validated @RequestBody ProductRO.Update args) {
+            @Validated @RequestBody ProductUpdateRO args) {
         var product = convert.from(args);
-        product.setStatus(ProductStatus.DEVELOPMENT);
         product.setId(id);
         productService.updateProductById(product);
     }
@@ -87,7 +88,7 @@ public class ProductController {
 
     @Operation(summary = "获取产品列表")
     @GetMapping(value = "products/list")
-    public List<ProductExtDTO> queryProductList(ProductQuery query) {
+    public List<ProductDTO> queryProductList(ProductQueryRO query) {
         ProductCriteria criteria = convert.from(query);
         return productService.queryList(criteria);
     }
@@ -97,7 +98,7 @@ public class ProductController {
     public PageInfo<ProductExtDTO> queryProductPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
-            ProductQuery query) {
+            ProductQueryRO query) {
         ProductCriteria criteria = DeviceBeRestConvert.INSTANT.from(query);
         return productService.queryPage(pageNum, pageSize, criteria);
     }
@@ -153,9 +154,9 @@ public class ProductController {
     @PutMapping(value = "products/{productId}/protocol-properties")
     public void updateProductProtocolProperties(
             @PathVariable(value = "productId") String productId,
-            @RequestBody ProductRO.ProtocolPropertiesUpdate args) {
+            @RequestBody ProtocolPropertiesUpdateRO args) {
 
-        var product =  ProductDTO.builder().id(productId).protocolProperties(args.getProtocolProperties()).build();
+        var product =  Product.builder().id(productId).protocolProperties(args.getProtocolProperties()).build();
         productService.updateProductById(product);
     }
 
@@ -166,7 +167,7 @@ public class ProductController {
     }
 
     @Operation(summary = "撤销发布产品")
-    @PutMapping(value = "products/{productId}/unpublish")
+    @PutMapping(value = "products/{productId}/revoke")
     public void revokePublishProduct(@PathVariable(value = "productId") String productId) {
         productService.revokePublishProduct(productId);
     }

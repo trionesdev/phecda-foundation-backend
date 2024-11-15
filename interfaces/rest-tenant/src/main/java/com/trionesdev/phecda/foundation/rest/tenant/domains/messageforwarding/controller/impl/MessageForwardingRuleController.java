@@ -83,7 +83,7 @@ public class MessageForwardingRuleController {
             @PathVariable(value = "id") String ruleId,
             @Validated @RequestBody RuleSourceCreateRO args
     ) {
-        RuleSource ruleSource = RuleSource.builder().ruleId(ruleId).sourceId(args.getSourceId()).build();
+        RuleSourcePO ruleSource = RuleSourcePO.builder().ruleId(ruleId).sourceId(args.getSourceId()).build();
         messageForwardingRuleService.addRuleSource(ruleSource);
     }
 
@@ -93,13 +93,13 @@ public class MessageForwardingRuleController {
             @PathVariable(value = "id") String ruleId,
             @PathVariable(value = "sourceId") String sourceId
     ) {
-        RuleSource ruleSource = RuleSource.builder().ruleId(ruleId).sourceId(sourceId).build();
+        RuleSourcePO ruleSource = RuleSourcePO.builder().ruleId(ruleId).sourceId(sourceId).build();
         messageForwardingRuleService.deleteRuleSource(ruleSource);
     }
 
     @Operation(summary = "获取消息转发规则的源")
     @GetMapping(value = "forwarding-rules/{id}/sources/list")
-    public List<MessageSource> findRuleSourcesList(@PathVariable(value = "id") String ruleId) {
+    public List<MessageSourcePO> findRuleSourcesList(@PathVariable(value = "id") String ruleId) {
         return messageForwardingRuleService.findRuleSources(ruleId);
     }
 
@@ -109,7 +109,7 @@ public class MessageForwardingRuleController {
             @PathVariable(value = "id") String ruleId,
             @Validated @RequestBody RuleSinkCreateRO args
     ) {
-        RuleSink ruleSink = RuleSink.builder().ruleId(ruleId).sinkId(args.getSinkId()).build();
+        RuleSinkPO ruleSink = RuleSinkPO.builder().ruleId(ruleId).sinkId(args.getSinkId()).build();
         messageForwardingRuleService.addRuleSink(ruleSink);
     }
 
@@ -119,7 +119,7 @@ public class MessageForwardingRuleController {
             @PathVariable(value = "id") String ruleId,
             @PathVariable(value = "sinkId") String sinkId
     ) {
-        RuleSink ruleSink = RuleSink.builder().ruleId(ruleId).sinkId(sinkId).build();
+        RuleSinkPO ruleSink = RuleSinkPO.builder().ruleId(ruleId).sinkId(sinkId).build();
         messageForwardingRuleService.deleteRuleSink(ruleSink);
     }
 

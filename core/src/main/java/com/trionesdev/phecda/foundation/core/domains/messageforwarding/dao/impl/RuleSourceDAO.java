@@ -3,7 +3,7 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.impl
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSource;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSourcePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.mapper.RuleSourceMapper;
 import org.springframework.stereotype.Repository;
 
@@ -11,28 +11,28 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public class RuleSourceDAO extends ServiceImpl<RuleSourceMapper, RuleSource> {
+public class RuleSourceDAO extends ServiceImpl<RuleSourceMapper, RuleSourcePO> {
 
-    public RuleSource selectByUnique(RuleSource ruleSource) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<RuleSource>().eq(RuleSource::getSourceId, ruleSource.getSourceId())
-                .eq(RuleSource::getRuleId, ruleSource.getRuleId()).last("limit 1")
+    public RuleSourcePO selectByUnique(RuleSourcePO ruleSource) {
+        return baseMapper.selectOne(new LambdaQueryWrapper<RuleSourcePO>().eq(RuleSourcePO::getSourceId, ruleSource.getSourceId())
+                .eq(RuleSourcePO::getRuleId, ruleSource.getRuleId()).last("limit 1")
         );
     }
 
-    public List<RuleSource> selectByRuleId(String ruleId) {
-        return baseMapper.selectList(new LambdaQueryWrapper<RuleSource>().eq(RuleSource::getRuleId, ruleId));
+    public List<RuleSourcePO> selectByRuleId(String ruleId) {
+        return baseMapper.selectList(new LambdaQueryWrapper<RuleSourcePO>().eq(RuleSourcePO::getRuleId, ruleId));
     }
 
-    public List<RuleSource> selectByRuleIds(Collection<String> ruleIds) {
-        return baseMapper.selectList(new LambdaQueryWrapper<RuleSource>().in(RuleSource::getRuleId, ruleIds));
+    public List<RuleSourcePO> selectByRuleIds(Collection<String> ruleIds) {
+        return baseMapper.selectList(new LambdaQueryWrapper<RuleSourcePO>().in(RuleSourcePO::getRuleId, ruleIds));
     }
 
-    public List<RuleSource> selectBySourceId(String sourceId) {
-        return baseMapper.selectList(new LambdaQueryWrapper<RuleSource>().eq(RuleSource::getSourceId, sourceId));
+    public List<RuleSourcePO> selectBySourceId(String sourceId) {
+        return baseMapper.selectList(new LambdaQueryWrapper<RuleSourcePO>().eq(RuleSourcePO::getSourceId, sourceId));
     }
 
-    public void delete(RuleSource ruleSource) {
-        baseMapper.delete(new LambdaUpdateWrapper<RuleSource>().eq(RuleSource::getRuleId, ruleSource.getRuleId())
-                .eq(RuleSource::getSourceId, ruleSource.getSourceId()));
+    public void delete(RuleSourcePO ruleSource) {
+        baseMapper.delete(new LambdaUpdateWrapper<RuleSourcePO>().eq(RuleSourcePO::getRuleId, ruleSource.getRuleId())
+                .eq(RuleSourcePO::getSourceId, ruleSource.getSourceId()));
     }
 }

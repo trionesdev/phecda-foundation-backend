@@ -10,12 +10,13 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DriverPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelUpsertCmd;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceEventLogQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DevicePropertyDataQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceServiceLogQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.ProductDriverQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.ProductQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.*;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -30,11 +31,11 @@ public interface DeviceBeRestConvert {
     DeviceBeRestConvert INSTANT = Mappers.getMapper(DeviceBeRestConvert.class);
 
     //region product
-    ProductDTO from(ProductRO.Create args);
+    Product from(ProductCreateRO args);
 
-    ProductDTO from(ProductRO.Update args);
+    Product from(ProductUpdateRO args);
 
-    ProductCriteria from(ProductQuery query);
+    ProductCriteria from(ProductQueryRO query);
 
 //    ThingModelUpsertBO from(ProductThingModelUpsertRO args);
     ProductThingModelUpsertCmd from(ProductThingModelUpsertRO args);

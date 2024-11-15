@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSink;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSinkPO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.spring.MessageSinkChangeEvent;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSinkManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.RuleSinkManager;
@@ -27,7 +27,7 @@ public class MessageSinkService {
     }
 
     public void deleteById(String id) {
-        List<RuleSink> ruleSinks = ruleSinkManager.findListBySinkId(id);
+        List<RuleSinkPO> ruleSinks = ruleSinkManager.findListBySinkId(id);
         if (CollectionUtil.isNotEmpty(ruleSinks)) {
             throw new BusinessException("MESSAGE_SINK_USED");
         }
