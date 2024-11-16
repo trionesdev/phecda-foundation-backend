@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.root;
 
+import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import com.trionesdev.phecda.infrastructure.rule.PhecdaRule;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSink;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSource;
@@ -43,7 +44,7 @@ public class MessageForwardingRuleAggregate {
             return null;
         }
 
-        return new PhecdaRule<byte[]>().name(id).when(conditionEl()).then((facts,content)->{
+        return new PhecdaRule<PropertiesPostMessage>().name(id).when(conditionEl()).then((facts, content)->{
             for (MessageSink sink : sinks) {
                 sink.getAction().setId(sink.getId());
                 forwardingActionFactory.write(sink.getAction(),content);
