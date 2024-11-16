@@ -11,6 +11,7 @@ import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.trigg
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.trigger.ThingPropertyReportTrigger;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.trigger.TriggerTypeEnum;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.util.LinkageSceneUtils;
+import com.trionesdev.phecda.infrastructure.rule.PhecdaRule;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
@@ -144,16 +145,18 @@ public class EasyRuleTest {
                 .enabled(true)
                 .build();
 
-        RulesEngine rulesEngine = new DefaultRulesEngine();
+        DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
+        rulesEngine.registerRuleListener(new MyRuleListener());
         Rules rules = new Rules();
         String condition = LinkageSceneUtils.buildScenesRuleCondition(linkageScene.getScenes());
 
-        Rule rule = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
+        Rule rule2 = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
+        Rule rule = new PhecdaRule<>().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
 
         rules.register(rule);
 
         Facts facts = new Facts();
-        facts.put("product", "ppp");
+//        facts.put("productKey", "ppp");
         facts.put("deviceName", "a001");
         facts.put("temperature", 10);
         facts.put("humidity", "25");
@@ -185,23 +188,44 @@ public class EasyRuleTest {
         DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
         rulesEngine.registerRuleListener(new MyRuleListener());
         Rules rules = new Rules();
-        Rule rule = new MVELRule().name("age rule").when(" obj.a > 9 ").then("System.out.println(\"age success\")").priority(1);
+        Rule rule = new PhecdaRule<>().name("age rule").when("  obj.a2 > 9  ").then("System.out.println(\"age success\")").priority(1);
 
         rules.register(rule);
         //匹配规则的事实
         Facts facts = new Facts();
         Map<String, Object> map = new HashMap<>();
         map.put("a", 1);
+//        map.put("af", null);
         facts.put("name", "张");
         facts.put("age", "11");
         facts.put("obj", map);
+//        facts.put("obj.af",23);
 
         rulesEngine.fire(rules, facts);
 
     }
 
 
+    @Test
+    public void rule_builder_test_4() {
+        //规则引擎
+        DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
+        rulesEngine.registerRuleListener(new MyRuleListener());
+        Rules rules = new Rules();
+        Rule rule = new MVELRule().name("age rule").when(" true && age<10 ").then("System.out.println(\"age success\")").priority(1);
 
+        rules.register(rule);
+        //匹配规则的事实
+        Facts facts = new Facts();
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", 1);
+        facts.put("name", "+");
+        facts.put("age", "11");
+        facts.put("obj", map);
+
+        rulesEngine.fire(rules, facts);
+
+    }
 
     @Test
     public void test() {

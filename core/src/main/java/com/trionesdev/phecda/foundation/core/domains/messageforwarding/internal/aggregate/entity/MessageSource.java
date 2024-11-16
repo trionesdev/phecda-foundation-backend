@@ -14,6 +14,7 @@ import java.util.List;
 public class MessageSource {
     private String id;
     private List<Topic> topics;
+    private List<MessageSourceRule> rules;
 
     @Data
     @SuperBuilder
@@ -23,4 +24,5 @@ public class MessageSource {
         private String id;
         private String topic;
     }
+
 }

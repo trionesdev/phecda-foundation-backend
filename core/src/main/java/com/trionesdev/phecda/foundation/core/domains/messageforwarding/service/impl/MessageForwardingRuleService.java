@@ -4,11 +4,15 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.BooleanUtil;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.*;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.MessageForwardingCmd;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.*;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
+import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import lombok.RequiredArgsConstructor;
 
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageForwardingRulePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.spring.MessageForwardingRuleChangeEvent;
+import org.jeasy.rules.api.Facts;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +21,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.RuleConstants.FACT_PRODUCT_KEY;
+
 @RequiredArgsConstructor
 @Service
 public class MessageForwardingRuleService {
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final ForwardingActionFactory forwardingActionFactory;
     private final MessageForwardingRuleManager messageForwardingRuleManager;
     private final RuleSourceManager ruleSourceManager;
     private final RuleSinkManager ruleSinkManager;
@@ -101,4 +108,11 @@ public class MessageForwardingRuleService {
         }
         return messageSinkManager.findListByIds(ruleSinks.stream().map(RuleSinkPO::getSinkId).collect(Collectors.toList()));
     }
+
+    public void fireForward(PropertiesPostMessage message) {
+        Facts facts = new Facts();
+        facts.put(FACT_PRODUCT_KEY, message.getProductKey());
+        forwardingActionFactory.fireForwardRule(facts, message);
+    }
+
 }

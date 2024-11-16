@@ -2,9 +2,13 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSink;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.root.MessageForwardingRuleAggregate;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.MessageForwardingCmd;
+import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
+import com.trionesdev.phecda.infrastructure.rule.PhecdaRuleEngine;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +19,9 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.i
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.AbsForwardingAction;
 import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.core.DefaultRulesEngine;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +40,9 @@ public class ForwardingActionFactory {
     private final List<AbsForwardingAction> actions;
 
     private final MessageForwardingRuleManager messageForwardingRuleManager;
+    private final PhecdaRuleEngine rulesEngine = new PhecdaRuleEngine();
+    private final Rules sourceRules = new Rules();
+
 
     /**
      * 初始化的时候，加载所有的Action以及转发规则
@@ -64,32 +74,36 @@ public class ForwardingActionFactory {
      *
      * @param message
      */
-    public void messageForwarding(String topic, byte[] message) {
-        if (CollectionUtils.isEmpty(messageForwardingRules)) {
-            return;
-        }
-        for (MessageForwardingRuleAggregate forwarding : messageForwardingRules) {
-            if (Objects.isNull(forwarding.getSource()) || CollectionUtil.isEmpty(forwarding.getSource().getTopics()) || CollectionUtil.isEmpty(forwarding.getSinks())) {
-                continue;
-            }
-            for (MessageSource.Topic topicItem : forwarding.getSource().getTopics()) {
-                if (StrUtil.isNotBlank(topicItem.getTopic()) && MqttTopicUtils.isMatched(topicItem.getTopic(), topic)) {
-                    for (MessageSink sink : forwarding.getSinks()) {
-                        sink.getAction().setId(sink.getId());
-                        write(sink.getAction(), message);
-                        break;
-                    }
-                }
-            }
-        }
+//    public void messageForwarding(String topic, byte[] message) {
+//        if (CollectionUtils.isEmpty(messageForwardingRules)) {
+//            return;
+//        }
+//        for (MessageForwardingRuleAggregate forwarding : messageForwardingRules) {
+//            if (Objects.isNull(forwarding.getSource()) || CollectionUtil.isEmpty(forwarding.getSource().getTopics()) || CollectionUtil.isEmpty(forwarding.getSinks())) {
+//                continue;
+//            }
+//            for (MessageSource.Topic topicItem : forwarding.getSource().getTopics()) {
+//                if (StrUtil.isNotBlank(topicItem.getTopic()) && MqttTopicUtils.isMatched(topicItem.getTopic(), topic)) {
+//                    for (MessageSink sink : forwarding.getSinks()) {
+//                        sink.getAction().setId(sink.getId());
+//                        write(sink.getAction(), message);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 
+    public void fireForwardRule(Facts facts, PropertiesPostMessage message) {
+        rulesEngine.fire(sourceRules, facts, message);
     }
 
 
-    public void write(SinkAction sinkAction, byte[] content) {
+    public void write(SinkAction sinkAction, PropertiesPostMessage content) {
         AbsForwardingAction forwardingAction = forwardingActionMap.get(sinkAction.getType());
         if (Objects.nonNull(forwardingAction)) {
-            forwardingAction.write(sinkAction, content);
+            forwardingAction.write(sinkAction, JSON.toJSONBytes(content));
         }
     }
 
