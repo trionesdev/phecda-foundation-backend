@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule;
+package com.trionesdev.phecda.infrastructure.rule;
 
 import org.jeasy.rules.api.Action;
 import org.jeasy.rules.api.Condition;
@@ -14,10 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
-public class PhecdaRule extends BasicRule {
+public class PhecdaRule<T> extends BasicRule {
     private Condition condition = Condition.FALSE;
     private final List<Action> actions = new ArrayList<>();
+    private final List<BiConsumer<Facts, T>> consumers = new ArrayList<>();
     private final ParserContext parserContext;
 
     /**
@@ -43,7 +45,7 @@ public class PhecdaRule extends BasicRule {
      * @param name of the rule
      * @return this rule
      */
-    public PhecdaRule name(String name) {
+    public PhecdaRule<T> name(String name) {
         this.name = name;
         return this;
     }
@@ -54,7 +56,7 @@ public class PhecdaRule extends BasicRule {
      * @param description of the rule
      * @return this rule
      */
-    public PhecdaRule description(String description) {
+    public PhecdaRule<T> description(String description) {
         this.description = description;
         return this;
     }
@@ -65,33 +67,29 @@ public class PhecdaRule extends BasicRule {
      * @param priority of the rule
      * @return this rule
      */
-    public PhecdaRule priority(int priority) {
+    public PhecdaRule<T> priority(int priority) {
         this.priority = priority;
         return this;
     }
 
     /**
      * Specify the rule's condition as MVEL expression.
+     *
      * @param condition of the rule
      * @return this rule
      */
-    public PhecdaRule when(String condition) {
-        this.condition = new MVELCondition(condition, parserContext);
+    public PhecdaRule<T> when(String condition) {
+        this.condition = new PhecdaMVELCondition(condition, parserContext);
         return this;
     }
 
-    /**
-     * Add an action specified as an MVEL expression to the rule.
-     * @param action to add to the rule
-     * @return this rule
-     */
-    public PhecdaRule then(String action) {
+    public PhecdaRule<T> then(String action) {
         this.actions.add(new MVELAction(action, parserContext));
         return this;
     }
 
-    public PhecdaRule then(Action action) {
-        this.actions.add(action);
+    public PhecdaRule<T> then(BiConsumer<Facts, T> action) {
+        this.consumers.add(action);
         return this;
     }
 
@@ -110,9 +108,23 @@ public class PhecdaRule extends BasicRule {
                 }
             }
         }
+        for (Action action : actions) {
+            action.execute(facts);
+        }
+        //此处的action 对应的是 rule 中的when
+        for (BiConsumer<Facts, ?> action : consumers) {
+            action.accept(facts, null);
+        }
+    }
+
+    public void execute(Facts facts, T content) throws Exception {
         //此处的action 对应的是 rule 中的when
         for (Action action : actions) {
             action.execute(facts);
         }
+        for (BiConsumer<Facts, T> action : consumers) {
+            action.accept(facts, content);
+        }
     }
+
 }

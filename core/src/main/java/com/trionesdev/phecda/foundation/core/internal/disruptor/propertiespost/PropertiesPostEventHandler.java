@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lmax.disruptor.EventHandler;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.impl.MessageForwardingRuleService;
 import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
@@ -34,6 +35,7 @@ import static com.trionesdev.phecda.foundation.core.domains.linkage.internal.rul
 @Component
 public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEvent> {
     private final ForwardingActionFactory forwardingActionFactory;
+    private final MessageForwardingRuleService messageForwardingRuleService;
     private final LinkageSceneService linkageSceneService;
     private final ProductService productService;
     private final DeviceService deviceService;
@@ -58,9 +60,10 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
                 log.debug("[PropertiesPostEventHandler#onEvent]  {} {}", JSON.toJSONString(event.getMessage()), l);
             }
             // message forwarding 消息转发处理
-            forwardingActionFactory.messageForwarding(event.getTopic(), JSON.toJSONBytes(message));
+//            forwardingActionFactory.messageForwarding(event.getTopic(), JSON.toJSONBytes(message));
+            messageForwardingRuleService.fireForward(message);
             // file rule 规则处理
-            ruleFire(event.getMessage());
+            ruleFire(message);
             // save data
             saveMessage(event.getMessage());
         } catch (Exception ex) {

@@ -2,6 +2,7 @@ package ms.phecda.foundation.core.domains.linkage.service.impl;
 
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.util.JsonUtils;
+import com.trionesdev.phecda.foundation.core.domains.linkage.internal.aggregate.entity.LinkageScene;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.impl.LinkageSceneService;
 import ms.phecda.BaseTest;
 import com.trionesdev.phecda.foundation.core.domains.linkage.dao.po.LinkageScenePO;
@@ -56,7 +57,7 @@ public class LinkageServiceTests extends BaseTest {
 
         PhecdaAction phecdaAction = AlarmAction.builder().type(PhecdaAction.TypeEnum.ALARM).build();
 
-        LinkageScenePO linkageScene = LinkageScenePO.builder().id("test-rule")
+        LinkageScene linkageScene = LinkageScene.builder().id("test-rule")
                 .scenes(Lists.newArrayList(
                         Scene.builder()
                                 .eventTrigger( ThingPropertyReportTrigger.builder()
