@@ -63,7 +63,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
 //            forwardingActionFactory.messageForwarding(event.getTopic(), JSON.toJSONBytes(message));
             messageForwardingRuleService.fireForward(message);
             // file rule 规则处理
-            ruleFire(message);
+            linkageSceneService.fireRules(message);
             // save data
             saveMessage(event.getMessage());
         } catch (Exception ex) {
@@ -71,38 +71,6 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
         }
     }
 
-
-    /**
-     * 触发联动规则
-     *
-     * @param message
-     */
-    public void ruleFire(PropertiesPostMessage message) {
-        try {
-            Facts facts = new Facts();
-            facts.put(FACT_PRODUCT_KEY, Optional.ofNullable(message.getProductKey()).orElse("nil"));
-            facts.put(FACT_DEVICE_NAME, Optional.ofNullable(message.getDeviceName()).orElse("nil"));
-            if (MapUtil.isNotEmpty(message.getReadings())) {
-                Map<String, ActionArgs.Reading> readings = Maps.newHashMap();
-                message.getReadings().forEach((k, v) -> {
-                    facts.put(k, expressionConvert(v.getReadingValue()));
-                    readings.put(k, ActionArgs.Reading.builder().identifier(k).value(v.getReadingValue()).build());
-                });
-                facts.put(FACT_READINGS, readings);
-            }
-            linkageSceneService.rulesFire(facts);
-        } catch (Exception ex) {
-            log.error("[ReportPropertyEventHandler] rule fire fail: productKey :{} , message: {}", message.getProductKey(), ex.getMessage(), ex);
-        }
-    }
-
-    private Object expressionConvert(Object val) {
-        if (Objects.isNull(val)) {
-            return "nil";
-        } else {
-            return val;
-        }
-    }
 
     public void saveMessage(PropertiesPostMessage message) {
         try {

@@ -20,7 +20,7 @@ public class LinkageBootstrap implements CommandLineRunner {
     public void run(String... args) {
         CompletableFuture.runAsync(() -> {
             log.info("[LinkageBootstrap] scan linkage rules");
-            linkageSceneService.registerAllRules();
+//            linkageSceneService.registerAllRules();
         });
     }
 }
