@@ -9,6 +9,7 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.i
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jeasy.rules.api.Facts;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.RuleConstants.FACT_PRODUCT_KEY;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MessageForwardingRuleService {
@@ -106,10 +106,18 @@ public class MessageForwardingRuleService {
         return messageSinkManager.findListByIds(ruleSinks.stream().map(RuleSinkPO::getSinkId).collect(Collectors.toList()));
     }
 
-    public void fireForward(PropertiesPostMessage message) {
-        Facts facts = new Facts();
-        facts.put(FACT_PRODUCT_KEY, message.getProductKey());
-        forwardingActionFactory.fireForwardRule(facts, message);
+    /**
+     * 触发转发
+     *
+     * @param facts
+     * @param message
+     */
+    public void fireForwards(Facts facts, PropertiesPostMessage message) {
+        try {
+            forwardingActionFactory.fireForwardRule(facts, message);
+        } catch (Exception e) {
+            log.error("[MessageForwardingRuleService#fireForwards] fail {}", e.getMessage(), e);
+        }
     }
 
 }

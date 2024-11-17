@@ -5,19 +5,18 @@ import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lmax.disruptor.EventHandler;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.impl.MessageForwardingRuleService;
-import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
-import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.DeviceDataService;
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.DeviceService;
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.ProductService;
-import com.trionesdev.phecda.foundation.core.domains.linkage.service.impl.LinkageSceneService;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
+import com.trionesdev.phecda.foundation.core.domains.linkage.service.impl.LinkageSceneService;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.impl.MessageForwardingRuleService;
+import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
+import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.jeasy.rules.api.Facts;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,6 @@ import static com.trionesdev.phecda.foundation.core.domains.linkage.internal.rul
 @RequiredArgsConstructor
 @Component
 public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEvent> {
-    private final ForwardingActionFactory forwardingActionFactory;
     private final MessageForwardingRuleService messageForwardingRuleService;
     private final LinkageSceneService linkageSceneService;
     private final ProductService productService;
@@ -59,16 +57,31 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
             if (log.isDebugEnabled()) {
                 log.debug("[PropertiesPostEventHandler#onEvent]  {} {}", JSON.toJSONString(event.getMessage()), l);
             }
+            Facts facts = createFacts(message);
             // message forwarding 消息转发处理
-//            forwardingActionFactory.messageForwarding(event.getTopic(), JSON.toJSONBytes(message));
-            messageForwardingRuleService.fireForward(message);
+            messageForwardingRuleService.fireForwards(facts, message);
             // file rule 规则处理
-            linkageSceneService.fireRules(message);
+            linkageSceneService.fireScenes(facts, message);
             // save data
             saveMessage(event.getMessage());
         } catch (Exception ex) {
             log.error("[ReportPropertyEventHandler] process error {} ", ex.getMessage(), ex);
         }
+    }
+
+    public Facts createFacts(PropertiesPostMessage message) {
+        Facts facts = new Facts();
+        facts.put(FACT_PRODUCT_KEY, Optional.ofNullable(message.getProductKey()).orElse("nil"));
+        facts.put(FACT_DEVICE_NAME, Optional.ofNullable(message.getDeviceName()).orElse("nil"));
+        if (MapUtil.isNotEmpty(message.getReadings())) {
+            Map<String, ActionArgs.Reading> readings = Maps.newHashMap();
+            message.getReadings().forEach((k, v) -> {
+                facts.put(k, Optional.ofNullable(v.getReadingValue()).orElse("nil"));
+                readings.put(k, ActionArgs.Reading.builder().identifier(k).value(v.getReadingValue()).build());
+            });
+            facts.put(FACT_READINGS, readings);
+        }
+        return facts;
     }
 
 

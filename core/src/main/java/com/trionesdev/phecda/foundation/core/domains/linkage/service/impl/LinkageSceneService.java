@@ -112,25 +112,14 @@ public class LinkageSceneService {
 
 
     /**
-     * 触发规则
+     * 触发场景
      *
      * @param message
      */
-    public void fireRules(PropertiesPostMessage message) {
+    public void fireScenes(Facts facts, PropertiesPostMessage message) {
         try {
-            Facts facts = new Facts();
-            facts.put(FACT_PRODUCT_KEY, Optional.ofNullable(message.getProductKey()).orElse("nil"));
-            facts.put(FACT_DEVICE_NAME, Optional.ofNullable(message.getDeviceName()).orElse("nil"));
-            if (MapUtil.isNotEmpty(message.getReadings())) {
-                Map<String, ActionArgs.Reading> readings = Maps.newHashMap();
-                message.getReadings().forEach((k, v) -> {
-                    facts.put(k, Optional.ofNullable(v.getReadingValue()).orElse("nil"));
-                    readings.put(k, ActionArgs.Reading.builder().identifier(k).value(v.getReadingValue()).build());
-                });
-                facts.put(FACT_READINGS, readings);
-            }
             ruleActionFactory.fireRules(facts);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("[ReportPropertyEventHandler] rule fire fail: productKey :{} , message: {}", message.getProductKey(), ex.getMessage(), ex);
         }
     }
