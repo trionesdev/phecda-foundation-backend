@@ -19,9 +19,9 @@ import lombok.experimental.SuperBuilder;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = KafkaSinkAction.class, name = "KAFKA")
+        @JsonSubTypes.Type(value = KafkaSinkActionProps.class, name = "KAFKA")
 })
-public abstract class SinkAction {
+public abstract class SinkActionProps {
     private String id;
     private SinkActionType type;
 

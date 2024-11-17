@@ -1,4 +1,4 @@
-package ms.phecda.backend.mq.consumer.mqtt;
+package com.trionesdev.phecda.foundation.mq.consumer.mqtt;
 
 import com.trionesdev.commons.core.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.P
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
 import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
-import ms.phecda.backend.mq.consumer.mqtt.model.MqttPropertiesPostMessage;
+import com.trionesdev.phecda.foundation.mq.consumer.mqtt.model.MqttPropertiesPostMessage;
 import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqtt;
 import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqttProperties;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;

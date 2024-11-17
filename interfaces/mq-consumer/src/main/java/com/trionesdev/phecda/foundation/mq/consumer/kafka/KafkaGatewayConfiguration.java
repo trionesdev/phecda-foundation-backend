@@ -1,4 +1,4 @@
-package ms.phecda.backend.mq.consumer.kafka;
+package com.trionesdev.phecda.foundation.mq.consumer.kafka;
 
 import com.trionesdev.commons.core.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import com.trionesdev.phecda.foundation.core.internal.disruptor.MessageType;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostEventProducer;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
-import ms.phecda.backend.mq.consumer.kafka.model.GatewayPropertiesPostMessage;
+import com.trionesdev.phecda.foundation.mq.consumer.kafka.model.GatewayPropertiesPostMessage;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 

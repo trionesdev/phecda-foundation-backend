@@ -57,7 +57,7 @@ public class DeviceManager {
         return deviceDAO.list();
     }
 
-    @Cacheable(value = DEVICE_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#name")
+//    @Cacheable(value = DEVICE_NAMES, key = "'" + DEVICE_NAME_PREFIX + "'+#name")
     public Optional<DevicePO> queryByName(String name) {
         return deviceDAO.getByName(name);
     }

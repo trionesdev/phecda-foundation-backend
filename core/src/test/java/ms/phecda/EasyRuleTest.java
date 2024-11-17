@@ -150,6 +150,7 @@ public class EasyRuleTest {
         Rules rules = new Rules();
         String condition = LinkageSceneUtils.buildScenesRuleCondition(linkageScene.getScenes());
 
+
         Rule rule2 = new MVELRule().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
         Rule rule = new PhecdaRule<>().name("name rule2").when(condition).then("System.out.println(\"name success\")  ").priority(2);
 
@@ -213,6 +214,27 @@ public class EasyRuleTest {
         rulesEngine.registerRuleListener(new MyRuleListener());
         Rules rules = new Rules();
         Rule rule = new MVELRule().name("age rule").when(" true && age<10 ").then("System.out.println(\"age success\")").priority(1);
+
+        rules.register(rule);
+        //匹配规则的事实
+        Facts facts = new Facts();
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", 1);
+        facts.put("name", "+");
+        facts.put("age", "11");
+        facts.put("obj", map);
+
+        rulesEngine.fire(rules, facts);
+
+    }
+
+    @Test
+    public void rule_builder_test_5() {
+        //规则引擎
+        DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
+        rulesEngine.registerRuleListener(new MyRuleListener());
+        Rules rules = new Rules();
+        Rule rule = new MVELRule().name("age rule").when(" true ").then("System.out.println(\"age success\")").priority(1);
 
         rules.register(rule);
         //匹配规则的事实

@@ -33,7 +33,7 @@ public class TrionesRedisCacheConfiguration<K, V> {
     private final ObjectMapper objectMapper;
 
     @Bean
-    public RedisTemplate<K, V> bojectRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<K, V> ojectRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         ObjectMapper redisObjMapper = redisObjectMapper();
         RedisTemplate<K, V> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
