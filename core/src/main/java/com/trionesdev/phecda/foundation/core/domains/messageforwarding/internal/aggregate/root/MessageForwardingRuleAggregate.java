@@ -1,20 +1,14 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.root;
 
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
-import com.trionesdev.phecda.infrastructure.rule.PhecdaRule;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSink;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSource;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jeasy.rules.api.Rule;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
@@ -34,23 +28,6 @@ public class MessageForwardingRuleAggregate {
         return source.getRules().stream().map(rule -> {
             return "( " + rule.conditionEl() + " )";
         }).collect(Collectors.joining(" && "));
-    }
-
-    public Rule rule(ForwardingActionFactory forwardingActionFactory) {
-        if (Objects.isNull(source) || CollectionUtils.isEmpty(source.getRules())) {
-            return null;
-        }
-        if (CollectionUtils.isEmpty(sinks)) {
-            return null;
-        }
-
-        return new PhecdaRule<PropertiesPostMessage>().name(id).when(conditionEl()).then((facts, content)->{
-            for (MessageSink sink : sinks) {
-                sink.getAction().setId(sink.getId());
-                forwardingActionFactory.write(sink.getAction(),content);
-                break;
-            }
-        });
     }
 
 }
