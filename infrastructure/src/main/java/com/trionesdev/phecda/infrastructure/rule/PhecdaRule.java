@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.infrastructure.rule;
 
+import com.alibaba.fastjson2.JSON;
 import org.jeasy.rules.api.Action;
 import org.jeasy.rules.api.Condition;
 import org.jeasy.rules.api.Facts;
@@ -7,6 +8,7 @@ import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.core.BasicRule;
 import org.jeasy.rules.mvel.MVELAction;
 import org.jeasy.rules.mvel.MVELCondition;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 import java.util.ArrayList;
@@ -26,7 +28,10 @@ public class PhecdaRule<T> extends BasicRule {
      * Create a new MVEL rule.
      */
     public PhecdaRule() {
-        this(new ParserContext());
+//        this(new ParserContext());
+        ParserConfiguration parserConfiguration = new ParserConfiguration();
+//        parserConfiguration
+        this.parserContext = new ParserContext(parserConfiguration);
     }
 
     /**
@@ -101,6 +106,7 @@ public class PhecdaRule<T> extends BasicRule {
     @Override
     public void execute(Facts facts) throws Exception {
         Map<String, Class> inputs = parserContext.getInputs();
+        System.out.println(JSON.toJSONString(facts));
         if (Objects.nonNull(inputs)) {
             for (Entry<String, Class> entry : inputs.entrySet()) {
                 if (Objects.isNull(facts.getFact(entry.getKey()))) {
@@ -118,6 +124,8 @@ public class PhecdaRule<T> extends BasicRule {
     }
 
     public void execute(Facts facts, T content) throws Exception {
+        Map<String, Class> inputs = parserContext.getInputs();
+        System.out.println(JSON.toJSONString(facts));
         //此处的action 对应的是 rule 中的when
         for (Action action : actions) {
             action.execute(facts);
