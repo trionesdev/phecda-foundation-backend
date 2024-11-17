@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaSinkAction extends SinkAction {
+public class KafkaSinkActionProps extends SinkActionProps {
     private String bootstrapServers;
     private String topic;
 

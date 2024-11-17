@@ -14,9 +14,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableMinioClients
 public class ServeApplication {
     public static void main(String[] args) {
-        log.info("--Trionesdev Phecda app start--");
+        log.info("------------Trionesdev Phecda app starting------------");
         SpringApplication.run(ServeApplication.class, args);
-        log.info("--Trionesdev Phecda app end--");
+        log.info("------------Trionesdev Phecda app started------------");
     }
 
 }

@@ -246,7 +246,7 @@ public class DeviceService {
         return deviceManager.queryByName(name);
     }
 
-    @Cacheable(value = {"devices"}, key = "'name:'+#name")
+    @Cacheable(value = {"devices"}, key = "'name:'+#name",condition = "#result!=null", unless = "#result==null")
     public DevicePO queryByNameCache(String name) {
         return deviceManager.queryByName(name).orElse(null);
     }

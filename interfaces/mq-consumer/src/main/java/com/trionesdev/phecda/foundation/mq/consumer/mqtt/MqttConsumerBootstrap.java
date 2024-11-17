@@ -1,4 +1,4 @@
-package ms.phecda.backend.mq.consumer.mqtt;
+package com.trionesdev.phecda.foundation.mq.consumer.mqtt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

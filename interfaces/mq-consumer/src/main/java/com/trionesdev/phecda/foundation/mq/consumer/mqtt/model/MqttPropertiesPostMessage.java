@@ -1,4 +1,4 @@
-package ms.phecda.backend.mq.consumer.mqtt.model;
+package com.trionesdev.phecda.foundation.mq.consumer.mqtt.model;
 
 import cn.hutool.core.map.MapUtil;
 import lombok.Data;

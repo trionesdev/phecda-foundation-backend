@@ -6,8 +6,8 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkAction;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.KafkaSinkAction;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.KafkaSinkActionProps;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSinkManager;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -52,7 +52,7 @@ public class KafkaForwardingAction extends AbsForwardingAction {
             sinks.forEach(t -> {
                 t.getAction().setId(t.getId());
                 try {
-                    kafkaTemplateMap.put(t.getId(), createTemplate((KafkaSinkAction) t.getAction()));
+                    kafkaTemplateMap.put(t.getId(), createTemplate((KafkaSinkActionProps) t.getAction()));
                 } catch (Exception ex) {
                     log.error("[KafkaForwardingAction#kafkaSync] kafka create fail action id: {}", t.getId(), ex);
                 }
@@ -61,7 +61,7 @@ public class KafkaForwardingAction extends AbsForwardingAction {
     }
 
 
-    public KafkaTemplate<String, Object> createTemplate(KafkaSinkAction sinkAction) {
+    public KafkaTemplate<String, Object> createTemplate(KafkaSinkActionProps sinkAction) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, sinkAction.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -71,9 +71,9 @@ public class KafkaForwardingAction extends AbsForwardingAction {
     }
 
     @Override
-    public void write(SinkAction sinkAction, byte[] data) {
+    public void write(SinkActionProps sinkAction, byte[] data) {
         try {
-            KafkaSinkAction action = (KafkaSinkAction) sinkAction;
+            KafkaSinkActionProps action = (KafkaSinkActionProps) sinkAction;
             KafkaTemplate<String, Object> kafkaTemplate = kafkaTemplateMap.get(action.getId());
             if (Objects.isNull(kafkaTemplate)) {
                 log.error("[KafkaForwardingAction] kafka instance not found ,sink id :{} create once again", action.getId());

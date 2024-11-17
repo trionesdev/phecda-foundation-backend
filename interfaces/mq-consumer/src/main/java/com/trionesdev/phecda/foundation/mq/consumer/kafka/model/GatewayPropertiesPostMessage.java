@@ -1,4 +1,4 @@
-package ms.phecda.backend.mq.consumer.kafka.model;
+package com.trionesdev.phecda.foundation.mq.consumer.kafka.model;
 
 import cn.hutool.core.map.MapUtil;
 import lombok.Data;

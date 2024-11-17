@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trionesdev.commons.mybatisplus.po.BaseLogicPO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkAction;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +29,6 @@ public class MessageSinkPO extends BaseLogicPO {
     private String description;
     private SinkActionType type;
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private SinkAction action;
+    private SinkActionProps action;
     private String state;
 }

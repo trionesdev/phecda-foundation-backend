@@ -2,12 +2,12 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.messageforwarding.c
 
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
 import lombok.Data;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkAction;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
 
 @Data
 public class MessageSinkCreateRO {
     private String name;
     private String description;
     private SinkActionType type;
-    private SinkAction action;
+    private SinkActionProps action;
 }

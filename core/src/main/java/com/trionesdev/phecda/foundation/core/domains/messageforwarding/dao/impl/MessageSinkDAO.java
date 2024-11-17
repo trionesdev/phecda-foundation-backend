@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkAction;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.mapper.MessageSinkMapper;
 
 import java.util.Collection;
