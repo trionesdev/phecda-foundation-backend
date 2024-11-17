@@ -189,13 +189,13 @@ public class EasyRuleTest {
         DefaultRulesEngine rulesEngine = new DefaultRulesEngine();
         rulesEngine.registerRuleListener(new MyRuleListener());
         Rules rules = new Rules();
-        Rule rule = new PhecdaRule<>().name("age rule").when("  obj.a2 > 9  ").then("System.out.println(\"age success\")").priority(1);
+        Rule rule = new PhecdaRule<>().name("age rule").when("  obj.aw > 9  ").then("System.out.println(\"age success\")").priority(1);
 
         rules.register(rule);
         //匹配规则的事实
         Facts facts = new Facts();
         Map<String, Object> map = new HashMap<>();
-        map.put("a", 1);
+        map.put("a", 11);
 //        map.put("af", null);
         facts.put("name", "张");
         facts.put("age", "11");
