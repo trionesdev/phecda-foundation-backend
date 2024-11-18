@@ -369,13 +369,13 @@ public class DeviceService {
         try {
             switch (channel) {
                 case DRIVER:
-                    String sendTopic = TopicUtils.serviceSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
+                    String sendTopic = TopicUtils.commandSendTopic(dto.getProductKey(), dto.getDeviceName(), dto.getCommandName());
                     if (CallType.ASYNC.equals(callType)) {
                         phecdaMqtt.publish(sendTopic, JSON.toJSONBytes(dto));
                         serviceLog.setResult(Result.SUCCESS);
                     } else if (CallType.SYNC.equals(callType)) {
-                        String replayTopic = TopicUtils.serviceSyncReplyTopic(dto.getId());
-                        MqttMessage replayMessage = phecdaMqtt.publishAsync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
+                        String replayTopic = TopicUtils.commandSyncReplyTopic(dto.getId());
+                        MqttMessage replayMessage = phecdaMqtt.publishSync(sendTopic, replayTopic, dto.getId(), JSON.toJSONBytes(dto));
                         serviceLog.setResult(Result.SUCCESS).setInputData(Optional.ofNullable(replayMessage.getPayload()).map(String::new).orElse(null));
                         return JSON.parseObject(replayMessage.getPayload(), ServiceInvokeReplyMessage.class);
                     }

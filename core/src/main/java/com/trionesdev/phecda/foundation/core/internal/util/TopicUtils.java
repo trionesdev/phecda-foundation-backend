@@ -24,16 +24,26 @@ public class TopicUtils {
      * @param commandName
      * @return
      */
-    public static String serviceSendTopic(String productKey, String deviceName, String commandName) {
-        return TOPIC_PREFIX + Optional.ofNullable(productKey).orElse("+") + "/" + Optional.ofNullable(deviceName).orElse("+") + "/thing/service/" + commandName;
+    public static String commandSendTopic(String productKey, String deviceName, String commandName) {
+        return TOPIC_PREFIX + Optional.ofNullable(productKey).orElse("+") + "/" + Optional.ofNullable(deviceName).orElse("+") + "/thing/command/" + commandName;
     }
 
-    public static String serviceAsyncReplyTopic(String messageId) {
-        return TOPIC_PREFIX + "thing/service/" + messageId + "/reply/async";
+    /**
+     * 异步指令回调
+     * @param messageId
+     * @return
+     */
+    public static String commandAsyncReplyTopic(String messageId) {
+        return TOPIC_PREFIX + "thing/command/" + messageId + "/reply/async";
     }
 
-    public static String serviceSyncReplyTopic(String messageId) {
-        return TOPIC_PREFIX + "thing/service/" + messageId + "/reply/sync";
+    /**
+     * 同步指令回调
+     * @param messageId
+     * @return
+     */
+    public static String commandSyncReplyTopic(String messageId) {
+        return TOPIC_PREFIX + "thing/command/" + messageId + "/reply/sync";
     }
 
     public static String join(String... paths) {
