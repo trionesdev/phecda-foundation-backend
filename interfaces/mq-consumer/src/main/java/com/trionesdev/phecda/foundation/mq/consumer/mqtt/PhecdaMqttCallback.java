@@ -1,14 +1,10 @@
 package com.trionesdev.phecda.foundation.mq.consumer.mqtt;
 
-import com.trionesdev.commons.core.util.JsonUtils;
+import com.trionesdev.phecda.foundation.core.internal.disruptor.message.PhecdaMessageEventProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.MessageType;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostEventProducer;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
-import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
 import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
-import com.trionesdev.phecda.foundation.mq.consumer.mqtt.model.MqttPropertiesPostMessage;
 import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqtt;
 import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqttProperties;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -24,6 +20,7 @@ public class PhecdaMqttCallback implements MqttCallbackExtended {
     private final PhecdaMqttProperties mqttProperties;
     private final PhecdaMqtt phecdaMqtt;
     private final PropertiesPostEventProducer propertiesPostEventProducer;
+    private final PhecdaMessageEventProducer phecdaMessageEventProducer;
 
 
     @Override
@@ -42,13 +39,15 @@ public class PhecdaMqttCallback implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) {
-        String propertyPostTopic = TopicUtils.join(mqttProperties.getTopicPrefix(), TopicUtils.propertyPostTopic(null, null));
-        if (MqttTopicUtils.isMatched(propertyPostTopic, topic)) { // 设备上报属性消息
-            MqttPropertiesPostMessage mqttMessage = JsonUtils.parse(message.getPayload(), MqttPropertiesPostMessage.class);
-            PropertiesPostMessage propertiesPostMessage = mqttMessage.toProcessMessage();
-            propertiesPostMessage.setType(MessageType.PROPERTIES_POST.name());
-            propertiesPostEventProducer.sender(topic, propertiesPostMessage);
-        }
+        phecdaMessageEventProducer.sender(topic, message.getPayload());
+
+//        String propertyPostTopic = TopicUtils.join(mqttProperties.getTopicPrefix(), TopicUtils.propertyPostTopic(null, null));
+//        if (MqttTopicUtils.isMatched(propertyPostTopic, topic)) { // 设备上报属性消息
+//            MqttPropertiesPostMessage mqttMessage = JsonUtils.parse(message.getPayload(), MqttPropertiesPostMessage.class);
+//            PropertiesPostMessage propertiesPostMessage = mqttMessage.toProcessMessage();
+//            propertiesPostMessage.setType(MessageType.PROPERTIES_POST.name());
+//            propertiesPostEventProducer.sender(topic, propertiesPostMessage);
+//        }
 
     }
 
