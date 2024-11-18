@@ -59,7 +59,7 @@ public class PropertiesPostEventHandler implements EventHandler<PropertiesPostEv
             }
             Facts facts = createFacts(message);
             // message forwarding 消息转发处理
-            messageForwardingRuleService.fireForwards(facts, message);
+//            messageForwardingRuleService.fireForwards(facts, message);
             // file rule 规则处理
             linkageSceneService.fireScenes(facts, message);
             // save data

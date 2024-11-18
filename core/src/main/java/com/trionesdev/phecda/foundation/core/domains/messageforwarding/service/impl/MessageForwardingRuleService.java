@@ -109,12 +109,12 @@ public class MessageForwardingRuleService {
     /**
      * 触发转发
      *
-     * @param facts
+     * @param topic
      * @param message
      */
-    public void fireForwards(Facts facts, PropertiesPostMessage message) {
+    public void fireForwards(String topic, byte[] message) {
         try {
-            forwardingActionFactory.fireForwardRule(facts, message);
+            forwardingActionFactory.fireForwardRule(topic, message);
         } catch (Exception e) {
             log.error("[MessageForwardingRuleService#fireForwards] fail {}", e.getMessage(), e);
         }

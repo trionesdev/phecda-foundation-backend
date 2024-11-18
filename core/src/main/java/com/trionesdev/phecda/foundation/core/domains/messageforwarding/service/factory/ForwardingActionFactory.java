@@ -3,12 +3,15 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson2.JSON;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSink;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSource;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.root.MessageForwardingRuleAggregate;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageForwardingRuleManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.AbsForwardingAction;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.ForwardingActionComponent;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
+import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
+import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
 import com.trionesdev.phecda.infrastructure.rule.PhecdaRule;
 import com.trionesdev.phecda.infrastructure.rule.PhecdaRuleEngine;
 import jakarta.annotation.PostConstruct;
@@ -28,6 +31,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Component
 public class ForwardingActionFactory {
+    private List<MessageForwardingRuleAggregate> forwardingRules = new ArrayList<>();
     /**
      * 消息转发规则集合
      */
@@ -61,49 +65,30 @@ public class ForwardingActionFactory {
      */
     public void syncMessageForwardingRules() {
         log.info("[ForwardingActionFactory#syncMessageForwardingRules] sync message forwarding rules");
-        var forwardingRules = messageForwardingRuleManager.activeForwardingList();
-        if (CollectionUtils.isEmpty(forwardingRules)) {
-            forwardingRules.forEach(forwardingRule -> {
-                registerRule(forwardingRule);
-            });
-        }
+        forwardingRules = messageForwardingRuleManager.activeForwardingList();
     }
 
-
-    public void registerRule(MessageForwardingRuleAggregate rule) {
-        sourceRules.register(createRule(rule));
-    }
-
-    public void unregisterRule(String id) {
-        sourceRules.unregister(id);
-    }
-
-    public void fireForwardRule(Facts facts, PropertiesPostMessage message) {
-        rulesEngine.fire(sourceRules, facts, message);
-    }
-
-
-    public void write(SinkActionProps sinkAction, PropertiesPostMessage content) {
+    public void write(SinkActionProps sinkAction, byte[] content) {
         AbsForwardingAction forwardingAction = forwardingActionMap.get(sinkAction.getType());
         if (Objects.nonNull(forwardingAction)) {
-            forwardingAction.write(sinkAction, JSON.toJSONBytes(content));
+            forwardingAction.write(sinkAction, content);
         }
     }
 
-    public Rule createRule(MessageForwardingRuleAggregate rule) {
-        if (Objects.isNull(rule.getSource()) || CollectionUtils.isEmpty(rule.getSource().getRules())) {
-            return null;
-        }
-        if (CollectionUtils.isEmpty(rule.getSinks())) {
-            return null;
-        }
 
-        return new PhecdaRule<PropertiesPostMessage>().name(rule.getId()).when(rule.conditionEl()).then((facts, content) -> {
-            for (MessageSink sink : rule.getSinks()) {
-                sink.getAction().setId(sink.getId());
-                write(sink.getAction(), content);
-                break;
+    public void fireForwardRule(String topic, byte[] message) {
+        for (MessageForwardingRuleAggregate rule : forwardingRules) {
+            if (CollectionUtils.isEmpty(rule.getSinks()) || CollectionUtils.isEmpty(rule.getSinks())) {
+                continue;
             }
-        });
+            for (MessageSource.Topic sourceTopic : rule.getSource().getTopics()) {
+                if (MqttTopicUtils.isMatched(sourceTopic.getTopic(), topic)) {
+                    for (MessageSink sink : rule.getSinks()) {
+                        write(sink.getAction(), message);
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
