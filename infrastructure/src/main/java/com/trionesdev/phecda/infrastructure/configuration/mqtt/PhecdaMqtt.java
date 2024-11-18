@@ -40,7 +40,7 @@ public class PhecdaMqtt {
         }
     }
 
-    public MqttMessage publishAsync(String topic, String replayTopic, String messageId, byte[] payload) {
+    public MqttMessage publishSync(String topic, String replayTopic, String messageId, byte[] payload) {
         String actualRepayTopic = String.join("/", mqttProperties.getTopicPrefix(), replayTopic);
         AtomicBoolean finished = new AtomicBoolean(false);
         try {
