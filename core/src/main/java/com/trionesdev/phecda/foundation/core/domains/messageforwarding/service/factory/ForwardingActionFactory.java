@@ -6,26 +6,24 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity.MessageSource;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.root.MessageForwardingRuleAggregate;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageForwardingRuleManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.AbsForwardingAction;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.ForwardingActionComponent;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
-import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
-import com.trionesdev.phecda.infrastructure.rule.PhecdaRule;
-import com.trionesdev.phecda.infrastructure.rule.PhecdaRuleEngine;
+import com.trionesdev.phecda.model.device.PhecdaMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
-import org.jeasy.rules.api.Facts;
-import org.jeasy.rules.api.Rule;
-import org.jeasy.rules.api.Rules;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,12 +34,8 @@ public class ForwardingActionFactory {
      * 消息转发规则集合
      */
     private final Map<SinkActionType, AbsForwardingAction> forwardingActionMap = new HashMap<>();
-
     private final List<AbsForwardingAction> actions;
-
     private final MessageForwardingRuleManager messageForwardingRuleManager;
-    private final PhecdaRuleEngine rulesEngine = new PhecdaRuleEngine();
-    private final Rules sourceRules = new Rules();
 
 
     /**
@@ -68,15 +62,15 @@ public class ForwardingActionFactory {
         forwardingRules = messageForwardingRuleManager.activeForwardingList();
     }
 
-    public void write(SinkActionProps sinkAction, byte[] content) {
+    public void write(SinkActionProps sinkAction, PhecdaMessage content) {
         AbsForwardingAction forwardingAction = forwardingActionMap.get(sinkAction.getType());
         if (Objects.nonNull(forwardingAction)) {
-            forwardingAction.write(sinkAction, content);
+            forwardingAction.write(sinkAction, JSON.toJSONBytes(content));
         }
     }
 
 
-    public void fireForwardRule(String topic, byte[] message) {
+    public void fireForwardRule(String topic, PhecdaMessage message) {
         for (MessageForwardingRuleAggregate rule : forwardingRules) {
             if (CollectionUtils.isEmpty(rule.getSinks()) || CollectionUtils.isEmpty(rule.getSinks())) {
                 continue;

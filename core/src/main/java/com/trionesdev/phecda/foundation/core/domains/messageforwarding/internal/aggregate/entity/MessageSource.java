@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity;
 
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.SourceProps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,6 @@ import java.util.List;
 public class MessageSource {
     private String id;
     private List<Topic> topics;
-    private List<MessageSourceCondition> rules;
 
     @Data
     @SuperBuilder
@@ -23,6 +23,10 @@ public class MessageSource {
     public static class Topic {
         private String id;
         private String topic;
+        private SourceProps properties;
+        public String getTopic() {
+            return properties.generateTopic();
+        }
     }
 
 }

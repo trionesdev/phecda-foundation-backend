@@ -1,12 +1,13 @@
 package com.trionesdev.phecda.foundation.mq.consumer.mqtt;
 
+import com.trionesdev.commons.core.util.JsonUtils;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.message.PhecdaMessageEventProducer;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostEventProducer;
 import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
 import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqtt;
 import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqttProperties;
+import com.trionesdev.phecda.model.device.PhecdaMessage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class PhecdaMqttCallback implements MqttCallbackExtended {
     private final PhecdaMqttProperties mqttProperties;
     private final PhecdaMqtt phecdaMqtt;
-    private final PropertiesPostEventProducer propertiesPostEventProducer;
+//    private final PropertiesPostEventProducer propertiesPostEventProducer;
     private final PhecdaMessageEventProducer phecdaMessageEventProducer;
 
 
@@ -39,7 +40,7 @@ public class PhecdaMqttCallback implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) {
-        phecdaMessageEventProducer.sender(topic, message.getPayload());
+        phecdaMessageEventProducer.sender(topic, JsonUtils.parse(message.getPayload(), PhecdaMessage.class));
 
 //        String propertyPostTopic = TopicUtils.join(mqttProperties.getTopicPrefix(), TopicUtils.propertyPostTopic(null, null));
 //        if (MqttTopicUtils.isMatched(propertyPostTopic, topic)) { // 设备上报属性消息
