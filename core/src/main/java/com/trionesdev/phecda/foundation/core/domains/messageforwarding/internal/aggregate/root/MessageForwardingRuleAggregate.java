@@ -9,7 +9,6 @@ import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Data
 @Accessors(chain = true)
@@ -23,11 +22,5 @@ public class MessageForwardingRuleAggregate {
     private Boolean enabled;
     private MessageSource source;
     private Collection<MessageSink> sinks;
-
-    public String conditionEl() {
-        return source.getRules().stream().map(rule -> {
-            return "( " + rule.conditionEl() + " )";
-        }).collect(Collectors.joining(" && "));
-    }
 
 }

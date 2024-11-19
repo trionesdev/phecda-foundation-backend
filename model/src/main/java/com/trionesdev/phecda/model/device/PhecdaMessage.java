@@ -2,8 +2,10 @@ package com.trionesdev.phecda.model.device;
 
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Data
 public class PhecdaMessage {
@@ -12,7 +14,6 @@ public class PhecdaMessage {
     private String id;
     private String deviceName;
     private String productKey;
-    private String identifier;
     private Long ts;
     private Map<String, Reading> readings = new HashMap<>();
     private Map<String, Object> tags;
@@ -20,12 +21,27 @@ public class PhecdaMessage {
     @Data
     public static class Reading {
         private Long ts;
-        private String identifier;
         private String valueType;
         private String utils;
         private byte[] binaryValue;
         private String mediaType;
         private Object objectValue;
         private String value;
+
+        public Long getTs() {
+            return Optional.ofNullable(ts).orElse(Instant.now().toEpochMilli());
+        }
+
+        public Object getReadingValue() {
+            if (objectValue != null) {
+                return objectValue;
+            }
+            if (value != null) {
+                return value;
+            }
+            return null;
+        }
     }
+
+
 }

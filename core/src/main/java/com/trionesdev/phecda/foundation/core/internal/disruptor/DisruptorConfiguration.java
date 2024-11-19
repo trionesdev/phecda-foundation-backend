@@ -9,8 +9,6 @@ import com.trionesdev.phecda.foundation.core.internal.disruptor.message.PhecdaMe
 import com.trionesdev.phecda.foundation.core.internal.disruptor.message.PhecdaMessageEventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostEvent;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostEventHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,19 +16,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Configuration
 public class DisruptorConfiguration {
-    private final PropertiesPostEventHandler propertiesPostEventHandler;
     private final PhecdaMessageEventHandler phecdaMessageEventHandler;
 
-    @Bean
-    public Disruptor<PropertiesPostEvent> reportPropertyMessageRingBuffer() {
-        int bufferSize = 1024;
-        Disruptor<PropertiesPostEvent> disruptor = new Disruptor<>(PropertiesPostEvent::new, bufferSize,
-                DaemonThreadFactory.INSTANCE, ProducerType.MULTI, new BlockingWaitStrategy());
-        disruptor.handleEventsWith(propertiesPostEventHandler);
-        disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
-        disruptor.start();
-        return disruptor;
-    }
+//    @Bean
+//    public Disruptor<PropertiesPostEvent> reportPropertyMessageRingBuffer() {
+//        int bufferSize = 1024;
+//        Disruptor<PropertiesPostEvent> disruptor = new Disruptor<>(PropertiesPostEvent::new, bufferSize,
+//                DaemonThreadFactory.INSTANCE, ProducerType.MULTI, new BlockingWaitStrategy());
+//        disruptor.handleEventsWith(propertiesPostEventHandler);
+//        disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
+//        disruptor.start();
+//        return disruptor;
+//    }
 
     @Bean
     public Disruptor<PhecdaMessageEvent> phecdaMessageRingBuffer() {

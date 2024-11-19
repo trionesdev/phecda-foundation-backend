@@ -3,14 +3,21 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.BooleanUtil;
 import com.trionesdev.commons.exception.NotFoundException;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.*;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageForwardingRulePO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourcePO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSinkPO;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSourcePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.spring.MessageForwardingRuleChangeEvent;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.*;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageForwardingRuleManager;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSinkManager;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSourceManager;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.RuleSinkManager;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.RuleSourceManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
+import com.trionesdev.phecda.model.device.PhecdaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jeasy.rules.api.Facts;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -112,7 +119,7 @@ public class MessageForwardingRuleService {
      * @param topic
      * @param message
      */
-    public void fireForwards(String topic, byte[] message) {
+    public void fireForwards(String topic, PhecdaMessage message) {
         try {
             forwardingActionFactory.fireForwardRule(topic, message);
         } catch (Exception e) {

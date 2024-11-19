@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class PropertiesPostEventProducer {
     private final Disruptor<PropertiesPostEvent> postEventDisruptor;
 

@@ -1,9 +1,16 @@
 package com.trionesdev.phecda.foundation.core.domains.device.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
+import com.trionesdev.phecda.model.device.PhecdaMessage;
+import com.trionesdev.phecda.model.device.PhecdaMessage.Reading;
+import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
+import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceEventLogCriteria;
@@ -16,6 +23,7 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceStatist
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataBO;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceDataManager;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -32,6 +40,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +55,51 @@ public class DeviceDataService {
     private final StringRedisTemplate stringRedisTemplate;
     private final DeviceDataManager deviceDataManager;
     private final RedissonClient redissonClient;
+
+    public void savePropertyData(PhecdaMessage message) {
+        Map<Long, List<TSDataType>> typesMap = Maps.newHashMap();
+        Map<Long, List<String>> measurementsMap = Maps.newHashMap();
+        Map<Long, List<Object>> valuesMap = Maps.newHashMap();
+
+        for (Entry<String, PhecdaMessage.Reading> reading : message.getReadings().entrySet()) {
+            String identifier = reading.getKey();
+            PhecdaMessage.Reading property = reading.getValue();
+            ValueTypeEnum valueType = EnumUtils.getEnum(ValueTypeEnum.class, property.getValueType(), ValueTypeEnum.STRING);
+            TSDataType tsDataType = IotDbUtils.typeConvert(valueType);
+            if (Objects.isNull(tsDataType)) {
+                log.warn("can not convert dataType {} of device {} not exist", valueType, message.getDeviceName());
+                continue;
+            }
+
+            List<TSDataType> types = typesMap.get(property.getTs());
+            if (Objects.isNull(types)) {
+                types = Lists.newArrayList();
+                typesMap.put(property.getTs(), types);
+            }
+
+            List<String> measurements = measurementsMap.get(property.getTs());
+            if (Objects.isNull(measurements)) {
+                measurements = Lists.newArrayList();
+                measurementsMap.put(property.getTs(), measurements);
+            }
+
+            List<Object> values = valuesMap.get(property.getTs());
+            if (Objects.isNull(values)) {
+                values = Lists.newArrayList();
+                valuesMap.put(property.getTs(), values);
+            }
+
+            types.add(tsDataType);
+            measurements.add(identifier);
+            values.add(IotDbUtils.valueConvert(valueType, property.getReadingValue()));
+        }
+
+        for (Entry<Long, List<TSDataType>> entry : typesMap.entrySet()) {
+            deviceDataManager.savePropertyData(message.getProductKey(), message.getDeviceName(), entry.getKey(), measurementsMap.get(entry.getKey()), entry.getValue(), valuesMap.get(entry.getKey()));
+        }
+
+    }
+
 
     //region event
     public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogCriteria criteria) {
@@ -68,6 +122,8 @@ public class DeviceDataService {
 
 
     //region property
+
+    @Deprecated
     public void savePropertyData(String productKey, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
         deviceDataManager.savePropertyData(productKey, deviceName, time, measurements, types, values);
     }

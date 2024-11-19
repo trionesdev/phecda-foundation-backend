@@ -9,9 +9,11 @@ import com.trionesdev.phecda.foundation.core.domains.linkage.dto.LinkageSceneDTO
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.LinkageDomainConvert;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.aggregate.entity.LinkageScene;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;
+import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs.Reading;
 import com.trionesdev.phecda.foundation.core.domains.linkage.manager.impl.LinkageSceneManager;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.RuleActionFactory;
 import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
+import com.trionesdev.phecda.model.device.PhecdaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -111,14 +113,29 @@ public class LinkageSceneService {
     }
 
 
+    public Facts createFacts(PhecdaMessage message) {
+        Facts facts = new Facts();
+        facts.put(FACT_PRODUCT_KEY, Optional.ofNullable(message.getProductKey()).orElse("nil"));
+        facts.put(FACT_DEVICE_NAME, Optional.ofNullable(message.getDeviceName()).orElse("nil"));
+        if (MapUtil.isNotEmpty(message.getReadings())) {
+            Map<String, Reading> readings = Maps.newHashMap();
+            message.getReadings().forEach((k, v) -> {
+                facts.put(k, Optional.ofNullable(v.getReadingValue()).orElse("nil"));
+                readings.put(k, ActionArgs.Reading.builder().identifier(k).value(v.getReadingValue()).build());
+            });
+            facts.put(FACT_READINGS, readings);
+        }
+        return facts;
+    }
+
     /**
      * 触发场景
      *
      * @param message
      */
-    public void fireScenes(Facts facts, PropertiesPostMessage message) {
+    public void fireScenes(PhecdaMessage message) {
         try {
-            ruleActionFactory.fireRules(facts);
+            ruleActionFactory.fireRules(createFacts(message));
         } catch (Exception ex) {
             log.error("[ReportPropertyEventHandler] rule fire fail: productKey :{} , message: {}", message.getProductKey(), ex.getMessage(), ex);
         }
