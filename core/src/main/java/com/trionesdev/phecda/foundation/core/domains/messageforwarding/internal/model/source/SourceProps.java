@@ -3,13 +3,13 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
-import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
 
 @Data
 @Accessors(chain = true)
@@ -31,19 +31,15 @@ import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SourceProps {
 
-    private Type type;
-
-    public enum Type {
-        THING_PROPERTY_REPORT,
-        THING_EVENT_REPORT
-    }
+    private MessageType type;
 
     public abstract String generateTopic();
 
     @Getter
     @AllArgsConstructor
     public enum TopicTemplate {
-        THING_PROPERTY_POST(TopicUtils.propertyPostTopic("${productKey}", "${deviceName}"));
+        THING_PROPERTY_POST(TopicUtils.propertyPostTopic("${productKey}", "${deviceName}")),
+        THING_EVENT_POST(TopicUtils.eventPostTopic("${productKey}", "${deviceName}"));
         private final String template;
     }
 
