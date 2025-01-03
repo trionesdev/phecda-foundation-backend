@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ public class TrionesRedisCacheConfiguration<K, V> {
     private final TrionesRedisCacheProperties cacheExtProperties;
     private final ObjectMapper objectMapper;
 
+    @Primary
     @Bean
     public RedisTemplate<K, V> ojectRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         ObjectMapper redisObjMapper = redisObjectMapper();
