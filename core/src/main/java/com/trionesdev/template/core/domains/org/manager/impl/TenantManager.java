@@ -1,8 +1,8 @@
 package com.trionesdev.template.core.domains.org.manager.impl;
 
 import com.trionesdev.boot.core.autoconfigure.AppProperties;
-import com.trionesdev.template.core.domains.org.dao.impl.TenantDAO;
-import com.trionesdev.template.core.domains.org.dao.po.TenantPO;
+import com.trionesdev.phecda.foundation.core.domains.org.dao.impl.TenantDAO;
+import com.trionesdev.phecda.foundation.core.domains.org.dao.po.TenantPO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
