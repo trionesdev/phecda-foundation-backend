@@ -2,7 +2,7 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.impl
 
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.commons.exception.TrionesError;
-import com.trionesdev.template.core.domains.oss.service.impl.OSSService;
+import com.trionesdev.phecda.foundation.core.domains.oss.service.impl.OSSService;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.ro.FormUploadRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.vo.UploadResultVO;
 import io.swagger.v3.oas.annotations.Operation;

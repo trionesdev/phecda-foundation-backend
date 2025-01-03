@@ -1,4 +1,4 @@
-package com.trionesdev.template.core.domains.oss.service.impl;
+package com.trionesdev.phecda.foundation.core.domains.oss.service.impl;
 
 import com.trionesdev.commons.core.util.FilePathUtils;
 import com.trionesdev.phecda.foundation.core.domains.oss.dto.UploadResultDTO;

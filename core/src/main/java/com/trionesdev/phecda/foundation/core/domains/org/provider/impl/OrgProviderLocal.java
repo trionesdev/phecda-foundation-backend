@@ -5,7 +5,7 @@ import com.trionesdev.phecda.foundation.core.domains.org.internal.OrgDomainConve
 import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.DepartmentManager;
 import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.TenantMemberManager;
 import com.trionesdev.phecda.foundation.core.domains.org.provider.OrgProvider;
-import com.trionesdev.template.core.domains.org.manager.impl.TenantManager;
+import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.TenantManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

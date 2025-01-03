@@ -22,7 +22,7 @@ import com.trionesdev.phecda.foundation.core.domains.org.internal.aggreate.entit
 import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.DepartmentManager;
 import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.TenantMemberManager;
 import com.trionesdev.phecda.foundation.core.domains.org.service.DepartmentService;
-import com.trionesdev.template.core.domains.org.manager.impl.TenantManager;
+import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.TenantManager;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

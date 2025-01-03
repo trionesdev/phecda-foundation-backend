@@ -1,4 +1,4 @@
-package com.trionesdev.template.core.domains.org.manager.impl;
+package com.trionesdev.phecda.foundation.core.domains.org.manager.impl;
 
 import com.trionesdev.boot.core.autoconfigure.AppProperties;
 import com.trionesdev.phecda.foundation.core.domains.org.dao.impl.TenantDAO;

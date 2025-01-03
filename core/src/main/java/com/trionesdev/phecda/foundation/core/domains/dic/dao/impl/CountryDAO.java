@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.trionesdev.phecda.foundation.core.domains.dic.dao.criteria.CountryCriteria;
 import com.trionesdev.phecda.foundation.core.domains.dic.dao.po.CountryPO;
-import com.trionesdev.template.core.domains.dic.dao.mapper.CountryMapper;
+import com.trionesdev.phecda.foundation.core.domains.dic.dao.mapper.CountryMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
