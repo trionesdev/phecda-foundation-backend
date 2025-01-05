@@ -15,13 +15,13 @@ image:
   livenessProbe:
     httpGet:
       path: /actuator/health
-      port: 8080
+      port: 8200
     initialDelaySeconds: 50
     timeoutSeconds: 50
   readinessProbe:
     httpGet:
       path: /actuator/health
-      port: 8080
+      port: 8200
     initialDelaySeconds: 50
     timeoutSeconds: 50
 
@@ -54,7 +54,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8080
+  targetPort: 8200
 
 ingress:
   enabled: true
