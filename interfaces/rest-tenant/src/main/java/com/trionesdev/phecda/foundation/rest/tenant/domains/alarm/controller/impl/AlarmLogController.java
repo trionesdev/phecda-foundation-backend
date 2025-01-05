@@ -5,13 +5,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmLogCriteria;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLog;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLog;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmLogBO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.impl.AlarmLogService;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmLogQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLogQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLogRO;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmConstants;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmRestConvertMapper;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmConstants;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmRestConvert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +38,7 @@ public class AlarmLogController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody AlarmLogRO args
     ) {
-        AlarmLog alarmLog = AlarmRestConvertMapper.INSTANCE.from(args);
+        AlarmLog alarmLog = AlarmRestConvert.INSTANCE.from(args);
         alarmLog.setId(id);
         alarmLogService.update(alarmLog);
     }
@@ -64,18 +64,18 @@ public class AlarmLogController {
     public PageInfo<AlarmLogBO> queryAlarmLogPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
-            AlarmLogQuery query
+            AlarmLogQueryRO query
     ) {
-        AlarmLogCriteria criteria = AlarmRestConvertMapper.INSTANCE.from(query);
+        AlarmLogCriteria criteria = AlarmRestConvert.INSTANCE.from(query);
         return alarmLogService.queryPage(pageNum, pageSize, criteria);
     }
 
     @Operation(summary = "查询报警记录列表")
     @GetMapping(value = "alarm-logs/list")
     public List<AlarmLog> queryAlarmLogList(
-            AlarmLogQuery query
+            AlarmLogQueryRO query
     ) {
-        AlarmLogCriteria criteria = AlarmRestConvertMapper.INSTANCE.from(query);
+        AlarmLogCriteria criteria = AlarmRestConvert.INSTANCE.from(query);
         return alarmLogService.queryList(criteria);
     }
 

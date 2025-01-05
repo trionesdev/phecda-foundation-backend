@@ -17,6 +17,7 @@
         <module>interfaces</module>
         <module>interfaces/mq-consumer</module>
         <module>model</module>
+        <module>db</module>
     </modules>
 
     <artifactId>phecda-foundation</artifactId>
@@ -91,6 +92,11 @@
             <dependency>
                 <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>rest-tenant</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trionesdev.phecda</groupId>
+                <artifactId>rest-boss</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -1,0 +1,8 @@
+package com.trionesdev.phecda.foundation.rest.tenant.domains.dic.internal;
+
+
+import com.trionesdev.phecda.foundation.rest.tenant.internal.RestConstants;
+
+public class DicRestConstants {
+    public final static String DIC_PATH = RestConstants.CONTEXT_PATH + "dic/";
+}

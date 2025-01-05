@@ -1,13 +1,13 @@
 package com.trionesdev.phecda.foundation.core.domains.alarm.service.impl;
 
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLevelPO;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmPO;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmTypePO;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmCriteria;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmLevelCriteria;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmTypeCriteria;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.Alarm;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLevel;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmType;
 import com.trionesdev.phecda.foundation.core.domains.alarm.manager.dto.AlarmDTO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.manager.impl.AlarmManager;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmCreateArgBO;
@@ -28,7 +28,7 @@ public class AlarmService {
     private final DeviceProvider deviceProvider;
 
     //region type
-    public void createType(AlarmType alarmType) {
+    public void createType(AlarmTypePO alarmType) {
         alarmManager.createType(alarmType);
     }
 
@@ -36,26 +36,26 @@ public class AlarmService {
         alarmManager.deleteTypeById(typeId);
     }
 
-    public void updateTypeById(AlarmType alarmType) {
+    public void updateTypeById(AlarmTypePO alarmType) {
         alarmManager.updateTypeById(alarmType);
     }
 
-    public void changeTypeEnabledById(AlarmType alarmType) {
+    public void changeTypeEnabledById(AlarmTypePO alarmType) {
         alarmManager.updateTypeById(alarmType);
     }
 
 
-    public Optional<AlarmType> findTypeById(String typeId) {
+    public Optional<AlarmTypePO> findTypeById(String typeId) {
         return alarmManager.findTypeById(typeId);
     }
 
-    public List<AlarmType> findTypes(AlarmTypeCriteria criteria) {
+    public List<AlarmTypePO> findTypes(AlarmTypeCriteria criteria) {
         return alarmManager.findTypes(criteria);
     }
     //endregion
 
     //region level
-    public void createLevel(AlarmLevel level) {
+    public void createLevel(AlarmLevelPO level) {
         alarmManager.createLevel(level);
     }
 
@@ -63,19 +63,19 @@ public class AlarmService {
         alarmManager.deleteLevelById(levelId);
     }
 
-    public void updateLevelById(AlarmLevel level) {
+    public void updateLevelById(AlarmLevelPO level) {
         alarmManager.updateLevelById(level);
     }
 
-    public Optional<AlarmLevel> findLevelById(String levelId) {
+    public Optional<AlarmLevelPO> findLevelById(String levelId) {
         return alarmManager.findLevelById(levelId);
     }
 
-    public List<AlarmLevel> findLevels(AlarmLevelCriteria criteria) {
+    public List<AlarmLevelPO> findLevels(AlarmLevelCriteria criteria) {
         return alarmManager.findLevels(criteria);
     }
 
-    public void changeLevelEnabledById(AlarmLevel alarmLevel) {
+    public void changeLevelEnabledById(AlarmLevelPO alarmLevel) {
         alarmManager.updateLevelById(alarmLevel);
     }
 
@@ -87,7 +87,7 @@ public class AlarmService {
         if (productPDO == null) {
             return;
         }
-        Alarm alarm = Alarm.builder()
+        AlarmPO alarm = AlarmPO.builder()
                 .type(alarmCreateArg.getType())
                 .level(alarmCreateArg.getLevel())
                 .productKey(alarmCreateArg.getProductKey())
@@ -95,12 +95,12 @@ public class AlarmService {
                 .deviceName(alarmCreateArg.getDeviceName())
                 .description(alarmCreateArg.getDescription())
                 .eventData(alarmCreateArg.getEventData())
-                .status(Alarm.Status.UN_PROCESSED)
+                .status(AlarmPO.Status.UN_PROCESSED)
                 .build();
         alarmManager.createAlarm(alarm);
     }
 
-    public void updateAlarmById(Alarm alarm) {
+    public void updateAlarmById(AlarmPO alarm) {
         alarmManager.updateAlarmById(alarm);
     }
 
@@ -112,7 +112,7 @@ public class AlarmService {
         return alarmManager.findAlarmsExt(criteria);
     }
 
-    public Optional<Alarm> findAlarmById(String alarmId) {
+    public Optional<AlarmPO> findAlarmById(String alarmId) {
         return alarmManager.findAlarmById(alarmId);
     }
 
@@ -120,9 +120,9 @@ public class AlarmService {
      * 分页查询警报信息。
      *
      * @param criteria 查询条件，包含分页和过滤条件。
-     * @return PageInfo<Alarm> 返回警报信息的分页结果，包含当前页的警报列表和分页相关信息。
+     * @return PageInfo<AlarmPO> 返回警报信息的分页结果，包含当前页的警报列表和分页相关信息。
      */
-    public PageInfo<Alarm> findAlarmsPage(AlarmCriteria criteria) {
+    public PageInfo<AlarmPO> findAlarmsPage(AlarmCriteria criteria) {
         // 通过alarmManager实例执行分页查询
         return alarmManager.findAlarmsPage(criteria);
     }

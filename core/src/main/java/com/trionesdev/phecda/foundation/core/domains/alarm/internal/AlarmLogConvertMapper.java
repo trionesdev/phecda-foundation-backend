@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.alarm.internal;
 
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLog;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLog;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmLogBO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;

@@ -1,34 +1,39 @@
 package com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.impl;
 
+import com.trionesdev.commons.exception.BusinessException;
+import com.trionesdev.commons.exception.TrionesError;
+import com.trionesdev.phecda.foundation.core.domains.oss.service.impl.OSSService;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.ro.FormUploadRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.vo.UploadResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.oss.service.impl.OssService;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.oss.support.OssConstants;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.oss.controller.vo.UploadVO;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.UUID;
+import static com.trionesdev.phecda.foundation.rest.tenant.domains.oss.internal.OSSConstants.OSS_URI;
 
-@Tag(name = "文件上传")
+@Tag(name = "OSS")
+@Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = OssConstants.OSS_URI)
+@RequestMapping(value = OSS_URI)
 public class OssController {
-    private final OssService ossService;
+    private final OSSService ossService;
 
-    @Operation(summary = "上传文件")
-    @PostMapping(value = "file/upload")
-    public UploadVO fileUpload(@RequestParam(value = "scene") String scene,
-                                @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
-        String fileName = multipartFile.getOriginalFilename();
-        String url = ossService.putFileObject(scene, fileName, multipartFile.getInputStream());
-        return UploadVO.builder().uid(UUID.randomUUID().toString()).fileName(fileName).url(url).build();
+    @Operation(summary = "文件上传(FormData)")
+    @PostMapping(value = "upload/form-data", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public UploadResultVO formUpload(FormUploadRO args) {
+        var file = args.getFile();
+        try {
+            var result = ossService.putObject(file.getOriginalFilename(), file.getInputStream(), file.getContentType(), args.getScene());
+            return UploadResultVO.builder().id(result.getId()).url(result.getUrl()).path(result.getPath()).build();
+        } catch (Exception e) {
+            throw new BusinessException(TrionesError.builder().code("UPLOAD_FAILED").message("文件上传失败").build());
+        }
     }
+
 }

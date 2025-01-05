@@ -3,7 +3,7 @@ package com.trionesdev.phecda.foundation.core.domains.alarm.service.impl;
 import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmLogCriteria;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLog;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLog;
 import com.trionesdev.phecda.foundation.core.domains.alarm.manager.AlarmLogManager;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmLogBO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.internal.AlarmLogConvertMapper;

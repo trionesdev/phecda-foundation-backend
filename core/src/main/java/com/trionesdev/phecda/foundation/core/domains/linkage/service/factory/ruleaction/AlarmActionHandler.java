@@ -5,7 +5,7 @@ import com.trionesdev.commons.core.util.JsonUtils;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.AlarmAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.Alarm;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmPO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmCreateArgBO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.impl.AlarmService;
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs;
@@ -30,10 +30,10 @@ public class AlarmActionHandler implements PhecdaRuleActionHandler {
         AlarmAction alarmAction = (AlarmAction) phecdaAction;
         log.info("alarmAction: {}, facts: {}", alarmAction, JsonUtils.toJsonString(actionArgs));
 
-        List<Alarm.Item> eventData = new ArrayList<>();
+        List<AlarmPO.Item> eventData = new ArrayList<>();
         if (MapUtil.isNotEmpty(actionArgs.getReadings())) {
             actionArgs.getReadings().forEach((k, v) -> {
-                eventData.add(Alarm.Item.builder().identifier(v.getIdentifier()).label(v.getLabel()).value(v.getValue()).build());
+                eventData.add(AlarmPO.Item.builder().identifier(v.getIdentifier()).label(v.getLabel()).value(v.getValue()).build());
             });
         }
         AlarmCreateArgBO alarm = AlarmCreateArgBO.builder().type(alarmAction.getAlarmType()).level(alarmAction.getAlarmLevel())

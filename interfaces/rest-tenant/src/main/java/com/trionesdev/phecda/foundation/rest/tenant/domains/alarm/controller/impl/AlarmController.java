@@ -1,26 +1,26 @@
 package com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.impl;
 
 import com.trionesdev.commons.core.page.PageInfo;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmTypePO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmQueryRO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmCriteria;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLevel;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmType;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLevelPO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.manager.dto.AlarmDTO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmStatisticsBO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.impl.AlarmService;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmLevelQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmTypeQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelChangeEnabledRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelCreateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelUpdateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeChangeEnabledRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeCreateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeUpdateRO;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmBeRestConvert;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmConstants;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmBeRestConvert;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmConstants;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,20 +49,26 @@ public class AlarmController {
     @Operation(summary = "根据ID修改报警类型")
     @PutMapping(value = "types/{typeId}")
     public void updateTypeById(@PathVariable String typeId, @RequestBody AlarmTypeUpdateRO args) {
-        AlarmType alarmType = alarmBeRestConvert.from(args);
+        AlarmTypePO alarmType = alarmBeRestConvert.from(args);
         alarmType.setId(typeId);
         alarmService.updateTypeById(alarmType);
     }
 
+    @Operation(summary = "根据ID获取报警类型")
+    @GetMapping(value = "types/{typeId}")
+    public AlarmTypePO queryTypeById(@PathVariable String typeId) {
+        return alarmService.findTypeById(typeId).orElse(null);
+    }
+
     @Operation(summary = "查询报警类型列表")
     @GetMapping(value = "types/list")
-    public List<AlarmType> findTypes(AlarmTypeQuery query) {
+    public List<AlarmTypePO> findTypes(AlarmTypeQueryRO query) {
         return alarmService.findTypes(alarmBeRestConvert.from(query));
     }
 
     @PutMapping(value = "types/{typeId}/enabled")
     public void changeTypeEnabled(@PathVariable String typeId, @RequestBody AlarmTypeChangeEnabledRO args) {
-        AlarmType alarmType = AlarmType.builder().id(typeId).enabled(args.getEnabled()).build();
+        AlarmTypePO alarmType = AlarmTypePO.builder().id(typeId).enabled(args.getEnabled()).build();
         alarmService.changeTypeEnabledById(alarmType);
     }
 
@@ -84,28 +90,34 @@ public class AlarmController {
     @Operation(summary = "根据ID修改报警级别")
     @PutMapping(value = "levels/{levelId}")
     public void updateLevelById(@PathVariable String levelId, @RequestBody AlarmLevelUpdateRO args) {
-        AlarmLevel alarmLevel = alarmBeRestConvert.from(args);
+        AlarmLevelPO alarmLevel = alarmBeRestConvert.from(args);
         alarmLevel.setId(levelId);
         alarmService.updateLevelById(alarmLevel);
     }
 
+    @Operation(summary = "根据ID获取报警级别")
+    @GetMapping(value = "levels/{levelId}")
+    public AlarmLevelPO queryLevelById(@PathVariable String levelId) {
+        return alarmService.findLevelById(levelId).orElse(null);
+    }
+
     @Operation(summary = "查询报警级别列表")
     @GetMapping(value = "levels/list")
-    public List<AlarmLevel> findLevels(AlarmLevelQuery query) {
+    public List<AlarmLevelPO> findLevels(AlarmLevelQueryRO query) {
         return alarmService.findLevels(alarmBeRestConvert.from(query));
     }
 
     @Operation(summary = "修改报警级别启用状态")
     @PutMapping(value = "levels/{levelId}/enabled")
     public void changeLevelEnabled(@PathVariable String levelId, @RequestBody AlarmLevelChangeEnabledRO args) {
-        AlarmLevel alarmLevel = AlarmLevel.builder().id(levelId).enabled(args.getEnabled()).build();
+        AlarmLevelPO alarmLevel = AlarmLevelPO.builder().id(levelId).enabled(args.getEnabled()).build();
         alarmService.changeLevelEnabledById(alarmLevel);
     }
     //endregion
 
     @Operation(summary = "查询报警列表（扩展信息）")
     @GetMapping(value = "alarms/ext/list")
-    public List<AlarmDTO> findAlarmsExt(AlarmQuery query) {
+    public List<AlarmDTO> findAlarmsExt(AlarmQueryRO query) {
         AlarmCriteria criteria = alarmBeRestConvert.from(query);
         return alarmService.findAlarmsExt(criteria);
     }
@@ -115,7 +127,7 @@ public class AlarmController {
     public PageInfo<AlarmDTO> findAlarmExtPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
-            AlarmQuery query) {
+            AlarmQueryRO query) {
         AlarmCriteria criteria = alarmBeRestConvert.from(query);
         criteria.setPageNum(pageNum);
         criteria.setPageSize(pageSize);

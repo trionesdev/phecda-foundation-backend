@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.alarm.internal;
 
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.Alarm;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmPO;
 import com.trionesdev.phecda.foundation.core.domains.alarm.manager.dto.AlarmDTO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -11,5 +11,5 @@ import org.mapstruct.Named;
         builder = @Builder(disableBuilder = true))
 @Named("alarmConvert")
 public interface AlarmConvert {
-    AlarmDTO from(Alarm alarm);
+    AlarmDTO from(AlarmPO alarm);
 }

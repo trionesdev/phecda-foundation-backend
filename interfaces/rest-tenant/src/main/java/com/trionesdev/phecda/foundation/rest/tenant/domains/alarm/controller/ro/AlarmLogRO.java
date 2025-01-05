@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro;
 
 import lombok.*;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.enums.AlarmLevelEnum;
+import com.trionesdev.phecda.foundation.core.domains.alarm.internal.enums.AlarmLevelEnum;
 
 import java.time.Instant;
 
