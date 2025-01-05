@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity;
+package com.trionesdev.phecda.foundation.core.domains.alarm.dao.po;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -16,8 +16,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@TableName(value = "phecda_alarm_level", autoResultMap = true)
-public class AlarmLevel extends BaseLogicEntity {
+@TableName(value = "phecda_alarm_type", autoResultMap = true)
+public class AlarmTypePO extends BaseLogicEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
     private String name;

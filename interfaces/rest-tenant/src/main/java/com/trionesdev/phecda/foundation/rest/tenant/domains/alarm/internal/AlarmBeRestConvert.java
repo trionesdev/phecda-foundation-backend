@@ -3,11 +3,11 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmCriteria;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmLevelCriteria;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmTypeCriteria;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLevel;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmType;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmLevelQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmTypeQuery;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLevelPO;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmTypePO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelCreateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLevelUpdateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeCreateRO;
@@ -22,17 +22,17 @@ import org.mapstruct.Named;
 @Named("alarmBeRestConvert")
 public interface AlarmBeRestConvert {
 
-    AlarmType from(AlarmTypeCreateRO args);
+    AlarmTypePO from(AlarmTypeCreateRO args);
 
-    AlarmType from(AlarmTypeUpdateRO args);
+    AlarmTypePO from(AlarmTypeUpdateRO args);
 
-    AlarmTypeCriteria from(AlarmTypeQuery query);
+    AlarmTypeCriteria from(AlarmTypeQueryRO query);
 
-    AlarmLevel from(AlarmLevelCreateRO args);
+    AlarmLevelPO from(AlarmLevelCreateRO args);
 
-    AlarmLevel from(AlarmLevelUpdateRO args);
+    AlarmLevelPO from(AlarmLevelUpdateRO args);
 
-    AlarmLevelCriteria from(AlarmLevelQuery query);
+    AlarmLevelCriteria from(AlarmLevelQueryRO query);
 
-    AlarmCriteria from(AlarmQuery query);
+    AlarmCriteria from(AlarmQueryRO query);
 }

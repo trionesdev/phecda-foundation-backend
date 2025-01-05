@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity;
+package com.trionesdev.phecda.foundation.core.domains.alarm.dao.po;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 @TableName(value = "phecda_alarm_alarm", autoResultMap = true)
-public class Alarm extends BaseLogicEntity {
+public class AlarmPO extends BaseLogicEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
     private String type;

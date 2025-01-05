@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.criteria.AlarmLogCriteria;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.AlarmLog;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmLog;
 import com.trionesdev.phecda.foundation.core.domains.alarm.dao.mapper.AlarmLogMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;

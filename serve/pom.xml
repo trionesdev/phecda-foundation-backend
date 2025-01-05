@@ -19,6 +19,10 @@
         </dependency>
         <dependency>
             <groupId>com.trionesdev.phecda</groupId>
+            <artifactId>rest-boss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.trionesdev.phecda</groupId>
             <artifactId>rest-ssp</artifactId>
         </dependency>
         <dependency>

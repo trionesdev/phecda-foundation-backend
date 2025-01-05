@@ -1,15 +1,13 @@
-package com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.enums;
+package com.trionesdev.phecda.foundation.core.domains.alarm.internal.enums;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum AlarmLevelEnum {
-
-    FIRST_LEVEL("紧急"),
-    SECOND_LEVEL("重要"),
-    THIRD_LEVEL("一般");
+public enum ImageTypeEnum {
+    ALARM("报警图片"),
+    DEAL("处理图片");
 
     @Getter
     private final String desc;

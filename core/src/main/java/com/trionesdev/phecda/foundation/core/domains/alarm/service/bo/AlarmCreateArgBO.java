@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.Alarm;
+import com.trionesdev.phecda.foundation.core.domains.alarm.dao.po.AlarmPO;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ public class AlarmCreateArgBO {
     private String productKey;
     private String deviceName;
     private String description;
-    private List<Alarm.Item> eventData;
+    private List<AlarmPO.Item> eventData;
 }

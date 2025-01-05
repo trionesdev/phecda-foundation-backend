@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity;
+package com.trionesdev.phecda.foundation.core.domains.alarm.dao.po;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -11,9 +11,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.enums.AlarmLevelEnum;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.enums.DealStatuEnums;
-import com.trionesdev.phecda.foundation.core.domains.alarm.dao.entity.enums.ImageTypeEnum;
+import com.trionesdev.phecda.foundation.core.domains.alarm.internal.enums.AlarmLevelEnum;
+import com.trionesdev.phecda.foundation.core.domains.alarm.internal.enums.DealStatuEnums;
+import com.trionesdev.phecda.foundation.core.domains.alarm.internal.enums.ImageTypeEnum;
 
 import java.time.Instant;
 import java.util.List;

@@ -95,6 +95,11 @@
             </dependency>
             <dependency>
                 <groupId>com.trionesdev.phecda</groupId>
+                <artifactId>rest-boss</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trionesdev.phecda</groupId>
                 <artifactId>phecda-rest-ssp-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>
