@@ -17,6 +17,7 @@
         <module>interfaces</module>
         <module>interfaces/mq-consumer</module>
         <module>model</module>
+        <module>db</module>
     </modules>
 
     <artifactId>phecda-foundation</artifactId>
