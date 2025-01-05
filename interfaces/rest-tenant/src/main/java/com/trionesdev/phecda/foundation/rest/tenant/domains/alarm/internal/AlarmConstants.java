@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support;
+package com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal;
 
 
 import com.trionesdev.phecda.foundation.rest.tenant.internal.RestConstants;

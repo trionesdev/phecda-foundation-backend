@@ -10,8 +10,8 @@ import com.trionesdev.phecda.foundation.core.domains.alarm.service.bo.AlarmLogBO
 import com.trionesdev.phecda.foundation.core.domains.alarm.service.impl.AlarmLogService;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.query.AlarmLogQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmLogRO;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmConstants;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmRestConvertMapper;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmConstants;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmRestConvert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +38,7 @@ public class AlarmLogController {
             @PathVariable(value = "id") String id,
             @Validated @RequestBody AlarmLogRO args
     ) {
-        AlarmLog alarmLog = AlarmRestConvertMapper.INSTANCE.from(args);
+        AlarmLog alarmLog = AlarmRestConvert.INSTANCE.from(args);
         alarmLog.setId(id);
         alarmLogService.update(alarmLog);
     }
@@ -66,7 +66,7 @@ public class AlarmLogController {
             @RequestParam(value = "pageSize") Integer pageSize,
             AlarmLogQuery query
     ) {
-        AlarmLogCriteria criteria = AlarmRestConvertMapper.INSTANCE.from(query);
+        AlarmLogCriteria criteria = AlarmRestConvert.INSTANCE.from(query);
         return alarmLogService.queryPage(pageNum, pageSize, criteria);
     }
 
@@ -75,7 +75,7 @@ public class AlarmLogController {
     public List<AlarmLog> queryAlarmLogList(
             AlarmLogQuery query
     ) {
-        AlarmLogCriteria criteria = AlarmRestConvertMapper.INSTANCE.from(query);
+        AlarmLogCriteria criteria = AlarmRestConvert.INSTANCE.from(query);
         return alarmLogService.queryList(criteria);
     }
 

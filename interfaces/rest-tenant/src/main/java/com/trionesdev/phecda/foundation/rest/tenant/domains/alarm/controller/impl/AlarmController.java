@@ -19,8 +19,8 @@ import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeChangeEnabledRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeCreateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.controller.ro.AlarmTypeUpdateRO;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmBeRestConvert;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.support.AlarmConstants;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmBeRestConvert;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.alarm.internal.AlarmConstants;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,6 +52,12 @@ public class AlarmController {
         AlarmType alarmType = alarmBeRestConvert.from(args);
         alarmType.setId(typeId);
         alarmService.updateTypeById(alarmType);
+    }
+
+    @Operation(summary = "根据ID获取报警类型")
+    @GetMapping(value = "types/{typeId}")
+    public AlarmType queryTypeById(@PathVariable String typeId) {
+        return alarmService.findTypeById(typeId).orElse(null);
     }
 
     @Operation(summary = "查询报警类型列表")
