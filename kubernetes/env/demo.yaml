@@ -5,27 +5,25 @@
 replicaCount: 1
 
 image:
-  repository: registry-vpc.cn-shanghai.aliyuncs.com/moensun/dubhe.dubhe-foundation-backend
+  repository: registry-vpc.cn-shanghai.aliyuncs.com/epiboly/demo
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
   envs:
     - name: spring.profiles.active
-      value: "testing"
-    - name: server.port
-      value: "8080"
+      value: "demo"
   livenessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 60
-    timeoutSeconds: 60
+    initialDelaySeconds: 50
+    timeoutSeconds: 50
   readinessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 60
-    timeoutSeconds: 60
+    initialDelaySeconds: 50
+    timeoutSeconds: 50
 
 imagePullSecrets: []
 nameOverride: ""
@@ -65,7 +63,7 @@ ingress:
      kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: testing.phecda-backend.jscoe.cn
+    - host: demo.phecda-foundation-backend.moensun.cn
       paths:
         - path: /
           pathType: ImplementationSpecific
