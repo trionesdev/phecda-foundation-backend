@@ -63,7 +63,7 @@ ingress:
      kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: demo.phecda-foundation-backend.moensun.cn
+    - host: demo.phecda-foundation-backend.moensun.net
       paths:
         - path: /
           pathType: ImplementationSpecific
