@@ -30,6 +30,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.trionesdev.phecda.foundation.core.domains.org.internal.OrgError.PWD_ERROR;
+import static com.trionesdev.phecda.foundation.core.domains.org.internal.OrgError.TENANT_ACCOUNT_OR_PWS_ERROR;
+
 @RequiredArgsConstructor
 @Service
 public class TenantService {
@@ -97,13 +100,13 @@ public class TenantService {
     public String accountSignIn(TenantMemberSignInCmd cmd) {
         return tenantMemberManager.findByAccount(cmd.getTenantSerial(), cmd.getAccount(), cmd.getPassword()).map(tenantMember -> {
             return jwtFacade.generate(tenantMember.getUserId(), JwtClaims.builder().role(ActorRoleEnum.TENANT_MEMBER.name()).tenantId(tenantMember.getTenantId()).tenantMemberId(tenantMember.getId()).build());
-        }).orElseThrow(() -> new NotFoundException("TENANT_ACCOUNT_OR_PWS_ERROR"));
+        }).orElseThrow(() -> new NotFoundException(TENANT_ACCOUNT_OR_PWS_ERROR));
     }
 
     public void changeActorPassword(ActorChangePasswordCmd cmd) {
         tenantMemberManager.findMemberByUserId(actorContext.getUserId()).ifPresent(tenantMemberSnap -> {
             if (!tenantMemberSnap.passwordMatch(cmd.getOldPassword())) {
-                throw new BusinessException("PWD_ERROR");
+                throw new BusinessException(PWD_ERROR);
             }
             var tenantMember = TenantMember.builder().id(tenantMemberSnap.getId()).password(cmd.getNewPassword()).build();
             tenantMemberManager.updateMemberById(tenantMember);
