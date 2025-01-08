@@ -12,7 +12,6 @@ public class TenantMemberCreateRO {
     @NotBlank
     private String password;
     private String phone;
-    @NotBlank
-    private String nickname;
+    private String name;
     private List<String> departmentIds;
 }

@@ -10,7 +10,6 @@ public class TenantMemberUpdateRO {
     @NotBlank
     private String username;
     private String phone;
-    @NotBlank
-    private String nickname;
+    private String name;
     private List<String> departmentIds;
 }
