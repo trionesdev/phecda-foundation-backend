@@ -1,7 +1,162 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-6">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-1">
+        <createTable remarks="字典数据表" tableName="dict_dictionary">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="dict_dictionary_pkey"/>
+            </column>
+            <column name="label" remarks="字典标签（例：男/女）" type="VARCHAR(64)"/>
+            <column name="code" remarks="编码(例：0/1)" type="VARCHAR(64)"/>
+            <column name="sort" remarks="排序" type="VARCHAR(64)"/>
+            <column name="type_code" remarks="类别编码" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(64)"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column defaultValue="0" name="parent_code" remarks="父节点code" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-2">
+        <createTable remarks="字典类型表" tableName="dict_dictionary_type">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="dict_dictionary_type_pkey"/>
+            </column>
+            <column name="name" remarks="名称" type="VARCHAR(64)"/>
+            <column name="code" remarks="编号" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(64)"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-3">
+        <createTable tableName="phecda_device_device">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="device_device_pkey"/>
+            </column>
+            <column name="product_id" remarks="产品ID" type="VARCHAR(64)"/>
+            <column name="name" remarks="deviceName，唯一" type="VARCHAR(256)"/>
+            <column name="remark_name" remarks="备注名称" type="VARCHAR(512)"/>
+            <column name="is_activated" remarks="在线状态" type="BOOLEAN"/>
+            <column defaultValueBoolean="false" name="is_enabled" remarks="启用状态" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="gateway_id" remarks="网关设备ID" type="VARCHAR(64)"/>
+            <column name="protocols" remarks="协议" type="JSONB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-4">
+        <createTable remarks="设备驱动" tableName="phecda_edge_driver">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="phecda_device_driver_pkey"/>
+            </column>
+            <column name="name" remarks="驱动名称" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column name="language" remarks="驱动语言" type="VARCHAR(100)"/>
+            <column name="version" remarks="驱动版本" type="VARCHAR(100)"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-5">
+        <createTable remarks="节点" tableName="phecda_edge_node">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="edge_node_pkey"/>
+            </column>
+            <column name="name" remarks="节点名称" type="VARCHAR(100)"/>
+            <column name="identifier" remarks="节点标识" type="VARCHAR(50)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="device_id" remarks="设备ID" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-6">
+        <createTable remarks="节点-终端设备" tableName="phecda_edge_node_device">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="edge_node_device_pkey"/>
+            </column>
+            <column name="node_id" remarks="节点ID" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="device_id" remarks="设备ID" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="driver_id" remarks="驱动ID" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-7">
+        <createTable remarks="节点-设备驱动" tableName="phecda_edge_node_driver">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="phecda_edge_node_driver_pkey"/>
+            </column>
+            <column name="node_id" remarks="节点ID" type="VARCHAR(64)"/>
+            <column name="driver_id" remarks="驱动ID" type="VARCHAR(64)"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-8">
+        <createTable remarks="告警记录" tableName="alarm_alarm_log">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="alarm_alarm_log_pk"/>
+            </column>
+            <column name="title" remarks="告警名称" type="VARCHAR(100)"/>
+            <column name="level" remarks="告警等级" type="VARCHAR(20)"/>
+            <column name="alarm_time" remarks="告警时间" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="describe" remarks="告警描述" type="VARCHAR(100)"/>
+            <column name="deal_time" remarks="处理时间" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deal_status" remarks="处理状态" type="VARCHAR(20)"/>
+            <column name="deal_remark" remarks="处理备注" type="VARCHAR(200)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="device_name" remarks="设备编号" type="VARCHAR(64)"/>
+            <column name="images" remarks="图片" type="JSONB"/>
+            <column name="asset_sn" remarks="关联资产编号" type="VARCHAR(64)"/>
+            <column name="asset_spare_sn" remarks="配件编号" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-9">
         <createTable tableName="custom_code_rule">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -18,7 +173,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-7">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-10">
         <createTable tableName="custom_code_serial_number">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -27,7 +182,7 @@
             <column name="serial_number" type="INTEGER"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-8">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-11">
         <createTable tableName="customer_customer">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -48,7 +203,7 @@
             <column name="remark" remarks="备注" type="VARCHAR(512)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-9">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-12">
         <createTable remarks="国际电话号码区号" tableName="dic_country">
             <column name="id" type="VARCHAR(64)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="dic_country_pkey"/>
@@ -59,7 +214,7 @@
             <column name="abbr" remarks="缩写" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-10">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-13">
         <createTable tableName="dic_dictionary">
             <column name="id" type="VARCHAR(64)"/>
             <column name="type" type="VARCHAR(64)"/>
@@ -73,7 +228,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-11">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-14">
         <createTable tableName="dic_district">
             <column name="id" type="VARCHAR(64)"/>
             <column name="country_code" type="VARCHAR(64)"/>
@@ -93,7 +248,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-12">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-15">
         <createTable remarks="操作日志" tableName="log_operation_log">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -113,7 +268,50 @@
             <column name="extra" type="JSONB"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-13">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-16">
+        <createTable tableName="logging_device_event_log">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="log_device_event_log_pkey"/>
+            </column>
+            <column name="product_id" remarks="产品ID" type="VARCHAR(64)"/>
+            <column name="device_name" type="VARCHAR(100)"/>
+            <column name="event_identifier" remarks="事件标识" type="VARCHAR(100)"/>
+            <column name="event_name" remarks="事件名称" type="VARCHAR(100)"/>
+            <column name="event_type" remarks="事件类型" type="VARCHAR(50)"/>
+            <column name="output_data" remarks="输出数据" type="JSONB"/>
+            <column name="time" remarks="发生时间" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-17">
+        <createTable tableName="logging_device_service_log">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="log_device_service_log_pkey"/>
+            </column>
+            <column name="product_id" remarks="产品ID" type="VARCHAR(64)"/>
+            <column name="device_name" type="VARCHAR(100)"/>
+            <column name="service_identifier" remarks="服务标识" type="VARCHAR(100)"/>
+            <column name="service_name" remarks="服务名称" type="VARCHAR(100)"/>
+            <column name="input_data" remarks="输入数据" type="VARCHAR(2048)"/>
+            <column name="output_data" remarks="输出数据" type="VARCHAR(2048)"/>
+            <column name="time" remarks="发生时间" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="sync" type="BOOLEAN"/>
+            <column name="result" type="VARCHAR(32)"/>
+            <column name="error_message" type="VARCHAR(2048)"/>
+            <column name="message_id" type="VARCHAR(64)"/>
+            <column name="tags" type="JSONB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-18">
         <createTable tableName="org_department">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -127,7 +325,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-14">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-19">
         <createTable tableName="org_department_member">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -140,7 +338,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-15">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-20">
         <createTable tableName="org_tenant">
             <column name="id" type="VARCHAR(64)"/>
             <column name="parent_id" type="VARCHAR(64)"/>
@@ -156,7 +354,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-16">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-21">
         <createTable tableName="org_tenant_member">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -178,7 +376,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-17">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-22">
         <createTable tableName="perm_functional_resource">
             <column name="id" type="VARCHAR(64)"/>
             <column name="parent_id" type="VARCHAR(64)"/>
@@ -199,7 +397,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-18">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-23">
         <createTable tableName="perm_functional_resource_action">
             <column name="id" type="VARCHAR(64)"/>
             <column name="object_id" type="VARCHAR(64)"/>
@@ -214,7 +412,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-19">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-24">
         <createTable tableName="perm_functional_resource_draft">
             <column name="id" type="VARCHAR(64)"/>
             <column name="parent_id" type="VARCHAR(64)"/>
@@ -231,7 +429,7 @@
             <column name="app_identifier" type="VARCHAR(128)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-20">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-25">
         <createTable tableName="perm_functional_resource_object">
             <column name="id" type="VARCHAR(64)"/>
             <column name="parent_id" type="VARCHAR(64)"/>
@@ -247,7 +445,7 @@
             <column name="app_identifier" type="VARCHAR(128)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-21">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-26">
         <createTable tableName="perm_permission">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -264,7 +462,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-22">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-27">
         <createTable tableName="perm_role">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="INTEGER"/>
@@ -280,7 +478,7 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-23">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-28">
         <createTable tableName="perm_role_grant">
             <column name="id" type="VARCHAR(64)"/>
             <column name="tenant_id" type="VARCHAR(64)"/>
@@ -294,7 +492,266 @@
             <column name="updated_by" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="fengxiaotx (generated)" id="1735265826108-24">
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-29">
+        <createTable tableName="phecda_alarm_alarm">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="type" type="VARCHAR(64)"/>
+            <column name="level" type="VARCHAR(64)"/>
+            <column name="product_key" type="VARCHAR(128)"/>
+            <column name="device_name" type="VARCHAR(64)"/>
+            <column name="event_data" type="JSONB"/>
+            <column name="status" type="VARCHAR(64)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="product_name" type="VARCHAR(256)"/>
+            <column name="description" type="VARCHAR(1024)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-30">
+        <createTable tableName="phecda_alarm_level">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="identifier" type="VARCHAR(64)"/>
+            <column name="description" type="VARCHAR(1024)"/>
+            <column name="is_enabled" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-31">
+        <createTable tableName="phecda_alarm_type">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="identifier" type="VARCHAR(64)"/>
+            <column name="description" type="VARCHAR(1024)"/>
+            <column name="is_enabled" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-32">
+        <createTable tableName="phecda_device_driver">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(128)"/>
+            <column name="description" type="VARCHAR(1024)"/>
+            <column name="url" type="VARCHAR(512)"/>
+            <column name="version" type="VARCHAR(128)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-33">
+        <createTable tableName="phecda_device_product">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="device_product_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="node_type" type="VARCHAR(64)"/>
+            <column name="thing_model_version" type="VARCHAR(64)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="status" type="VARCHAR(30)"/>
+            <column name="protocol_properties" type="JSONB"/>
+            <column name="driver_name" type="VARCHAR(64)"/>
+            <column name="key" type="VARCHAR(32)"/>
+            <column name="access_channel" type="VARCHAR(32)"/>
+            <column name="type" type="VARCHAR(64)"/>
+            <column name="thing_model_draft" type="JSONB"/>
+            <column name="manufacturer" type="VARCHAR(256)"/>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-34">
+        <createTable tableName="phecda_device_product_thing_model_draft">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="device_product_thing_model_draft_pkey"/>
+            </column>
+            <column name="product_id" type="VARCHAR(64)"/>
+            <column name="thing_model" type="JSONB"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-35">
+        <createTable tableName="phecda_device_product_thing_model_version">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="device_product_thing_model_version_pkey"/>
+            </column>
+            <column name="product_id" type="VARCHAR(64)"/>
+            <column name="thing_model" type="JSONB"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-36">
+        <createTable remarks="按天消息统计" tableName="phecda_device_statistics_message_daily">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="type" type="VARCHAR(64)"/>
+            <column name="date" type="date"/>
+            <column name="quantity" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-37">
+        <createTable remarks="联动场景" tableName="phecda_linkage_scene">
+            <column name="id" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="linkage_linkage_scene_pkey"/>
+            </column>
+            <column name="description" type="VARCHAR(2000)"/>
+            <column name="filter_condition" type="JSONB"/>
+            <column name="conditions" type="JSONB"/>
+            <column name="actions" type="JSONB"/>
+            <column name="is_enabled" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(512)"/>
+            <column name="scenes" type="JSONB"/>
+            <column name="action_trigger" type="JSONB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-38">
+        <createTable tableName="phecda_mf_message_forwarding_rule">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(64)"/>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="is_enabled" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-39">
+        <createTable tableName="phecda_mf_message_sink">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="type" type="VARCHAR(64)"/>
+            <column name="action" type="JSONB"/>
+            <column name="state" remarks="状态" type="VARCHAR(64)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-40">
+        <createTable tableName="phecda_mf_message_source">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-41">
+        <createTable tableName="phecda_mf_message_source_topic">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="source_id" type="VARCHAR(64)"/>
+            <column name="topic" type="VARCHAR(256)"/>
+            <column name="properties" type="JSONB"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-42">
+        <createTable tableName="phecda_mf_rule_sink">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="rule_id" type="VARCHAR(64)"/>
+            <column name="sink_id" type="VARCHAR(64)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-43">
+        <createTable tableName="phecda_mf_rule_source">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="rule_id" type="VARCHAR(64)"/>
+            <column name="source_id" type="VARCHAR(64)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-44">
+        <createTable tableName="phecda_notification_contact">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="phone" type="VARCHAR(16)"/>
+            <column name="email" type="VARCHAR(128)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+            <column name="remark" type="VARCHAR(1024)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-45">
+        <createTable tableName="phecda_notification_contact_group">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="name" type="VARCHAR(512)"/>
+            <column name="contact_ids" type="JSONB"/>
+            <column name="description" type="VARCHAR(1024)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-46">
+        <createTable tableName="phecda_notification_template">
+            <column name="id" type="VARCHAR(64)"/>
+            <column name="code" type="VARCHAR(128)"/>
+            <column name="title" type="VARCHAR(256)"/>
+            <column name="content" type="VARCHAR(2048)"/>
+            <column name="remark" type="VARCHAR(1024)"/>
+            <column name="is_enabled" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_by" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fengxiaotx (generated)" id="1741252794191-47">
         <createTable tableName="user_user">
             <column name="id" type="VARCHAR(64)"/>
             <column name="username" type="VARCHAR(128)"/>
