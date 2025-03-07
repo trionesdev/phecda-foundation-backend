@@ -3,9 +3,9 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.notification.suppor
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.ContactCriteria;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.ContactGroupCriteria;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.NotificationTemplateCriteria;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.Contact;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.ContactGroup;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.NotificationTemplate;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.ContactPO;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.ContactGroupPO;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.NotificationTemplatePO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.query.ContactGroupQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.query.ContactQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.query.NotificationTemplateQuery;
@@ -25,21 +25,21 @@ import org.mapstruct.Named;
 @Named("notificationBeRestConvert")
 public interface NotificationBeRestConvert {
 
-    Contact from(ContactCreateRO args);
+    ContactPO from(ContactCreateRO args);
 
-    Contact from(ContactUpdateRO args);
+    ContactPO from(ContactUpdateRO args);
 
     ContactCriteria from(ContactQuery args);
 
 
-    ContactGroup from(ContactGroupCreateRO args);
+    ContactGroupPO from(ContactGroupCreateRO args);
 
-    ContactGroup from(ContactGroupUpdateRO args);
+    ContactGroupPO from(ContactGroupUpdateRO args);
 
     ContactGroupCriteria from(ContactGroupQuery args);
 
-    NotificationTemplate from(NotificationTemplateCreateRO args);
-    NotificationTemplate from(NotificationTemplateUpdateRO args);
+    NotificationTemplatePO from(NotificationTemplateCreateRO args);
+    NotificationTemplatePO from(NotificationTemplateUpdateRO args);
 
     NotificationTemplateCriteria from(NotificationTemplateQuery args);
 }

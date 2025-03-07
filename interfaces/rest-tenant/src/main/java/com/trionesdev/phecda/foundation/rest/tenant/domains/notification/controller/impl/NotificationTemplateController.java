@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.NotificationTemplateCriteria;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.NotificationTemplate;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.NotificationTemplatePO;
 import com.trionesdev.phecda.foundation.core.domains.notification.service.impl.NotificationTemplateService;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.query.NotificationTemplateQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.ro.NotificationTemplateCreateRO;
@@ -35,7 +35,7 @@ public class NotificationTemplateController {
     @Operation(summary = "新建通知模板")
     @PostMapping(value = "templates")
     public void createTemplate(@RequestBody NotificationTemplateCreateRO args) {
-        NotificationTemplate template = notificationBeRestConvert.from(args);
+        NotificationTemplatePO template = notificationBeRestConvert.from(args);
         notificationTemplateService.createTemplate(template);
     }
 
@@ -48,26 +48,26 @@ public class NotificationTemplateController {
     @Operation(summary = "根据ID修改通知模板")
     @PutMapping(value = "templates/{id}")
     public void updateTemplateById(@PathVariable String id, @RequestBody NotificationTemplateUpdateRO args) {
-        NotificationTemplate template = notificationBeRestConvert.from(args);
+        NotificationTemplatePO template = notificationBeRestConvert.from(args);
         template.setId(id);
         notificationTemplateService.updateTemplateById(template);
     }
 
     @Operation(summary = "根据ID获取通知模板")
     @GetMapping(value = "templates/{id}")
-    public NotificationTemplate findTemplateById(@PathVariable String id) {
+    public NotificationTemplatePO findTemplateById(@PathVariable String id) {
         return notificationTemplateService.findTemplateById(id);
     }
 
     @Operation(summary = "查询通知模板列表")
     @GetMapping(value = "templates/list")
-    public List<NotificationTemplate> findTemplates(NotificationTemplateQuery query) {
+    public List<NotificationTemplatePO> findTemplates(NotificationTemplateQuery query) {
         return notificationTemplateService.findTemplates(notificationBeRestConvert.from(query));
     }
 
     @Operation(summary = "分页查询通知模板")
     @GetMapping(value = "templates/page")
-    public PageInfo<NotificationTemplate> findTemplatesPage(
+    public PageInfo<NotificationTemplatePO> findTemplatesPage(
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "pageNum") Integer pageNum,
             NotificationTemplateQuery query

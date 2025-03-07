@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.ContactCriteria;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.ContactGroupCriteria;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.Contact;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.ContactGroup;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.ContactPO;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.ContactGroupPO;
 import com.trionesdev.phecda.foundation.core.domains.notification.service.impl.ContactService;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.query.ContactGroupQuery;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.notification.controller.query.ContactQuery;
@@ -41,7 +41,7 @@ public class ContactController {
     @Operation(summary = "新建联系人")
     @PostMapping(value = "contacts")
     public void createContact(@RequestBody ContactCreateRO args) {
-        Contact contact = notificationBeRestConvert.from(args);
+        ContactPO contact = notificationBeRestConvert.from(args);
         contactService.createContact(contact);
     }
 
@@ -54,27 +54,27 @@ public class ContactController {
     @Operation(summary = "根据ID修改联系人")
     @PutMapping(value = "contacts/{id}")
     public void updateContactById(@PathVariable String id, @RequestBody ContactUpdateRO args) {
-        Contact contact = notificationBeRestConvert.from(args);
+        ContactPO contact = notificationBeRestConvert.from(args);
         contact.setId(id);
         contactService.updateContactById(contact);
     }
 
     @Operation(summary = "根据ID获取联系人")
     @GetMapping(value = "contacts/{id}")
-    public Contact findContactById(@PathVariable String id) {
+    public ContactPO findContactById(@PathVariable String id) {
         return contactService.findContactById(id);
     }
 
     @Operation(summary = "查询联系人列表")
     @GetMapping(value = "contacts/list")
-    public List<Contact> findContacts(ContactQuery query) {
+    public List<ContactPO> findContacts(ContactQuery query) {
         ContactCriteria criteria = notificationBeRestConvert.from(query);
         return contactService.findContacts(criteria);
     }
 
     @Operation(summary = "分页查询联系人")
     @GetMapping(value = "contacts/page")
-    public PageInfo<Contact> findContactsPage(
+    public PageInfo<ContactPO> findContactsPage(
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "pageNum") Integer pageNum,
             ContactQuery query) {
@@ -90,7 +90,7 @@ public class ContactController {
     @Operation(summary = "新建联系人组")
     @PostMapping(value = "contact-groups")
     public void createContactGroup(@RequestBody ContactGroupCreateRO args) {
-        ContactGroup contactGroup = notificationBeRestConvert.from(args);
+        ContactGroupPO contactGroup = notificationBeRestConvert.from(args);
         contactService.createContactGroup(contactGroup);
     }
 
@@ -102,27 +102,27 @@ public class ContactController {
 
     @Operation(summary = "根据ID获取联系人组")
     @GetMapping(value = "contact-groups/{id}")
-    public ContactGroup findContactGroupById(@PathVariable String id) {
+    public ContactGroupPO findContactGroupById(@PathVariable String id) {
         return contactService.findContactGroupById(id);
     }
 
     @Operation(summary = "根据ID修改联系人组")
     @PutMapping(value = "contact-groups/{id}")
     public void updateContactGroupById(@PathVariable String id, @RequestBody ContactGroupUpdateRO args) {
-        ContactGroup contactGroup = notificationBeRestConvert.from(args);
+        ContactGroupPO contactGroup = notificationBeRestConvert.from(args);
         contactGroup.setId(id);
         contactService.updateContactGroupById(contactGroup);
     }
 
     @Operation(summary = "查询联系人组列表")
     @GetMapping(value = "contact-groups/list")
-    public List<ContactGroup> findContactGroups(ContactGroupQuery query) {
+    public List<ContactGroupPO> findContactGroups(ContactGroupQuery query) {
         return contactService.findContactGroups(notificationBeRestConvert.from(query));
     }
 
     @Operation(summary = "分页查询联系人组")
     @GetMapping(value = "contact-groups/page")
-    public PageInfo<ContactGroup> findContactGroupsPage(
+    public PageInfo<ContactGroupPO> findContactGroupsPage(
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "pageNum") Integer pageNum,
             ContactGroupQuery query) {

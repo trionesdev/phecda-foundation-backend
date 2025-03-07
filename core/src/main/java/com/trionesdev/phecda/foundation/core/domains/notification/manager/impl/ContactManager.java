@@ -4,8 +4,8 @@ import com.trionesdev.commons.core.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.ContactCriteria;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.criteria.ContactGroupCriteria;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.Contact;
-import com.trionesdev.phecda.foundation.core.domains.notification.dao.entity.ContactGroup;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.ContactPO;
+import com.trionesdev.phecda.foundation.core.domains.notification.dao.po.ContactGroupPO;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.impl.ContactDAO;
 import com.trionesdev.phecda.foundation.core.domains.notification.dao.impl.ContactGroupDAO;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class ContactManager {
     private final ContactGroupDAO contactGroupDAO;
 
     //region contact
-    public void createContact(Contact contact) {
+    public void createContact(ContactPO contact) {
         contactDAO.save(contact);
     }
 
@@ -30,19 +30,19 @@ public class ContactManager {
         contactGroupDAO.removeGroupContact(id);
     }
 
-    public void updateContactById(Contact contact) {
+    public void updateContactById(ContactPO contact) {
         contactDAO.updateById(contact);
     }
 
-    public Contact findContactById(String id) {
+    public ContactPO findContactById(String id) {
         return contactDAO.getById(id);
     }
 
-    public List<Contact> findContacts(ContactCriteria criteria) {
+    public List<ContactPO> findContacts(ContactCriteria criteria) {
         return contactDAO.selectList(criteria);
     }
 
-    public PageInfo<Contact> findContactsPage(ContactCriteria criteria) {
+    public PageInfo<ContactPO> findContactsPage(ContactCriteria criteria) {
         return contactDAO.selectPage(criteria);
     }
 
@@ -50,7 +50,7 @@ public class ContactManager {
 
 
     //region contact group
-    public void createContactGroup(ContactGroup contactGroup) {
+    public void createContactGroup(ContactGroupPO contactGroup) {
         contactGroupDAO.save(contactGroup);
     }
 
@@ -58,19 +58,19 @@ public class ContactManager {
         contactGroupDAO.removeById(id);
     }
 
-    public void updateContactGroupById(ContactGroup contactGroup) {
+    public void updateContactGroupById(ContactGroupPO contactGroup) {
         contactGroupDAO.updateById(contactGroup);
     }
 
-    public ContactGroup findContactGroupById(String id) {
+    public ContactGroupPO findContactGroupById(String id) {
         return contactGroupDAO.getById(id);
     }
 
-    public List<ContactGroup> findContactGroups(ContactGroupCriteria criteria) {
+    public List<ContactGroupPO> findContactGroups(ContactGroupCriteria criteria) {
         return contactGroupDAO.selectList(criteria);
     }
 
-    public PageInfo<ContactGroup> findContactGroupsPage(ContactGroupCriteria criteria) {
+    public PageInfo<ContactGroupPO> findContactGroupsPage(ContactGroupCriteria criteria) {
         return contactGroupDAO.selectPage(criteria);
     }
 
