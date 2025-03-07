@@ -44,8 +44,8 @@ public class ProductThingModelProfileDTO {
         private String name;
         private String description;
         private String callType;
-        private List<ValueItem> inputData;
-        private List<ValueItem> outputData;
+        private List<ValueItem> inputProps;
+        private List<ValueItem> outputProps;
     }
 
     @Data
@@ -57,7 +57,7 @@ public class ProductThingModelProfileDTO {
         private String name;
         private String description;
         private String type;
-        private List<ValueItem> outputData;
+        private List<ValueItem> outputProps;
     }
 
     @Data

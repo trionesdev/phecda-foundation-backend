@@ -1,6 +1,7 @@
 package com.trionesdev.phecda.model.device.thing;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.trionesdev.phecda.model.device.thing.enums.Rw;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueType;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import lombok.AllArgsConstructor;
@@ -28,9 +29,4 @@ public class ThingModelProperty extends ThingModelAbility {
     private Boolean required;
     private Boolean custom;
 
-    public enum Rw {
-        R,
-        W,
-        RW
-    }
 }

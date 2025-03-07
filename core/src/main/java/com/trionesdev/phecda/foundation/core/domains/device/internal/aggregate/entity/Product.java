@@ -74,10 +74,10 @@ public class Product {
                                     .getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
             }
-            if (Objects.nonNull(upsertCmd.getService()) &&
+            if (Objects.nonNull(upsertCmd.getCommand()) &&
                     thingModelDraft.getCommands()
                             .stream()
-                            .anyMatch(t -> Objects.equals(upsertCmd.getService()
+                            .anyMatch(t -> Objects.equals(upsertCmd.getCommand()
                                     .getIdentifier(), t.getIdentifier()))) {
                 throw new BusinessException("ABILITY_IDENTIFIER_DUPLICATED");
             }
@@ -93,7 +93,7 @@ public class Product {
                     thingModelDraft.getProperties().add(upsertCmd.getProperty());
                     break;
                 case COMMAND:
-                    thingModelDraft.getCommands().add(upsertCmd.getService());
+                    thingModelDraft.getCommands().add(upsertCmd.getCommand());
                     break;
                 case EVENT:
                     thingModelDraft.getEvents().add(upsertCmd.getEvent());
@@ -116,7 +116,7 @@ public class Product {
                     }
                     break;
                 case COMMAND:
-                    ThingModelCommand tms = upsertCmd.getService();
+                    ThingModelCommand tms = upsertCmd.getCommand();
                     if (Objects.nonNull(tms)) {
                         List<ThingModelCommand> commands = thingModelDraft.getCommands().stream().map(t -> {
                             if (Objects.equals(t.getIdentifier(), upsertCmd.getIdentifier())) {
@@ -155,7 +155,7 @@ public class Product {
         private String identifier;
         private ThingModelProperty property;
         private ThingModelEvent event;
-        private ThingModelCommand service;
+        private ThingModelCommand command;
     }
 
     public void removeThingModelAbility(String identifier) {

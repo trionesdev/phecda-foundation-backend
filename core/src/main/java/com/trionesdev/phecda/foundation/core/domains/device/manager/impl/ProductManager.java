@@ -93,8 +93,10 @@ public class ProductManager {
     public void upsertThingModel(String id, ProductThingModelUpsertCmd upsertCmd) {
         productRepository.findById(id).ifPresent(product -> {
             var upsert = Product.ThingModelUpsert.builder().identifier(upsertCmd.getIdentifier())
-                    .abilityType(upsertCmd.getAbilityType()).property(upsertCmd.getProperty()).event(upsertCmd.getEvent())
-                    .service(upsertCmd.getService())
+                    .abilityType(upsertCmd.getAbilityType())
+                    .property(upsertCmd.getProperty())
+                    .event(upsertCmd.getEvent())
+                    .command(upsertCmd.getCommand())
                     .build();
             product.upsertThingModel(upsert);
             productRepository.upsertThingModel(product);

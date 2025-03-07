@@ -10,6 +10,7 @@ import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.*;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.*;
+import com.trionesdev.phecda.model.device.thing.enums.CallType;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceCriteria;
@@ -25,7 +26,6 @@ import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceM
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.ProductManager;
 import com.trionesdev.phecda.model.device.thing.ThingModel;
 import com.trionesdev.phecda.model.device.thing.ThingModelCommand;
-import com.trionesdev.phecda.model.device.thing.ThingModelCommand.CallType;
 import com.trionesdev.phecda.foundation.core.messageaccess.model.ServiceInvokeReplyMessage;
 import com.trionesdev.phecda.foundation.core.facade.ssp.edge.impl.NodeDeviceProvider;
 import com.trionesdev.phecda.foundation.core.facade.ssp.edge.pdo.NodeDevicePDO;

@@ -155,8 +155,11 @@ public class ProductService {
 
     public String generateProductKey() {
         String key = DeviceUtils.productKeyGenerate();
-        while (productManager.findByKey(key).isEmpty()) {
-            key = DeviceUtils.productKeyGenerate();
+        boolean keyEnable = false;
+        while (!keyEnable) {
+            if (productManager.findByKey(key).isEmpty()) {
+                keyEnable = true;
+            }
         }
         return key;
     }

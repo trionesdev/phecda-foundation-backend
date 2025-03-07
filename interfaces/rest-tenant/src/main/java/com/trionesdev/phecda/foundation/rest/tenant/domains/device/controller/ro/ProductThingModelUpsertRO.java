@@ -15,5 +15,5 @@ public class ProductThingModelUpsertRO {
     private String identifier;
     private ThingModelProperty property;
     private ThingModelEvent event;
-    private ThingModelCommand service;
+    private ThingModelCommand command;
 }

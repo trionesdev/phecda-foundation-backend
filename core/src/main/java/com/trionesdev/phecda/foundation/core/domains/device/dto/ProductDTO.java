@@ -26,6 +26,7 @@ public class ProductDTO {
     private NodeType nodeType;
     private AccessChannel accessChannel;
     private ProductType type;
+    private String thingModelVersion;
     private List<ProtocolProperty> protocolProperties;
     private ThingModel thingModelDraft  ;
     private ThingModel thingModelCurrent  ;

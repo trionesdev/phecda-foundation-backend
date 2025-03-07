@@ -18,7 +18,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ThingModelEvent extends ThingModelAbility {
     private Type type;
-    private List<ValueItem> outputData;
+    private List<ValueItem> outputProps;
 
     @AllArgsConstructor
     @Getter

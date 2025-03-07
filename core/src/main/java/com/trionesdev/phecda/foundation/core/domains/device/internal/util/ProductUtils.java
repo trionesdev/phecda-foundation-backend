@@ -8,12 +8,14 @@ import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingMode
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelProfileDTO.ValueItem;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelProfileDTO.ValueProperties;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
-import com.trionesdev.phecda.model.device.thing.ThingModelCommand.CallType;
 import com.trionesdev.phecda.model.device.thing.ThingModelEvent;
+import com.trionesdev.phecda.model.device.thing.enums.CallType;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueType;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeArray;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,21 +51,29 @@ public class ProductUtils {
             }
             if (CollectionUtil.isNotEmpty(currentThingModel.getCommands())){
                 var deviceCommands = currentThingModel.getCommands().stream().map(thingCommand -> {
+                    List<ValueItem> inputProps = new ArrayList<>();
+                    if (CollectionUtil.isNotEmpty(thingCommand.getInputProps())){
+                        inputProps = thingCommand.getInputProps().stream().map(param -> {
+                            return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
+                                    .properties(
+                                            ValueProperties.builder().valueType(valueType(param.getValueType(), param.getValueSpec())).build()
+                                    ).build();
+                        }).collect(Collectors.toList());
+                    }
+                    List<ValueItem> outputProps = new ArrayList<>();
+                    if (CollectionUtil.isNotEmpty(thingCommand.getOutputProps())){
+                        outputProps = thingCommand.getOutputProps().stream().map(param -> {
+                            return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
+                                    .properties(
+                                            ValueProperties.builder().valueType(valueType(param.getValueType(), param.getValueSpec())).build()
+                                    ).build();
+                        }).collect(Collectors.toList());
+                    }
                     var command = DeviceCommand.builder()
                             .identifier(thingCommand.getIdentifier()).name(thingCommand.getName()).description(thingCommand.getDescription())
                             .callType(Optional.ofNullable(thingCommand.getCallType()).map(CallType::getValue).orElse(null))
-                            .inputData(thingCommand.getInputData().stream().map(param -> {
-                                return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
-                                        .properties(
-                                                ValueProperties.builder().valueType(valueType(param.getValueType(), param.getValueSpec())).build()
-                                        ).build();
-                            }).collect(Collectors.toList()))
-                            .outputData(thingCommand.getOutputData().stream().map(param -> {
-                                return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
-                                        .properties(
-                                                ValueProperties.builder().valueType(valueType(param.getValueType(), param.getValueSpec())).build()
-                                        ).build();
-                            }).collect(Collectors.toList()))
+                            .inputProps(inputProps)
+                            .outputProps(outputProps)
                             .build();
                     return command;
                 }).collect(Collectors.toList());
@@ -71,15 +81,19 @@ public class ProductUtils {
             }
             if (CollectionUtil.isNotEmpty(currentThingModel.getEvents())){
                 var deviceEvents = currentThingModel.getEvents().stream().map(thingEvent -> {
+                    List<ValueItem> outputProps = new ArrayList<>();
+                    if (CollectionUtil.isNotEmpty(thingEvent.getOutputProps())){
+                        outputProps = thingEvent.getOutputProps().stream().map(param -> {
+                            return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
+                                    .properties(
+                                            ValueProperties.builder().valueType(valueType(param.getValueType(), param.getValueSpec())).build()
+                                    ).build();
+                        }).collect(Collectors.toList());
+                    }
                     var event = DeviceEvent.builder()
                             .identifier(thingEvent.getIdentifier()).name(thingEvent.getName()).description(thingEvent.getDescription())
                             .type(Optional.ofNullable(thingEvent.getType()).map(ThingModelEvent.Type::getValue).orElse(null))
-                            .outputData(thingEvent.getOutputData().stream().map(param -> {
-                                return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
-                                        .properties(
-                                                ValueProperties.builder().valueType(valueType(param.getValueType(), param.getValueSpec())).build()
-                                        ).build();
-                            }).collect(Collectors.toList()))
+                            .outputProps(outputProps)
                             .build();
                     return event;
                 }).collect(Collectors.toList());
