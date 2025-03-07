@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.NodeType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.NodeType;
 
 @Data
 @SuperBuilder

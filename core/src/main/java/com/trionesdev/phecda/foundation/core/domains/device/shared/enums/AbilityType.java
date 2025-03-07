@@ -1,0 +1,7 @@
+package com.trionesdev.phecda.foundation.core.domains.device.shared.enums;
+
+public enum AbilityType {
+    PROPERTY,
+    COMMAND,
+    EVENT;
+}

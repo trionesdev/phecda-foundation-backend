@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.device.internal.enums;
+package com.trionesdev.phecda.foundation.core.domains.device.shared.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

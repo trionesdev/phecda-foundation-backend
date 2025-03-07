@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.foundation.core.domains.device.dto;
 
 import lombok.Data;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.AbilityType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.AbilityType;
 import com.trionesdev.phecda.model.device.thing.ThingModelCommand;
 import com.trionesdev.phecda.model.device.thing.ThingModelEvent;
 import com.trionesdev.phecda.model.device.thing.ThingModelProperty;

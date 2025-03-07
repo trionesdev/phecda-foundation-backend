@@ -19,7 +19,7 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceService
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO.Result;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.AccessChannel;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.AccessChannel;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceDataManager;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceManager;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.ProductManager;

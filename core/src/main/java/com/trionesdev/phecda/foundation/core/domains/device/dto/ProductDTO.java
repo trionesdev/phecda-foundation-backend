@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO.ProtocolProperty;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.AccessChannel;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.NodeType;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductStatus;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.AccessChannel;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.NodeType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductStatus;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductType;
 import com.trionesdev.phecda.model.device.thing.ThingModel;
 
 import java.util.List;

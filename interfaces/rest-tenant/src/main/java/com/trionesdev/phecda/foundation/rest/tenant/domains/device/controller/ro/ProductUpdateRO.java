@@ -1,8 +1,8 @@
 package com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro;
 
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.AccessChannel;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.NodeType;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.AccessChannel;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.NodeType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

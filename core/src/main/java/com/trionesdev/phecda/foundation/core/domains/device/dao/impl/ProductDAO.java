@@ -11,7 +11,7 @@ import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.ProductStatisticsDVO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductCriteria;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductStatus;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductStatus;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.mapper.ProductMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;

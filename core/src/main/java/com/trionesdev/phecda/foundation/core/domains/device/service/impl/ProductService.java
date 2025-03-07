@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.trionesdev.commons.core.page.PageInfo;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductStatus;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductStatus;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelProfileDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelUpsertCmd;

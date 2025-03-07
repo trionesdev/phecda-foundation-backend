@@ -13,11 +13,11 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.ProductStati
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductThingModelVersion;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.NodeType;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductStatus;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.NodeType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductStatus;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.ProductDAO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.ProductThingModelVersionDAO;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.enums.ProductType;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.ProductType;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductExtDTO;
 import com.trionesdev.phecda.model.device.thing.ThingModel;
 import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
