@@ -8,7 +8,7 @@ public class DeviceUtils {
     public static final String BASE_CHAR_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public static String productKeyGenerate() {
-        return RandomUtil.randomString(BASE_CHAR + BASE_CHAR_UPPER, 1) + RandomUtil.randomString(9);
+        return RandomUtil.randomString(BASE_CHAR , 1) + RandomUtil.randomString(9);
     }
 
 }

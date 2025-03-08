@@ -16,8 +16,8 @@ import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomai
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO.Result;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO.Result;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.AccessChannel;
@@ -317,7 +317,7 @@ public class DeviceService {
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
-        ServiceSendCmd dto = ServiceSendCmd.builder()
+        CommandSendCmd dto = CommandSendCmd.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
 //                .method(service.getIdentifier())
@@ -338,7 +338,7 @@ public class DeviceService {
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
-        ServiceSendCmd dto = ServiceSendCmd.builder()
+        CommandSendCmd dto = CommandSendCmd.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
                 .productKey(productKey)
@@ -351,10 +351,10 @@ public class DeviceService {
     }
 
 
-    public ServiceInvokeReplyMessage invokeService(Product product, CallType callType, ServiceSendCmd dto, Map<String, String> tags) {
+    public ServiceInvokeReplyMessage invokeService(Product product, CallType callType, CommandSendCmd dto, Map<String, String> tags) {
         AccessChannel channel = product.getAccessChannel();
 
-        DeviceServiceLogPO serviceLog = DeviceServiceLogPO.builder()
+        DeviceCommandLogPO serviceLog = DeviceCommandLogPO.builder()
                 .messageId(dto.getId())
                 .productId(product.getId())
                 .deviceName(dto.getDeviceName())

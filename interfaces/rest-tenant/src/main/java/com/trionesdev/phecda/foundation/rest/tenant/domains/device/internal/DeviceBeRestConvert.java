@@ -8,14 +8,13 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.Product
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductDriverCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DriverPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelUpsertCmd;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceEventLogQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DevicePropertyDataQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceServiceLogQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.ProductDriverQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceEventLogQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DevicePropertyDataQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceCommandLogQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductDriverQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.*;
 import org.mapstruct.Builder;
@@ -45,13 +44,13 @@ public interface DeviceBeRestConvert {
 
     DevicePO from(DeviceUpdateRO args);
 
-    DeviceCriteria from(DeviceQuery query);
+    DeviceCriteria from(DeviceQueryRO query);
 
-    DevicePropertyDataCriteria from(DevicePropertyDataQuery query);
+    DevicePropertyDataCriteria from(DevicePropertyDataQueryRO query);
 
-    DeviceEventLogCriteria from(DeviceEventLogQuery query);
+    DeviceEventLogCriteria from(DeviceEventLogQueryRO query);
 
-    DeviceServiceLogCriteria from(DeviceServiceLogQuery query);
+    DeviceServiceLogCriteria from(DeviceCommandLogQueryRO query);
 
 
     //region product driver
@@ -59,7 +58,7 @@ public interface DeviceBeRestConvert {
 
     DriverPO from(DriverRO.Update args);
 
-    ProductDriverCriteria from(ProductDriverQuery query);
+    ProductDriverCriteria from(ProductDriverQueryRO query);
     //endregion
 
 }

@@ -1,6 +1,9 @@
 package com.trionesdev.phecda.model.device;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -19,6 +22,9 @@ public class PhecdaMessage {
     private Map<String, Object> tags;
 
     @Data
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Reading {
         private Long ts;
         private String valueType;

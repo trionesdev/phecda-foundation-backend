@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductDriverCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DriverPO;
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.DriverService;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.ProductDriverQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.ProductDriverQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DriverRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceBeRestConvert;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceConstants;
@@ -61,7 +61,7 @@ public class DriverController {
 
     @Operation(summary = "获取驱动列表")
     @GetMapping(value = "drivers/list")
-    public List<DriverPO> findDriverList(ProductDriverQuery query) {
+    public List<DriverPO> findDriverList(ProductDriverQueryRO query) {
         ProductDriverCriteria criteria = convert.from(query);
         return driverService.findDriverList(criteria);
     }
@@ -71,7 +71,7 @@ public class DriverController {
     public PageInfo<DriverPO> findDriverPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
-            ProductDriverQuery query
+            ProductDriverQueryRO query
     ) {
         ProductDriverCriteria criteria = convert.from(query);
         criteria.setPageNum(pageNum);

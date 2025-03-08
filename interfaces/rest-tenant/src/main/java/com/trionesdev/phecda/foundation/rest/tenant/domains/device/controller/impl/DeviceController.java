@@ -17,7 +17,7 @@ import com.trionesdev.phecda.foundation.core.messageaccess.model.ServiceInvokeRe
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceCreateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceEnabledRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceProtocolUpdateRO;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceUpdateRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceBeRestConvert;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceConstants;
@@ -83,7 +83,7 @@ public class DeviceController {
     public PageInfo<DeviceExtDTO> queryExtPage(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
-            DeviceQuery query
+            DeviceQueryRO query
     ) {
         DeviceCriteria criteria = deviceBeRestConvert.from(query);
         return deviceService.queryExtPage(pageNum, pageSize, criteria);
@@ -151,7 +151,7 @@ public class DeviceController {
     @Operation(summary = "查询设备列表(不分页)")
     @GetMapping(value = "devices/list")
     public List<DevicePO> queryDeviceList(
-            DeviceQuery query
+            DeviceQueryRO query
     ) {
         DeviceCriteria criteria = deviceBeRestConvert.from(query);
         return deviceService.queryList(criteria);

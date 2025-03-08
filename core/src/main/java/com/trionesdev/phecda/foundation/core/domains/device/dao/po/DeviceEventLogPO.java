@@ -21,7 +21,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
-@TableName(value = "logging_device_event_log", autoResultMap = true)
+@TableName(value = "command_device_event_log", autoResultMap = true)
 public class DeviceEventLogPO extends BaseLogicEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;

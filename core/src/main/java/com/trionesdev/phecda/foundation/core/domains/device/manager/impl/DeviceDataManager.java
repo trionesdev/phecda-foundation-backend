@@ -7,6 +7,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceEventLogCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
@@ -14,7 +15,7 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceS
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceStatisticsMessageDailyCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceEventLogPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceStatisticsMessageDailyPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.DeviceDAO;
@@ -24,8 +25,6 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.DeviceServi
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.DeviceStatisticsMessageDailyDAO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.ProductDAO;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
-import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataBO;
-import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -52,23 +51,23 @@ public class DeviceDataManager {
     }
 
 
-    public PageInfo<DeviceServiceLogPO> serviceLogsPage(DeviceServiceLogCriteria criteria) {
-        Page<DeviceServiceLogPO> page = deviceServiceLogDAO.page(criteria);
+    public PageInfo<DeviceCommandLogPO> serviceLogsPage(DeviceServiceLogCriteria criteria) {
+        Page<DeviceCommandLogPO> page = deviceServiceLogDAO.page(criteria);
 
         return MpPageUtils.of(page);
     }
 
-    public void saveServiceLog(DeviceServiceLogPO entity) {
+    public void saveServiceLog(DeviceCommandLogPO entity) {
         deviceServiceLogDAO.save(entity);
     }
 
-    public void updateServiceLog(DeviceServiceLogPO entity) {
+    public void updateServiceLog(DeviceCommandLogPO entity) {
         deviceServiceLogDAO.updateById(entity);
     }
 
     //region device property data
-    public void savePropertyData(String productKey, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
-        devicePropertyDataDAO.insertRecord(IotDbUtils.generatePath(Lists.newArrayList(productKey, deviceName)), time, measurements, types, values);
+    public void savePropertyData(IotDbSave data) {
+        devicePropertyDataDAO.saveBatch(data);
     }
 
     public ProductPO getProductByDeviceName(String deviceName) {
@@ -89,8 +88,9 @@ public class DeviceDataManager {
     }
 
     public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
-        List<Map<String, Object>> rawsData = queryDevicePropertyDataList(criteria.getDeviceName(), Lists.newArrayList(criteria.getIdentifier()),
-                Optional.of(criteria.getStartTime()).map(Instant::toEpochMilli).get(), Optional.of(criteria.getStartTime()).map(Instant::toEpochMilli).orElse(null));
+        Long startTime = Optional.ofNullable(criteria.getStartTime()).map(Instant::toEpochMilli).orElse(Instant.now().toEpochMilli());
+        Long endTime = Optional.ofNullable(criteria.getEndTime()).map(Instant::toEpochMilli).orElse(Instant.now().toEpochMilli());
+        List<Map<String, Object>> rawsData = queryDevicePropertyDataList(criteria.getDeviceName(), Lists.newArrayList(criteria.getIdentifier()), startTime, endTime);
         return assembleDevicePropertiesData(rawsData, criteria);
     }
 

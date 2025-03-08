@@ -9,13 +9,12 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceE
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceEventLogPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataBO;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
 import com.trionesdev.phecda.foundation.core.domains.device.service.impl.DeviceDataService;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceEventLogQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DevicePropertyDataQuery;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query.DeviceServiceLogQuery;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceEventLogQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DevicePropertyDataQueryRO;
+import com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro.DeviceCommandLogQueryRO;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceBeRestConvert;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.device.internal.DeviceConstants;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,21 +39,21 @@ public class DeviceDataController {
 
     @Operation(summary = "查询设备属性数据列表")
     @GetMapping(value = "property/data/list")
-    public List<DevicePropertyDataDTO> queryProperties(DevicePropertyDataQuery query) {
+    public List<DevicePropertyDataDTO> queryProperties(DevicePropertyDataQueryRO query) {
         DevicePropertyDataCriteria criteria = deviceBeRestConvert.from(query);
         return deviceDataService.queryDevicePropertyDataList(criteria);
     }
 
-    @Operation(summary = "设备事件管理日志分页查询")
-    @GetMapping(value = "event/logs/page")
-    public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogQuery args) {
+    @Operation(summary = "设备事件日志(分页)")
+    @GetMapping(value = "event/log/page")
+    public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogQueryRO args) {
         DeviceEventLogCriteria criteria = deviceBeRestConvert.from(args);
         return deviceDataService.eventLogsPage(criteria);
     }
 
-    @Operation(summary = "设备服务日志分页查询")
-    @GetMapping(value = "service/logs/page")
-    public PageInfo<DeviceServiceLogPO> page(DeviceServiceLogQuery args) {
+    @Operation(summary = "设备指令日志(分页)")
+    @GetMapping(value = "command/log/page")
+    public PageInfo<DeviceCommandLogPO> page(DeviceCommandLogQueryRO args) {
         DeviceServiceLogCriteria criteria = deviceBeRestConvert.from(args);
         return deviceDataService.serviceLogsPage(criteria);
     }

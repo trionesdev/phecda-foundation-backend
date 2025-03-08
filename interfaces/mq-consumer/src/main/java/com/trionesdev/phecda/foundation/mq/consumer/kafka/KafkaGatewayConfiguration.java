@@ -5,9 +5,6 @@ import com.trionesdev.phecda.foundation.core.internal.disruptor.message.PhecdaMe
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.MessageType;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostEventProducer;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
 import com.trionesdev.phecda.foundation.mq.consumer.kafka.model.GatewayPropertiesPostMessage;
 import org.springframework.context.annotation.Configuration;
