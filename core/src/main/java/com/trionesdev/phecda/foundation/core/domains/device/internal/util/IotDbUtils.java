@@ -53,10 +53,10 @@ public class IotDbUtils {
         while (dataSet.hasNext()) {
             RowRecord rowRecord = dataSet.next();
             Map<String, Object> row = Maps.newHashMap();
-            row.put(columnNames.get(0), String.valueOf(rowRecord.getTimestamp()));
+//            row.put(columnNames.get(0), String.valueOf(rowRecord.getTimestamp()));
             if (!rowRecord.getFields().isEmpty()) {
                 for (int i = 0; i < rowRecord.getFields().size(); i++) {
-                    row.put(columnNames.get(i + 1), fieldValue(rowRecord.getFields().get(i)));
+                    row.put(columnNames.get(i), fieldValue(rowRecord.getFields().get(i)));
                 }
             }
             results.add(row);

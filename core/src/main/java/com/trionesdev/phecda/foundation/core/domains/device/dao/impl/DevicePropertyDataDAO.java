@@ -53,10 +53,10 @@ public class DevicePropertyDataDAO {
         sb.append("SELECT * from ").append(query.getProductKey());
         sb.append(" WHERE deviceName = '").append(query.getDeviceName()).append("'");
         if (query.getStartTime() > 0) {
-            sb.append(" AND startTime > ").append(query.getStartTime());
+            sb.append(" AND time > ").append(query.getStartTime());
         }
         if (query.getEndTime() > 0) {
-            sb.append(" AND endTime < ").append(query.getEndTime());
+            sb.append(" AND time < ").append(query.getEndTime());
         }
         sb.append(" ORDER BY time DESC limit 6000");
         try (ITableSession session = tableSessionPool.getSession()) {
@@ -67,8 +67,6 @@ public class DevicePropertyDataDAO {
             }
         } catch (IoTDBConnectionException e) {
             throw new RuntimeException(e);
-        } finally {
-            tableSessionPool.close();
         }
     }
 
@@ -91,8 +89,6 @@ public class DevicePropertyDataDAO {
             }
         } catch (IoTDBConnectionException e) {
             throw new RuntimeException(e);
-        } finally {
-            tableSessionPool.close();
         }
     }
 

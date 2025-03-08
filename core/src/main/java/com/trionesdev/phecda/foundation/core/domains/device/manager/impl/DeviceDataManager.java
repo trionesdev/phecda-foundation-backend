@@ -78,21 +78,19 @@ public class DeviceDataManager {
 
     public List<Map<String, Object>> queryDevicePropertyDataList(String deviceName, List<String> fields, long startTime, long endTime) {
         ProductPO product = getProductByDeviceName(deviceName);
-//        List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
-        var query = IotDbQuery.builder().productKey(product.getKey()).columns(fields).startTime(startTime).endTime(endTime).build();
+        var query = IotDbQuery.builder().productKey(product.getKey()).deviceName(deviceName).columns(fields).startTime(startTime).endTime(endTime).build();
         return devicePropertyDataDAO.selectList(query);
     }
 
     public List<Map<String, Object>> queryDevicePropertyLastData(String deviceName, List<String> fields) {
         ProductPO product = getProductByDeviceName(deviceName);
-//        List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
         var query = IotDbQuery.builder().productKey(product.getKey()).columns(fields).build();
         return devicePropertyDataDAO.selectLastList(query);
     }
 
     public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
-        Long startTime = Optional.ofNullable(criteria.getStartTime()).map(Instant::toEpochMilli).orElse(Instant.now().toEpochMilli());
-        Long endTime = Optional.ofNullable(criteria.getEndTime()).map(Instant::toEpochMilli).orElse(Instant.now().toEpochMilli());
+        Long startTime = Optional.ofNullable(criteria.getStartTime()).map(Instant::toEpochMilli).orElse(0L);
+        Long endTime = Optional.ofNullable(criteria.getEndTime()).map(Instant::toEpochMilli).orElse(0L);
         List<Map<String, Object>> rawsData = queryDevicePropertyDataList(criteria.getDeviceName(), Lists.newArrayList(criteria.getIdentifier()), startTime, endTime);
         return assembleDevicePropertiesData(rawsData, criteria);
     }
