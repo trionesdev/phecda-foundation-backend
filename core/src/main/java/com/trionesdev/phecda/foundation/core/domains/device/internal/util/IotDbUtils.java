@@ -9,6 +9,7 @@ import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSa
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.isession.pool.SessionDataSetWrapper;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -34,6 +35,23 @@ public class IotDbUtils {
         List<String> columnNames = wrapper.getColumnNames();
         while (wrapper.hasNext()) {
             RowRecord rowRecord = wrapper.next();
+            Map<String, Object> row = Maps.newHashMap();
+            row.put(columnNames.get(0), String.valueOf(rowRecord.getTimestamp()));
+            if (!rowRecord.getFields().isEmpty()) {
+                for (int i = 0; i < rowRecord.getFields().size(); i++) {
+                    row.put(columnNames.get(i + 1), fieldValue(rowRecord.getFields().get(i)));
+                }
+            }
+            results.add(row);
+        }
+        return results;
+    }
+
+    public static List<Map<String, Object>> toList(SessionDataSet dataSet) throws IoTDBConnectionException, StatementExecutionException {
+        List<Map<String, Object>> results = Lists.newArrayList();
+        List<String> columnNames = dataSet.getColumnNames();
+        while (dataSet.hasNext()) {
+            RowRecord rowRecord = dataSet.next();
             Map<String, Object> row = Maps.newHashMap();
             row.put(columnNames.get(0), String.valueOf(rowRecord.getTimestamp()));
             if (!rowRecord.getFields().isEmpty()) {

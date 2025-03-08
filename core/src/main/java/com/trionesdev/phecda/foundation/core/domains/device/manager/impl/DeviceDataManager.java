@@ -7,6 +7,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbQuery;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceEventLogCriteria;
@@ -77,14 +78,16 @@ public class DeviceDataManager {
 
     public List<Map<String, Object>> queryDevicePropertyDataList(String deviceName, List<String> fields, long startTime, long endTime) {
         ProductPO product = getProductByDeviceName(deviceName);
-        List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
-        return devicePropertyDataDAO.selectList(paths, startTime, endTime);
+//        List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
+        var query = IotDbQuery.builder().productKey(product.getKey()).columns(fields).startTime(startTime).endTime(endTime).build();
+        return devicePropertyDataDAO.selectList(query);
     }
 
     public List<Map<String, Object>> queryDevicePropertyLastData(String deviceName, List<String> fields) {
         ProductPO product = getProductByDeviceName(deviceName);
-        List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
-        return devicePropertyDataDAO.selectLastList(paths);
+//        List<String> paths = fields.stream().map(field -> IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), deviceName, field))).collect(Collectors.toList());
+        var query = IotDbQuery.builder().productKey(product.getKey()).columns(fields).build();
+        return devicePropertyDataDAO.selectLastList(query);
     }
 
     public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
