@@ -6,6 +6,9 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.core.util.PageUtils;
 import com.trionesdev.commons.exception.NotFoundException;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomainConvert;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.util.ProductUtils;
+import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbColumn;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelUpsertCmd;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.ProductCriteria;
@@ -27,11 +30,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceCacheConstants.*;
 import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceErrors.PRODUCT_NOT_FOUND;
@@ -43,6 +42,7 @@ public class ProductManager {
     private final ProductDAO productDAO;
     private final ProductThingModelVersionDAO productThingModelVersionDAO;
     private final ProductRepository productRepository;
+    private final TsDbTemplate tsDbTemplate;
 
     public ProductStatisticsDVO queryStatistics() {
         return productDAO.selectStatistics();
@@ -205,8 +205,15 @@ public class ProductManager {
         return DeviceDomainConvert.INSTANCE.productDtoFromRecord(records);
     }
 
-    public void publish(String id) {
-        productDAO.updateStatus(id, ProductStatus.RELEASE);
+    public void releaseProduct(String id) {
+        productRepository.findById(id).ifPresent(product -> {
+            productDAO.updateStatus(id, ProductStatus.RELEASE);
+            List<ThingModelProperty> properties = product.getThingModelCurrent().getProperties();
+            if (CollectionUtil.isNotEmpty(properties)) {
+                List<TsDbColumn> columns = ProductUtils.propertiesToColumns(properties);
+                tsDbTemplate.createTable(product.getKey(),columns);
+            }
+        });
     }
 
     public void revokePublish(String id) {

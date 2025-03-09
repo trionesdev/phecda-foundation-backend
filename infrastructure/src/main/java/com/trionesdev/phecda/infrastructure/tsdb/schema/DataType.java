@@ -6,5 +6,6 @@ public enum DataType {
     LONG,
     FLOAT,
     DOUBLE,
-    STRING
+    STRING,
+    TIMESTAMP
 }

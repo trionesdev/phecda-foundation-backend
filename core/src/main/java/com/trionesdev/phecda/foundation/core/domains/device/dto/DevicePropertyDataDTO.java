@@ -14,6 +14,7 @@ import java.time.Instant;
 public class DevicePropertyDataDTO {
     private Instant ts;
     private String deviceName;
+    private String name;
     private String identifier;
     private Object value;
 }

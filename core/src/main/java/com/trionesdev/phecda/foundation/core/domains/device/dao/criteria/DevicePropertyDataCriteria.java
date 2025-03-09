@@ -22,4 +22,5 @@ public class DevicePropertyDataCriteria {
     private String identifier;
     private String nodeId;
     private List<String> identifiers;
+    private long limit;
 }

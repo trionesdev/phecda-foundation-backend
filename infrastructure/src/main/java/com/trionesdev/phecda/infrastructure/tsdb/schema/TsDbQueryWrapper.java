@@ -18,6 +18,10 @@ public class TsDbQueryWrapper {
     @Getter
     @Setter
     private List<String> selectFields;
+    @Getter
+    @Setter
+    private long limit;
+
 
     @Getter
     private Map<String, Object> eqCriteria = new HashMap<>();
@@ -38,6 +42,11 @@ public class TsDbQueryWrapper {
 
     public TsDbQueryWrapper table(String table){
         this.tableName = table;
+        return this;
+    }
+
+    public TsDbQueryWrapper selectFields(List<String> fields){
+        this.selectFields = fields;
         return this;
     }
 

@@ -8,7 +8,12 @@ import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingMode
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelProfileDTO.ValueItem;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.ProductThingModelProfileDTO.ValueProperties;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
+import com.trionesdev.phecda.infrastructure.tsdb.impl.iotdb.IotDbUtils;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.ColumnCategory;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.DataType;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbColumn;
 import com.trionesdev.phecda.model.device.thing.ThingModelEvent;
+import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
 import com.trionesdev.phecda.model.device.thing.enums.CallType;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueType;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeArray;
@@ -22,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class ProductUtils {
 
-    public static String valueType(ValueTypeEnum valueType, ValueType valueSpec){
+    public static String valueType(ValueTypeEnum valueType, ValueType valueSpec) {
         return switch (valueType) {
             case INT, LONG, FLOAT, DOUBLE, BOOL, STRING, STRUCT -> valueType.getValue();
             case ARRAY -> {
@@ -38,8 +43,8 @@ public class ProductUtils {
     public static ProductThingModelProfileDTO toProductProfile(Product product) {
         var profile = ProductThingModelProfileDTO.builder().productKey(product.getKey()).description(product.getDescription()).build();
         var currentThingModel = product.getThingModelCurrent();
-        if (Objects.nonNull(currentThingModel) ){
-            if (CollectionUtil.isNotEmpty(currentThingModel.getProperties())){
+        if (Objects.nonNull(currentThingModel)) {
+            if (CollectionUtil.isNotEmpty(currentThingModel.getProperties())) {
                 var deviceProperties = currentThingModel.getProperties().stream().map(thingProperty -> {
                     var property = DeviceProperty.builder().identifier(thingProperty.getIdentifier()).name(thingProperty.getName()).description(thingProperty.getDescription())
                             .properties(
@@ -49,10 +54,10 @@ public class ProductUtils {
                 }).collect(Collectors.toList());
                 profile.setDeviceProperties(deviceProperties);
             }
-            if (CollectionUtil.isNotEmpty(currentThingModel.getCommands())){
+            if (CollectionUtil.isNotEmpty(currentThingModel.getCommands())) {
                 var deviceCommands = currentThingModel.getCommands().stream().map(thingCommand -> {
                     List<ValueItem> inputProps = new ArrayList<>();
-                    if (CollectionUtil.isNotEmpty(thingCommand.getInputProps())){
+                    if (CollectionUtil.isNotEmpty(thingCommand.getInputProps())) {
                         inputProps = thingCommand.getInputProps().stream().map(param -> {
                             return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
                                     .properties(
@@ -61,7 +66,7 @@ public class ProductUtils {
                         }).collect(Collectors.toList());
                     }
                     List<ValueItem> outputProps = new ArrayList<>();
-                    if (CollectionUtil.isNotEmpty(thingCommand.getOutputProps())){
+                    if (CollectionUtil.isNotEmpty(thingCommand.getOutputProps())) {
                         outputProps = thingCommand.getOutputProps().stream().map(param -> {
                             return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
                                     .properties(
@@ -79,10 +84,10 @@ public class ProductUtils {
                 }).collect(Collectors.toList());
                 profile.setDeviceCommands(deviceCommands);
             }
-            if (CollectionUtil.isNotEmpty(currentThingModel.getEvents())){
+            if (CollectionUtil.isNotEmpty(currentThingModel.getEvents())) {
                 var deviceEvents = currentThingModel.getEvents().stream().map(thingEvent -> {
                     List<ValueItem> outputProps = new ArrayList<>();
-                    if (CollectionUtil.isNotEmpty(thingEvent.getOutputProps())){
+                    if (CollectionUtil.isNotEmpty(thingEvent.getOutputProps())) {
                         outputProps = thingEvent.getOutputProps().stream().map(param -> {
                             return ValueItem.builder().identifier(param.getIdentifier()).name(param.getName())
                                     .properties(
@@ -101,6 +106,28 @@ public class ProductUtils {
             }
         }
         return profile;
+    }
+
+    public static DataType toDsDataType(ValueTypeEnum valueType) {
+        return switch (valueType) {
+            case INT -> DataType.INT;
+            case LONG -> DataType.LONG;
+            case FLOAT -> DataType.FLOAT;
+            case DOUBLE -> DataType.DOUBLE;
+            case BOOL -> DataType.BOOLEAN;
+            case STRING -> DataType.STRING;
+            default -> DataType.STRING;
+        };
+    }
+
+    public static List<TsDbColumn> propertiesToColumns(List<ThingModelProperty> properties) {
+        List<TsDbColumn> columns = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(properties)) {
+            properties.forEach(property -> {
+                columns.add(TsDbColumn.builder().name(property.getIdentifier()).category(ColumnCategory.FIELD).dataType(toDsDataType(property.getValueType())).build());
+            });
+        }
+        return columns;
     }
 
 }

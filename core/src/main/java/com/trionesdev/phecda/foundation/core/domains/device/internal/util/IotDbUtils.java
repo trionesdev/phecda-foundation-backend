@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbCell;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbColumn;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.ColumnCategory;
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import org.apache.commons.collections4.MapUtils;
@@ -116,6 +117,13 @@ public class IotDbUtils {
         };
     }
 
+    public static Tablet.ColumnCategory columnCategory(ColumnCategory category) {
+        return switch (category) {
+            case FIELD -> Tablet.ColumnCategory.FIELD;
+            case TAG -> Tablet.ColumnCategory.TAG;
+            case ATTRIBUTE -> Tablet.ColumnCategory.ATTRIBUTE;
+        };
+    }
 
     public static IotDbSave messageToInsert(PhecdaMessage message) {
         List<IotDbColumn> columns = Lists.newArrayList();

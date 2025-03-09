@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.infrastructure.tsdb.impl.iotdb;
 
+import com.trionesdev.iotdb.autoconfigure.IotDbProperties;
 import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbColumn;
@@ -8,6 +9,8 @@ import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.iotdb.isession.ITableSession;
 import org.apache.iotdb.isession.SessionDataSet;
@@ -18,17 +21,19 @@ import org.apache.tsfile.write.record.Tablet;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class IotDbTableTemplate implements TsDbTemplate {
     private final ITableSessionPool tableSessionPool;
+    private final IotDbProperties iotDbProperties;
 
     @Override
     public void createDatabase(String database) {
         try (ITableSession session = tableSessionPool.getSession()) {
-            session.executeQueryStatement("create database " + database);
+            session.executeNonQueryStatement("create database " + database);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +41,30 @@ public class IotDbTableTemplate implements TsDbTemplate {
 
     @Override
     public void createTable(String table, List<TsDbColumn> columns) {
-
+        String tableName = table;
+        if (!StringUtils.contains(table, ".")) {
+            tableName = StringUtils.joinWith(".", iotDbProperties.getDatabase(), table);
+        }
+        List<String> columnDescList = new ArrayList<>(columns.size());
+        if (CollectionUtils.isNotEmpty(columns)) {
+            for (TsDbColumn column : columns) {
+                columnDescList.add(column.getName() + " " + IotDbUtils.getDataType(column.getDataType()) + " " + IotDbUtils.getColumnCategory(column.getCategory()));
+            }
+        }
+        String withStr = "";
+        List<String> withList = new ArrayList<>();
+        if (iotDbProperties.getTtl() > 0) {
+            withList.add(" TTL=" + iotDbProperties.getTtl());
+        }
+        if (CollectionUtils.isNotEmpty(withList)) {
+            withStr = " WITH (" + StringUtils.joinWith(",", withList.toArray()) + ")";
+        }
+        try (ITableSession session = tableSessionPool.getSession()) {
+            String sql = "create table IF NOT EXISTS " + tableName + " ( " + StringUtils.joinWith(",", columnDescList.toArray()) + " ) " + withStr;
+            session.executeNonQueryStatement(sql);
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

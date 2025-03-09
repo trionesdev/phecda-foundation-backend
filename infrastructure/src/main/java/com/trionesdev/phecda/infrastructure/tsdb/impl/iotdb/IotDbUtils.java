@@ -58,6 +58,7 @@ public class IotDbUtils {
             case INT64 -> DataType.LONG;
             case FLOAT -> DataType.FLOAT;
             case DOUBLE -> DataType.DOUBLE;
+            case TIMESTAMP ->DataType.TIMESTAMP;
             case TEXT -> DataType.STRING;
             default -> DataType.STRING;
         };
@@ -72,6 +73,7 @@ public class IotDbUtils {
             case DOUBLE -> field.getDoubleV();
             case VECTOR -> field.getObjectValue(TSDataType.VECTOR);
             case TEXT -> field.getStringValue();
+            case TIMESTAMP -> field.getLongV();
             default -> field.getBinaryV();
         };
     }

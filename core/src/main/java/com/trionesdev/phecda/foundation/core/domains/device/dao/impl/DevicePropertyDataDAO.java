@@ -1,28 +1,21 @@
 package com.trionesdev.phecda.foundation.core.domains.device.dao.impl;
 
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
-import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbQuery;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
 import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
 import lombok.RequiredArgsConstructor;
-import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.iotdb.isession.ITableSession;
-import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.isession.pool.ITableSessionPool;
-import org.apache.iotdb.isession.pool.SessionDataSetWrapper;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
-import org.apache.iotdb.session.pool.SessionPool;
-import org.apache.tsfile.read.common.RowRecord;
 import org.apache.tsfile.write.record.Tablet;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Repository
@@ -32,7 +25,7 @@ public class DevicePropertyDataDAO {
 
     public TsDbQueryWrapper buildQueryWrapper(DevicePropertyDataCriteria criteria) {
         TsDbQueryWrapper wrapper = new TsDbQueryWrapper().table(criteria.getProductKey());
-        wrapper.database(criteria.getProductKey()).eq("deviceName",criteria.getDeviceName());
+        wrapper.database(criteria.getProductKey()).selectFields(criteria.getIdentifiers()).eq("deviceName", criteria.getDeviceName());
         return wrapper;
     }
 
@@ -41,7 +34,12 @@ public class DevicePropertyDataDAO {
     }
 
     public List<TsDbCell> selectLastList(DevicePropertyDataCriteria criteria) {
-        return tsDbTemplate.selecList(buildQueryWrapper(criteria)).get(0);
+        var cells = tsDbTemplate.selecList(buildQueryWrapper(criteria));
+        if (CollectionUtils.isNotEmpty(cells)) {
+            return cells.get(0);
+        } else {
+            return null;
+        }
     }
 
     public void saveBatch(IotDbSave data) {

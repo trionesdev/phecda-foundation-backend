@@ -6,7 +6,9 @@ import com.google.common.collect.Maps;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.dto.PropertyDataDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommand
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceStatisticsMessageDailyPO;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceDataManager;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -75,9 +78,12 @@ public class DeviceDataService {
 
     //region property
 
-    public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
-        var data = deviceDataManager.queryDevicePropertyDataList(criteria);
-        return Collections.emptyList();
+    public Map<String, Object> queryPropertyLast(String deviceName, List<String> fields) {
+        return deviceDataManager.queryDevicePropertyLastData(deviceName, fields);
+    }
+
+    public List<List<TsDbCell>> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
+        return deviceDataManager.queryDevicePropertyDataList(criteria);
     }
     //endregion
 

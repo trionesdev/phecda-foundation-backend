@@ -145,8 +145,8 @@ public class ProductService {
         return productManager.findThingModelByKey(key, version);
     }
 
-    public void publishProduct(String productId) {
-        productManager.publish(productId);
+    public void releaseProduct(String productId) {
+        productManager.releaseProduct(productId);
     }
 
     public void revokePublishProduct(String productId) {

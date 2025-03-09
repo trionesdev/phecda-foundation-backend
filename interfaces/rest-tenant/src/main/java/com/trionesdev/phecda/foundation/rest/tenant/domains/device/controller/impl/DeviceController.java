@@ -4,6 +4,7 @@ import cn.hutool.core.util.BooleanUtil;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DeviceExtDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataBO;
+import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.InvokeServiceCmd;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,7 +105,7 @@ public class DeviceController {
 
     @Operation(summary = "获取设备属性数据")
     @GetMapping(value = "devices/{id}/properties-data")
-    public List<DevicePropertyDataBO> queryDevicePropertiesData(
+    public List<DevicePropertyDataDTO> queryDevicePropertiesData(
             @PathVariable(value = "id") String id
     ) {
         return deviceService.queryDeviceThingModelPropertiesData(id);
