@@ -1,5 +1,9 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal;
 
+import com.trionesdev.message.core.Message;
+import com.trionesdev.message.core.MessageContainer;
+import com.trionesdev.message.core.MessageListener;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.ForwardingActionFactory;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.redis.RuleChangeListener;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.redis.SinkActionChangeListener;
@@ -21,12 +25,28 @@ public class MessageForwardingBootstrap implements ApplicationRunner {
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final RuleChangeListener ruleChangeListener;
     private final SinkActionChangeListener sinkActionChangeListener;
+    private final MessageContainer messageContainer;
+    private final ForwardingActionFactory forwardingActionFactory;
 
     @Override
     public void run(ApplicationArguments args) {
         CompletableFuture.runAsync(() -> {
             redisMessageListenerContainer.addMessageListener(new MessageListenerAdapter(ruleChangeListener, "onMessage"), PatternTopic.of(MESSAGE_FORWARDING_RULE_CHANGE));
             redisMessageListenerContainer.addMessageListener(new MessageListenerAdapter(sinkActionChangeListener, "onMessage"), PatternTopic.of(MESSAGE_SINK_CHANGE));
+
+//            messageContainer.addBroadcastListener(new MessageListener() {
+//                @Override
+//                public void onMessage(Message message) {
+//                    forwardingActionFactory.syncMessageForwardingRules();
+//                }
+//            }, MESSAGE_FORWARDING_RULE_CHANGE);
+//
+//            messageContainer.addBroadcastListener(new MessageListener() {
+//                @Override
+//                public void onMessage(Message message) {
+//                    String id = message.getPayload();
+//                }
+//            }, MESSAGE_SINK_CHANGE);
         });
     }
 }
