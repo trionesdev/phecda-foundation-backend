@@ -11,6 +11,8 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.i
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.AbsForwardingAction;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action.ForwardingActionComponent;
 import com.trionesdev.phecda.foundation.core.internal.util.MqttTopicUtils;
+import com.trionesdev.phecda.foundation.core.internal.util.TopicUtils;
+import com.trionesdev.phecda.infrastructure.configuration.mqtt.PhecdaMqttProperties;
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Component
 public class ForwardingActionFactory {
+    private final PhecdaMqttProperties mqttProperties;
     private List<MessageForwardingRuleAggregate> forwardingRules = new ArrayList<>();
     /**
      * 消息转发规则集合
@@ -76,7 +79,7 @@ public class ForwardingActionFactory {
                 continue;
             }
             for (MessageSource.Topic sourceTopic : rule.getSource().getTopics()) {
-                if (MqttTopicUtils.isMatched(sourceTopic.getTopic(), topic)) {
+                if (MqttTopicUtils.isMatched(TopicUtils.join(mqttProperties.getTopicPrefix(),sourceTopic.getTopic()), topic)) {
                     for (MessageSink sink : rule.getSinks()) {
                         write(sink.getAction(), message);
                         break;

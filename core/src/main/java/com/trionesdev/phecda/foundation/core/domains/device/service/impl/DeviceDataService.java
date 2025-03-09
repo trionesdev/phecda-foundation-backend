@@ -7,6 +7,7 @@ import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.PropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.util.DeviceUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import com.trionesdev.phecda.model.device.PhecdaMessage;
@@ -52,7 +53,7 @@ public class DeviceDataService {
     private final RedissonClient redissonClient;
 
     public void savePropertyData(PhecdaMessage message) {
-        deviceDataManager.savePropertyData(IotDbUtils.messageToInsert(message));
+        deviceDataManager.savePropertyData(DeviceUtils.messageToInsert(message));
     }
 
 

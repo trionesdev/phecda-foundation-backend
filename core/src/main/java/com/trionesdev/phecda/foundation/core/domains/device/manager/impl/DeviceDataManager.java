@@ -12,9 +12,11 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceS
 import com.trionesdev.phecda.foundation.core.domains.device.dao.impl.*;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.*;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.DevicePropertyData;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
 import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbInsertWrapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -57,8 +59,13 @@ public class DeviceDataManager {
     }
 
     //region device property data
-    public void savePropertyData(IotDbSave data) {
-        devicePropertyDataDAO.saveBatch(data);
+    public void savePropertyData(DevicePropertyData propertyData) {
+        var insertWrapper = TsDbInsertWrapper.builder().tableName(propertyData.getProductKey())
+                .timestamp(propertyData.getTimestamp())
+                .columns(propertyData.getColumns())
+                .rows(propertyData.getRows())
+                .build();
+        tsDbTemplate.save(insertWrapper);
     }
 
     public ProductPO getProductByDeviceName(String deviceName) {
@@ -72,7 +79,7 @@ public class DeviceDataManager {
         return devicePropertyDataDAO.selectList(criteria);
     }
 
-    public Map<String,Object> queryDevicePropertyLastData(String deviceName, List<String> fields) {
+    public Map<String, Object> queryDevicePropertyLastData(String deviceName, List<String> fields) {
         ProductPO product = getProductByDeviceName(deviceName);
         var query = DevicePropertyDataCriteria.builder().productKey(product.getKey()).deviceName(deviceName).identifiers(fields).limit(1).build();
         var data = devicePropertyDataDAO.selectLastList(query);

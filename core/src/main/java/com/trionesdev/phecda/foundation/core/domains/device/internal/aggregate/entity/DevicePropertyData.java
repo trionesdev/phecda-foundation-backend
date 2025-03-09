@@ -1,5 +1,7 @@
-package com.trionesdev.phecda.infrastructure.tsdb.schema;
+package com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity;
 
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +14,10 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TsDbInsertWrapper {
-    private String tableName;
+public class DevicePropertyData {
     private Instant timestamp;
+    private String productKey;
+    private String deviceName;
     private List<TsDbColumn> columns;
     private List<List<TsDbCell>> rows;
 }

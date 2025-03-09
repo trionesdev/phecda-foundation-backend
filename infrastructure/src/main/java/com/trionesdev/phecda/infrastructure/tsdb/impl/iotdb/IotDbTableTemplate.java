@@ -6,11 +6,8 @@ import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbColumn;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbInsertWrapper;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
-
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.iotdb.isession.ITableSession;
 import org.apache.iotdb.isession.SessionDataSet;
@@ -21,7 +18,6 @@ import org.apache.tsfile.write.record.Tablet;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -87,15 +83,11 @@ public class IotDbTableTemplate implements TsDbTemplate {
                         wrapper.getRows().size());
                 if (CollectionUtils.isNotEmpty(wrapper.getRows())) {
                     wrapper.getRows().forEach(row -> {
-                        if (row.size() != columns.size()) {
-                            return;
-                        }
                         int rowIndex = tablet.getRowSize();
                         tablet.addTimestamp(rowIndex, wrapper.getTimestamp().toEpochMilli());
-                        for (int i = 0; i < row.size(); i++) {
-                            tablet.addValue(columns.get(i), rowIndex, row.get(i));
-                        }
-                        ;
+                        row.forEach(cell->{
+                            tablet.addValue(cell.getColumnName(),rowIndex,cell.getValue());
+                        });
                     });
 
                 }
