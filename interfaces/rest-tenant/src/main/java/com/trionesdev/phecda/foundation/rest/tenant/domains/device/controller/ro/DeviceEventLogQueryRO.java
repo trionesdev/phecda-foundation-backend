@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query;
+package com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class DeviceEventLogQuery {
+public class DeviceEventLogQueryRO {
     private String deviceName;
     private String eventIdentifier;
     private Type eventType;

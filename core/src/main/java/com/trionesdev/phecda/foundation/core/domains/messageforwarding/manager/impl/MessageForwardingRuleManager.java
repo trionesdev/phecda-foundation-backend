@@ -77,7 +77,9 @@ public class MessageForwardingRuleManager {
         List<MessageSourceTopicPO> sourceTopics = messageSourceTopicDAO.selectListBySourceIds(sourceIds);
 
         Map<String, MessageSource> messageSourceMap = messageSourceDAO.selectListByIds(sourceIds).stream().map(source -> {
-            List<MessageSource.Topic> topics = sourceTopics.stream().filter(topic -> topic.getSourceId().equals(source.getId())).map(topic -> MessageSource.Topic.builder().id(topic.getId()).topic(topic.getTopic()).build()).collect(Collectors.toList());
+            List<MessageSource.Topic> topics = sourceTopics.stream().filter(topic ->
+                    topic.getSourceId().equals(source.getId())).map(topic ->
+                    MessageSource.Topic.builder().id(topic.getId()).properties(topic.getProperties()).topic(topic.getTopic()).build()).collect(Collectors.toList());
             return MessageSource.builder()
                     .id(source.getId())
                     .topics(topics)

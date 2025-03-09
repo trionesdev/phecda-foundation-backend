@@ -1,8 +1,8 @@
 package com.trionesdev.phecda.foundation.mq.consumer.kafka.model;
 
 import cn.hutool.core.map.MapUtil;
+import com.trionesdev.phecda.model.device.PhecdaMessage;
 import lombok.Data;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,19 +31,17 @@ public class GatewayPropertiesPostMessage {
         private String value;
     }
 
-    public  PropertiesPostMessage toProcessMessage(){
-        PropertiesPostMessage processMessage = new PropertiesPostMessage();
+    public PhecdaMessage toProcessMessage(){
+        PhecdaMessage processMessage = new PhecdaMessage();
         processMessage.setId(this.getId());
         processMessage.setDeviceName(this.getDeviceName());
         processMessage.setProductKey(this.getProductKey());
-        processMessage.setIdentifier(this.getIdentifier());
         processMessage.setTs(this.getTs());
         processMessage.setTags(this.getTags());
         if (MapUtil.isNotEmpty(this.getReadings())){
             this.getReadings().forEach((key, value) -> {
-                PropertiesPostMessage.Reading reading = PropertiesPostMessage.Reading.builder()
+                PhecdaMessage.Reading reading = PhecdaMessage.Reading.builder()
                         .ts(value.getTs())
-                        .identifier(value.getIdentifier())
                         .valueType(value.getValueType())
                         .utils(value.getUtils())
                         .binaryValue(value.getBinaryValue())

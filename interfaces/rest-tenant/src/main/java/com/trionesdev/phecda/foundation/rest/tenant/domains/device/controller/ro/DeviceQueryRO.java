@@ -1,9 +1,9 @@
-package com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.query;
+package com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro;
 
 import lombok.Data;
 
 @Data
-public class DeviceQuery {
+public class DeviceQueryRO {
     private String productId;
     private String productKey;
     private String nodeId;

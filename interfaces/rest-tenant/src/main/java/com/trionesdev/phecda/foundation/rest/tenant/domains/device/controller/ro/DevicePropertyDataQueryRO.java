@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.rest.tenant.domains.devicedata.controller.query;
+package com.trionesdev.phecda.foundation.rest.tenant.domains.device.controller.ro;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class DeviceDataQuery {
+public class DevicePropertyDataQueryRO {
     @NotNull
     private Instant startTime;
     @NotNull
@@ -14,6 +14,6 @@ public class DeviceDataQuery {
     @NotNull
     private String deviceName;
     @NotNull
-    private String field;
+    private String identifier;
 
 }

@@ -6,10 +6,11 @@ import com.google.common.collect.Maps;
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.commons.exception.BusinessException;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.dto.PropertyDataDTO;
+import com.trionesdev.phecda.foundation.core.domains.device.internal.util.DeviceUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import com.trionesdev.phecda.model.device.PhecdaMessage;
-import com.trionesdev.phecda.model.device.PhecdaMessage.Reading;
-import com.trionesdev.phecda.model.device.thing.ThingModelProperty;
 import com.trionesdev.phecda.model.device.thing.valuetype.ValueTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,12 @@ import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceP
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceServiceLogCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceStatisticsMessageDailyCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceEventLogPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceStatisticsMessageDailyPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataBO;
 import com.trionesdev.phecda.foundation.core.domains.device.manager.impl.DeviceDataManager;
 import com.trionesdev.phecda.foundation.core.domains.device.service.bo.DevicePropertiesPostStatisticsBO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -37,12 +37,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceCacheConstants.PROPERTIES_POST_STATISTICS_DAILY_LOCK_KEY;
@@ -57,47 +53,7 @@ public class DeviceDataService {
     private final RedissonClient redissonClient;
 
     public void savePropertyData(PhecdaMessage message) {
-        Map<Long, List<TSDataType>> typesMap = Maps.newHashMap();
-        Map<Long, List<String>> measurementsMap = Maps.newHashMap();
-        Map<Long, List<Object>> valuesMap = Maps.newHashMap();
-
-        for (Entry<String, PhecdaMessage.Reading> reading : message.getReadings().entrySet()) {
-            String identifier = reading.getKey();
-            PhecdaMessage.Reading property = reading.getValue();
-            ValueTypeEnum valueType = EnumUtils.getEnum(ValueTypeEnum.class, property.getValueType(), ValueTypeEnum.STRING);
-            TSDataType tsDataType = IotDbUtils.typeConvert(valueType);
-            if (Objects.isNull(tsDataType)) {
-                log.warn("can not convert dataType {} of device {} not exist", valueType, message.getDeviceName());
-                continue;
-            }
-
-            List<TSDataType> types = typesMap.get(property.getTs());
-            if (Objects.isNull(types)) {
-                types = Lists.newArrayList();
-                typesMap.put(property.getTs(), types);
-            }
-
-            List<String> measurements = measurementsMap.get(property.getTs());
-            if (Objects.isNull(measurements)) {
-                measurements = Lists.newArrayList();
-                measurementsMap.put(property.getTs(), measurements);
-            }
-
-            List<Object> values = valuesMap.get(property.getTs());
-            if (Objects.isNull(values)) {
-                values = Lists.newArrayList();
-                valuesMap.put(property.getTs(), values);
-            }
-
-            types.add(tsDataType);
-            measurements.add(identifier);
-            values.add(IotDbUtils.valueConvert(valueType, property.getReadingValue()));
-        }
-
-        for (Entry<Long, List<TSDataType>> entry : typesMap.entrySet()) {
-            deviceDataManager.savePropertyData(message.getProductKey(), message.getDeviceName(), entry.getKey(), measurementsMap.get(entry.getKey()), entry.getValue(), valuesMap.get(entry.getKey()));
-        }
-
+        deviceDataManager.savePropertyData(DeviceUtils.messageToInsert(message));
     }
 
 
@@ -109,11 +65,11 @@ public class DeviceDataService {
 
 
     //region service
-    public PageInfo<DeviceServiceLogPO> serviceLogsPage(DeviceServiceLogCriteria criteria) {
+    public PageInfo<DeviceCommandLogPO> serviceLogsPage(DeviceServiceLogCriteria criteria) {
         return deviceDataManager.serviceLogsPage(criteria);
     }
 
-    public void saveServiceLog(DeviceServiceLogPO entity) {
+    public void saveServiceLog(DeviceCommandLogPO entity) {
         deviceDataManager.saveServiceLog(entity);
     }
 
@@ -123,12 +79,11 @@ public class DeviceDataService {
 
     //region property
 
-    @Deprecated
-    public void savePropertyData(String productKey, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
-        deviceDataManager.savePropertyData(productKey, deviceName, time, measurements, types, values);
+    public Map<String, Object> queryPropertyLast(String deviceName, List<String> fields) {
+        return deviceDataManager.queryDevicePropertyLastData(deviceName, fields);
     }
 
-    public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
+    public List<List<TsDbCell>> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
         return deviceDataManager.queryDevicePropertyDataList(criteria);
     }
     //endregion

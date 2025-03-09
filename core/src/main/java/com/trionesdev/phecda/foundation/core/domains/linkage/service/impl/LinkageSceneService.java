@@ -12,7 +12,6 @@ import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.actio
 import com.trionesdev.phecda.foundation.core.domains.linkage.internal.rule.action.ActionArgs.Reading;
 import com.trionesdev.phecda.foundation.core.domains.linkage.manager.impl.LinkageSceneManager;
 import com.trionesdev.phecda.foundation.core.domains.linkage.service.factory.RuleActionFactory;
-import com.trionesdev.phecda.foundation.core.internal.disruptor.propertiespost.PropertiesPostMessage;
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -72,10 +72,7 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.trionesdev.iotdb</groupId>
-            <artifactId>triones-iotdb-spring-boot-starter</artifactId>
-        </dependency>
+
 
 
 <!--        <dependency>-->

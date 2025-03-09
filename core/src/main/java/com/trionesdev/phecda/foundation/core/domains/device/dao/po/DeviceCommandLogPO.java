@@ -22,8 +22,8 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
 @Accessors(chain = true)
-@TableName(value = "logging_device_service_log", autoResultMap = true)
-public class DeviceServiceLogPO extends BaseLogicEntity {
+@TableName(value = "phecda_device_command_log", autoResultMap = true)
+public class DeviceCommandLogPO extends BaseLogicEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
     private String messageId;

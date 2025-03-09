@@ -16,8 +16,8 @@ import com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceDomai
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.dvo.DeviceStatisticsDVO;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DevicePO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO;
-import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceServiceLogPO.Result;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO;
+import com.trionesdev.phecda.foundation.core.domains.device.dao.po.DeviceCommandLogPO.Result;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.po.ProductPO;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.aggregate.entity.Product;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.enums.AccessChannel;
@@ -41,9 +41,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceErrors.DEVICE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -131,7 +134,7 @@ public class DeviceService {
     @Transactional
     public void deviceOnline(String deviceId) {
         DevicePO device = deviceManager.queryById(deviceId)
-                .orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+                .orElseThrow(() -> new NotFoundException(DEVICE_NOT_FOUND));
 
         deviceManager.updateById(DevicePO.builder()
                 .id(deviceId)
@@ -157,18 +160,36 @@ public class DeviceService {
         deviceManager.cleanDeviceCache(device);
     }
 
-    public List<DevicePropertyDataBO> queryDeviceThingModelPropertiesData(String deviceId) {
-        DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
-        return productManager.findThingModel(device.getProductId()).map(thingModel -> {
-            return thingModel.getProperties().stream().map(property -> {
-                DevicePropertyDataBO devicePropertyData = DeviceDomainConvert.INSTANCE.from(property);
-                return devicePropertyData;
-            }).collect(Collectors.toList());
-        }).orElse(Collections.emptyList());
+    public List<DevicePropertyDataDTO> queryDeviceThingModelPropertiesData(String deviceId) {
+        DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException(DEVICE_NOT_FOUND));
+        var lastData = deviceDataManager.queryDevicePropertyLastData(device.getName(),null);
+        List<DevicePropertyDataDTO> devicePropertyDataDTOS = Lists.newArrayList();
+
+         productManager.findThingModel(device.getProductId()).ifPresent(thingModel -> {
+             if (CollectionUtils.isNotEmpty(thingModel.getProperties())) {
+                 Instant time;
+                 if (lastData.get("time") instanceof Long) {
+                     time = Instant.ofEpochSecond((Long) lastData.get("time"));
+                 } else {
+                     time = null;
+                 }
+                 thingModel.getProperties().forEach(property -> {
+                     var propertyData = DevicePropertyDataDTO.builder().ts(time)
+                             .deviceName(device.getName())
+                             .name(property.getName())
+                             .identifier(property.getIdentifier())
+                             .value(lastData.get(property.getIdentifier().toLowerCase()))
+                             .build();
+                     devicePropertyDataDTOS.add(propertyData);
+                 });
+             }
+         });
+
+        return  devicePropertyDataDTOS;
     }
 
     public List<DeviceEventDataBO> queryDeviceThingModelEventsData(String deviceId) {
-        DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException(DEVICE_NOT_FOUND));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getEvents().stream().map(property -> {
                 DeviceEventDataBO deviceEventData = DeviceDomainConvert.INSTANCE.from(property);
@@ -178,7 +199,7 @@ public class DeviceService {
     }
 
     public List<DeviceServiceDataBO> queryDeviceThingModelServicesData(String deviceId) {
-        DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException("DEVICE_NOT_FOUND"));
+        DevicePO device = deviceManager.queryById(deviceId).orElseThrow(() -> new NotFoundException(DEVICE_NOT_FOUND));
         return productManager.findThingModel(device.getProductId()).map(thingModel -> {
             return thingModel.getCommands().stream().map(property -> {
                 DeviceServiceDataBO deviceServiceData = DeviceDomainConvert.INSTANCE.from(property);
@@ -317,7 +338,7 @@ public class DeviceService {
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
-        ServiceSendCmd dto = ServiceSendCmd.builder()
+        CommandSendCmd dto = CommandSendCmd.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
 //                .method(service.getIdentifier())
@@ -338,7 +359,7 @@ public class DeviceService {
                 .filter(i -> i.getIdentifier().equals(args.getIdentifier()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("SERVICE_NOT_FOUND"));
-        ServiceSendCmd dto = ServiceSendCmd.builder()
+        CommandSendCmd dto = CommandSendCmd.builder()
                 .id(UUID.randomUUID().toString())
                 .sync(service.getCallType().equals(CallType.SYNC))
                 .productKey(productKey)
@@ -351,10 +372,10 @@ public class DeviceService {
     }
 
 
-    public ServiceInvokeReplyMessage invokeService(Product product, CallType callType, ServiceSendCmd dto, Map<String, String> tags) {
+    public ServiceInvokeReplyMessage invokeService(Product product, CallType callType, CommandSendCmd dto, Map<String, String> tags) {
         AccessChannel channel = product.getAccessChannel();
 
-        DeviceServiceLogPO serviceLog = DeviceServiceLogPO.builder()
+        DeviceCommandLogPO serviceLog = DeviceCommandLogPO.builder()
                 .messageId(dto.getId())
                 .productId(product.getId())
                 .deviceName(dto.getDeviceName())

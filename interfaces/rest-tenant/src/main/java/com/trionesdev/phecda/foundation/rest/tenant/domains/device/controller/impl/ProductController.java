@@ -161,9 +161,9 @@ public class ProductController {
     }
 
     @Operation(summary = "发布产品")
-    @PutMapping(value = "products/{productId}/publish")
-    public void publishProduct(@PathVariable(value = "productId") String productId) {
-        productService.publishProduct(productId);
+    @PutMapping(value = "products/{productId}/release")
+    public void releaseProduct(@PathVariable(value = "productId") String productId) {
+        productService.releaseProduct(productId);
     }
 
     @Operation(summary = "撤销发布产品")

@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Data
 @SuperBuilder
-public class ServiceSendCmd {
+public class CommandSendCmd {
     private String version;
     private String id;
     private Boolean sync;
