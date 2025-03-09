@@ -1,7 +1,11 @@
 package com.trionesdev.phecda.foundation.core.domains.device.dao.impl;
 
+import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbQuery;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
+import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.internal.util.IotDbUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,72 +28,20 @@ import java.util.Map;
 @Repository
 public class DevicePropertyDataDAO {
     private final ITableSessionPool tableSessionPool;
-//    private final SessionPool sessionPool;
+    private final TsDbTemplate tsDbTemplate;
 
-//    public void insertRecord(String path, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
-//        try {
-//            sessionPool.insertRecord(path, time, measurements, types, values);
-//        } catch (IoTDBConnectionException | StatementExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    public void insertRecord(String path, long time, List<String> measurements, List<String> values) {
-//        try {
-//            sessionPool.insertRecord(path, time, measurements, values);
-//        } catch (IoTDBConnectionException | StatementExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-    public List<Map<String, Object>> selectList(IotDbQuery query) {
-//        try {
-//            SessionDataSetWrapper sessionDataSet = sessionPool.executeRawDataQuery(paths, startTime, endTime, 6000);
-//            return IotDbUtils.toList(sessionDataSet);
-//        } catch (IoTDBConnectionException | StatementExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * from ").append(query.getProductKey());
-        sb.append(" WHERE deviceName = '").append(query.getDeviceName()).append("'");
-        if (query.getStartTime() > 0) {
-            sb.append(" AND time > ").append(query.getStartTime());
-        }
-        if (query.getEndTime() > 0) {
-            sb.append(" AND time < ").append(query.getEndTime());
-        }
-        sb.append(" ORDER BY time DESC limit 6000");
-        try (ITableSession session = tableSessionPool.getSession()) {
-            try (SessionDataSet dataSet = session.executeQueryStatement(sb.toString())) {
-                return IotDbUtils.toList(dataSet);
-            } catch (StatementExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IoTDBConnectionException e) {
-            throw new RuntimeException(e);
-        }
+    public TsDbQueryWrapper buildQueryWrapper(DevicePropertyDataCriteria criteria) {
+        TsDbQueryWrapper wrapper = new TsDbQueryWrapper().table(criteria.getProductKey());
+        wrapper.database(criteria.getProductKey()).eq("deviceName",criteria.getDeviceName());
+        return wrapper;
     }
 
-    public List<Map<String, Object>> selectLastList(IotDbQuery query) {
-//        try {
-//            SessionDataSetWrapper sessionDataSet = sessionPool.executeLastDataQuery(paths);
-//            return IotDbUtils.toList(sessionDataSet);
-//        } catch (IoTDBConnectionException | StatementExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * from ").append(query.getProductKey());
-        sb.append(" WHERE deviceName = '").append(query.getDeviceName()).append("'");
-        sb.append(" ORDER BY time DESC limit 1");
-        try (ITableSession session = tableSessionPool.getSession()) {
-            try (SessionDataSet dataSet = session.executeQueryStatement(sb.toString())) {
-                return IotDbUtils.toList(dataSet);
-            } catch (StatementExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IoTDBConnectionException e) {
-            throw new RuntimeException(e);
-        }
+    public List<List<TsDbCell>> selectList(DevicePropertyDataCriteria criteria) {
+        return tsDbTemplate.selecList(buildQueryWrapper(criteria));
+    }
+
+    public List<TsDbCell> selectLastList(DevicePropertyDataCriteria criteria) {
+        return tsDbTemplate.selecList(buildQueryWrapper(criteria)).get(0);
     }
 
     public void saveBatch(IotDbSave data) {

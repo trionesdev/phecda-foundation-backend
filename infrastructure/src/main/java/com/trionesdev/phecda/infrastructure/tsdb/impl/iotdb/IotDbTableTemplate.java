@@ -2,6 +2,7 @@ package com.trionesdev.phecda.infrastructure.tsdb.impl.iotdb;
 
 import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbColumn;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbInsertWrapper;
 import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
 
@@ -14,13 +15,29 @@ import org.apache.iotdb.isession.pool.ITableSessionPool;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.write.record.Tablet;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 @RequiredArgsConstructor
 public class IotDbTableTemplate implements TsDbTemplate {
     private final ITableSessionPool tableSessionPool;
+
+    @Override
+    public void createDatabase(String database) {
+        try (ITableSession session = tableSessionPool.getSession()) {
+            session.executeQueryStatement("create database " + database);
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void createTable(String table, List<TsDbColumn> columns) {
+
+    }
 
     @Override
     public void save(TsDbInsertWrapper wrapper) {
@@ -64,15 +81,9 @@ public class IotDbTableTemplate implements TsDbTemplate {
 
     @Override
     public List<List<TsDbCell>> selecList(TsDbQueryWrapper wrapper) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * from ").append(wrapper.getTableName());
-        sb.append(" WHERE ");
-        if (CollectionUtils.isNotEmpty(wrapper.getEqCriteria())) {
-            sb.append(StringUtils.join(wrapper.getEqCriteria(), " AND "));
-        }
-        sb.append(" ORDER BY time DESC limit 6000");
+        String sql = IotDbUtils.toSelectSql(wrapper);
         try (ITableSession session = tableSessionPool.getSession()) {
-            try (SessionDataSet dataSet = session.executeQueryStatement(sb.toString())) {
+            try (SessionDataSet dataSet = session.executeQueryStatement(sql)) {
                 return IotDbUtils.toList(dataSet);
             } catch (StatementExecutionException e) {
                 throw new RuntimeException(e);

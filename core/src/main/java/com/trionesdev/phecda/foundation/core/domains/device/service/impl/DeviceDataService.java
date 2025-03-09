@@ -33,12 +33,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceCacheConstants.PROPERTIES_POST_STATISTICS_DAILY_LOCK_KEY;
@@ -53,46 +49,6 @@ public class DeviceDataService {
     private final RedissonClient redissonClient;
 
     public void savePropertyData(PhecdaMessage message) {
-//        Map<Long, List<TSDataType>> typesMap = Maps.newHashMap();
-//        Map<Long, List<String>> measurementsMap = Maps.newHashMap();
-//        Map<Long, List<Object>> valuesMap = Maps.newHashMap();
-//
-//        for (Entry<String, PhecdaMessage.Reading> reading : message.getReadings().entrySet()) {
-//            String identifier = reading.getKey();
-//            PhecdaMessage.Reading property = reading.getValue();
-//            ValueTypeEnum valueType = EnumUtils.getEnum(ValueTypeEnum.class, property.getValueType(), ValueTypeEnum.STRING);
-//            TSDataType tsDataType = IotDbUtils.typeConvert(valueType);
-//            if (Objects.isNull(tsDataType)) {
-//                log.warn("can not convert dataType {} of device {} not exist", valueType, message.getDeviceName());
-//                continue;
-//            }
-//
-//            List<TSDataType> types = typesMap.get(property.getTs());
-//            if (Objects.isNull(types)) {
-//                types = Lists.newArrayList();
-//                typesMap.put(property.getTs(), types);
-//            }
-//
-//            List<String> measurements = measurementsMap.get(property.getTs());
-//            if (Objects.isNull(measurements)) {
-//                measurements = Lists.newArrayList();
-//                measurementsMap.put(property.getTs(), measurements);
-//            }
-//
-//            List<Object> values = valuesMap.get(property.getTs());
-//            if (Objects.isNull(values)) {
-//                values = Lists.newArrayList();
-//                valuesMap.put(property.getTs(), values);
-//            }
-//
-//            types.add(tsDataType);
-//            measurements.add(identifier);
-//            values.add(IotDbUtils.valueConvert(valueType, property.getReadingValue()));
-//        }
-//
-//        for (Entry<Long, List<TSDataType>> entry : typesMap.entrySet()) {
-//            deviceDataManager.savePropertyData(message.getProductKey(), message.getDeviceName(), entry.getKey(), measurementsMap.get(entry.getKey()), entry.getValue(), valuesMap.get(entry.getKey()));
-//        }
         deviceDataManager.savePropertyData(IotDbUtils.messageToInsert(message));
     }
 
@@ -119,13 +75,9 @@ public class DeviceDataService {
 
     //region property
 
-//    @Deprecated
-//    public void savePropertyData(String productKey, String deviceName, long time, List<String> measurements, List<TSDataType> types, List<Object> values) {
-//        deviceDataManager.savePropertyData(productKey, deviceName, time, measurements, types, values);
-//    }
-
     public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
-        return deviceDataManager.queryDevicePropertyDataList(criteria);
+        var data = deviceDataManager.queryDevicePropertyDataList(criteria);
+        return Collections.emptyList();
     }
     //endregion
 

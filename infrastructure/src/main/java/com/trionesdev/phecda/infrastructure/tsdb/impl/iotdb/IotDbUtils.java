@@ -1,14 +1,11 @@
 package com.trionesdev.phecda.infrastructure.tsdb.impl.iotdb;
 
-import static org.mockito.ArgumentMatchers.refEq;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.collect.Lists;
+import com.trionesdev.phecda.infrastructure.tsdb.TsDbUtils;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.ColumnCategory;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.DataType;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -16,13 +13,9 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.read.common.Field;
 import org.apache.tsfile.read.common.RowRecord;
 import org.apache.tsfile.write.record.Tablet;
-import org.checkerframework.checker.units.qual.C;
 
-import com.google.common.collect.Lists;
-import com.trionesdev.phecda.infrastructure.tsdb.schema.ColumnCategory;
-import com.trionesdev.phecda.infrastructure.tsdb.schema.DataType;
-import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
-import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbQueryWrapper;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IotDbUtils {
     public static TSDataType getDataType(DataType dataType) {
@@ -83,32 +76,8 @@ public class IotDbUtils {
         };
     }
 
-    public static String toSql(TsDbQueryWrapper wrapper) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * from ").append(wrapper.getTableName());
-        if (MapUtils.isNotEmpty(wrapper.getEqCriteria())
-        || MapUtils.isNotEmpty(wrapper.getLtCriteria())
-        || MapUtils.isNotEmpty(wrapper.getLeCriteria())
-        || MapUtils.isNotEmpty(wrapper.getGtCriteria())
-        || MapUtils.isNotEmpty(wrapper.getGeCriteria())
-        ) {
-            sb.append(" WHERE ");
-            List<String> criteria = new ArrayList<>();
-            if (MapUtils.isNotEmpty(wrapper.getEqCriteria())) {
-                List<String> eqCriteria = new ArrayList<>();
-                for (Map.Entry<String, Object> entry : wrapper.getEqCriteria().entrySet()) {
-                    if (entry.getValue() instanceof String) {
-                        eqCriteria.add( entry.getKey()+"='"+entry.getValue()+"'");
-                    }else {
-                        eqCriteria.add(entry.getKey() + " = " + entry.getValue();
-                    }
-
-                }
-                criteria.add(StringUtils.join(eqCriteria, ","));
-            }
-        }
-        sb.append(" ORDER BY time DESC ");
-        return sb.toString();
+    public static String toSelectSql(TsDbQueryWrapper wrapper) {
+        return TsDbUtils.toSelectSql(wrapper).toString();
     }
 
     public static List<List<TsDbCell>> toList(SessionDataSet dataSet)

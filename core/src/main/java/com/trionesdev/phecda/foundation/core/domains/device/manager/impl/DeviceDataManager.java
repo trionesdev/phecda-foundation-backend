@@ -9,6 +9,8 @@ import com.trionesdev.commons.mybatisplus.util.MpPageUtils;
 import com.trionesdev.phecda.foundation.core.domains.device.dto.DevicePropertyDataDTO;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbQuery;
 import com.trionesdev.phecda.foundation.core.domains.device.shared.model.IotDbSave;
+import com.trionesdev.phecda.infrastructure.tsdb.TsDbTemplate;
+import com.trionesdev.phecda.infrastructure.tsdb.schema.TsDbCell;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DeviceEventLogCriteria;
 import com.trionesdev.phecda.foundation.core.domains.device.dao.criteria.DevicePropertyDataCriteria;
@@ -44,6 +46,7 @@ public class DeviceDataManager {
     private final DeviceDAO deviceDAO;
     private final ProductDAO productDAO;
     private final DeviceStatisticsMessageDailyDAO deviceStatisticsMessageDailyDAO;
+    private final TsDbTemplate tsDbTemplate;
 
 
     public PageInfo<DeviceEventLogPO> eventLogsPage(DeviceEventLogCriteria criteria) {
@@ -76,43 +79,42 @@ public class DeviceDataManager {
         return productDAO.getById(device.getProductId());
     }
 
-    public List<Map<String, Object>> queryDevicePropertyDataList(String deviceName, List<String> fields, long startTime, long endTime) {
-        ProductPO product = getProductByDeviceName(deviceName);
-        var query = IotDbQuery.builder().productKey(product.getKey()).deviceName(deviceName).columns(fields).startTime(startTime).endTime(endTime).build();
-        return devicePropertyDataDAO.selectList(query);
+    public List<List<TsDbCell>> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
+        ProductPO product = getProductByDeviceName(criteria.getDeviceName());
+        criteria.setProductKey(product.getKey());
+        return devicePropertyDataDAO.selectList(criteria);
     }
 
-    public List<Map<String, Object>> queryDevicePropertyLastData(String deviceName, List<String> fields) {
+    public List<TsDbCell> queryDevicePropertyLastData(String deviceName, List<String> fields) {
         ProductPO product = getProductByDeviceName(deviceName);
-        var query = IotDbQuery.builder().productKey(product.getKey()).columns(fields).build();
+        var query = DevicePropertyDataCriteria.builder().productKey(product.getKey()).build();
         return devicePropertyDataDAO.selectLastList(query);
     }
 
-    public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
-        Long startTime = Optional.ofNullable(criteria.getStartTime()).map(Instant::toEpochMilli).orElse(0L);
-        Long endTime = Optional.ofNullable(criteria.getEndTime()).map(Instant::toEpochMilli).orElse(0L);
-        List<Map<String, Object>> rawsData = queryDevicePropertyDataList(criteria.getDeviceName(), Lists.newArrayList(criteria.getIdentifier()), startTime, endTime);
-        return assembleDevicePropertiesData(rawsData, criteria);
-    }
+//    public List<DevicePropertyDataDTO> queryDevicePropertyDataList(DevicePropertyDataCriteria criteria) {
+//        List<List<TsDbCell>> rawsData = queryDevicePropertyDataList(criteria);
+//        return assembleDevicePropertiesData(rawsData, criteria);
+//    }
 
-    public List<DevicePropertyDataDTO> assembleDevicePropertiesData(List<Map<String, Object>> rawsData, DevicePropertyDataCriteria criteria) {
+    public List<DevicePropertyDataDTO> assembleDevicePropertiesData(List<List<TsDbCell>> rawsData, DevicePropertyDataCriteria criteria) {
         if (CollectionUtil.isEmpty(rawsData)) {
             return Collections.emptyList();
         }
         ProductPO product = getProductByDeviceName(criteria.getDeviceName());
 
-        return rawsData.stream().map(row -> {
-            String timeStr = String.valueOf(row.get("Time")).substring(0, 13);
-            Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
-            String devicePath = IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), criteria.getDeviceName(), criteria.getIdentifier()));
-            Object value = row.get(devicePath);
-            return DevicePropertyDataDTO.builder()
-                    .ts(time)
-                    .value(value)
-                    .identifier(criteria.getIdentifier())
-                    .deviceName(criteria.getDeviceName())
-                    .build();
-        }).collect(Collectors.toList());
+        return Collections.emptyList();
+//        return rawsData.stream().map(row -> {
+//            String timeStr = String.valueOf(row.get("Time")).substring(0, 13);
+//            Instant time = Instant.ofEpochMilli(Long.parseLong(timeStr));
+//            String devicePath = IotDbUtils.generatePath(Lists.newArrayList(product.getKey(), criteria.getDeviceName(), criteria.getIdentifier()));
+//            Object value = row.get(devicePath);
+//            return DevicePropertyDataDTO.builder()
+//                    .ts(time)
+//                    .value(value)
+//                    .identifier(criteria.getIdentifier())
+//                    .deviceName(criteria.getDeviceName())
+//                    .build();
+//        }).collect(Collectors.toList());
     }
 
     //endregion

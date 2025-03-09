@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceCacheConstants.*;
+import static com.trionesdev.phecda.foundation.core.domains.device.internal.DeviceErrors.PRODUCT_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -132,7 +133,7 @@ public class ProductManager {
      * @param id
      */
     public void releaseThingModel(String id) {
-        var product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND"));
+        var product = productRepository.findById(id).orElseThrow(() -> new NotFoundException(PRODUCT_NOT_FOUND));
         productRepository.releaseThingModel(product);
     }
 

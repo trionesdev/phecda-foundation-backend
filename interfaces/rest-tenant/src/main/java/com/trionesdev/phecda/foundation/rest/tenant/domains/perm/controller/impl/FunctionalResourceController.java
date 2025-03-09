@@ -3,7 +3,6 @@ package com.trionesdev.phecda.foundation.rest.tenant.domains.perm.controller.imp
 import cn.hutool.core.lang.tree.Tree;
 import com.trionesdev.phecda.foundation.core.domains.perm.internal.enums.ClientType;
 import com.trionesdev.phecda.foundation.core.domains.perm.service.impl.FunctionalResourceService;
-import com.trionesdev.phecda.foundation.rest.tenant.domains.perm.internal.PermBeRestConvert;
 import com.trionesdev.phecda.foundation.rest.tenant.domains.perm.internal.PermRestConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping(PermRestConstants.PERM_PATH)
 public class FunctionalResourceController {
-    private final PermBeRestConvert convert;
     private final FunctionalResourceService functionalResourceService;
 
     @Operation(summary = "获取功能资源(树形列表)")
