@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.source;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

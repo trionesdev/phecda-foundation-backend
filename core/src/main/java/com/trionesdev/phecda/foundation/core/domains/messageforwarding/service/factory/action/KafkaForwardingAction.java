@@ -2,12 +2,12 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.enums.SinkActionType;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.KafkaSinkActionProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.sinkaction.SinkActionProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.sinkaction.KafkaSinkActionProps;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSinkManager;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

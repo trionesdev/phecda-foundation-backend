@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trionesdev.commons.mybatisplus.po.BaseLogicPO;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.SourceProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.source.SourceProps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

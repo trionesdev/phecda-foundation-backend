@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.sinkaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

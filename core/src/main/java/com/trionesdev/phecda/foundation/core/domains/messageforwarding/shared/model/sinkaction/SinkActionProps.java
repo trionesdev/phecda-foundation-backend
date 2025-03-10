@@ -1,8 +1,8 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.sinkaction;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.enums.SinkActionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
