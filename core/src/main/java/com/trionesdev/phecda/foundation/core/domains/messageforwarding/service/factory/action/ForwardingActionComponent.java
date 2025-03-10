@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action;
 
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.enums.SinkActionType;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;

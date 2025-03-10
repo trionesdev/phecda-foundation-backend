@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.factory.action;
 
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.sinkaction.SinkActionProps;
 
 public abstract class AbsForwardingAction {
 

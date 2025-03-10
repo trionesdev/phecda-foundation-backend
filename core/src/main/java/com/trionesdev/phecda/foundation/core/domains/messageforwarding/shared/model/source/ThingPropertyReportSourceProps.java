@@ -1,4 +1,4 @@
-package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source;
+package com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.source;
 
 import lombok.*;
 import lombok.experimental.Accessors;

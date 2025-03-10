@@ -7,7 +7,7 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.Me
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourcePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSourcePO;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.ThingPropertyReportSourceProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.source.ThingPropertyReportSourceProps;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.MessageForwardingDomainConvert;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSourceManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSourceTopicManager;

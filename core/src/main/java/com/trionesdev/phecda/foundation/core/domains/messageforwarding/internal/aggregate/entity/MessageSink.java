@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.aggregate.entity;
 
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.sinkaction.SinkActionProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.sinkaction.SinkActionProps;
 import lombok.Data;
 
 @Data

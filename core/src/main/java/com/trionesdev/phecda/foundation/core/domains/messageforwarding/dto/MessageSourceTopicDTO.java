@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.model.source.SourceProps;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.model.source.SourceProps;
 
 @Data
 @SuperBuilder

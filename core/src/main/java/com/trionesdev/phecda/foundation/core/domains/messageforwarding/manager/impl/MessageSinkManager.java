@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl;
 
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.enums.SinkActionType;
+import com.trionesdev.phecda.foundation.core.domains.messageforwarding.shared.enums.SinkActionType;
 import lombok.RequiredArgsConstructor;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.impl.MessageSinkDAO;
 import org.springframework.stereotype.Service;

@@ -3,12 +3,12 @@ package com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.BooleanUtil;
 import com.trionesdev.commons.exception.NotFoundException;
+import com.trionesdev.message.core.MessageContainer;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageForwardingRulePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSinkPO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.MessageSourcePO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSinkPO;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.dao.po.RuleSourcePO;
-import com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.spring.MessageForwardingRuleChangeEvent;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageForwardingRuleManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSinkManager;
 import com.trionesdev.phecda.foundation.core.domains.messageforwarding.manager.impl.MessageSourceManager;
@@ -18,7 +18,6 @@ import com.trionesdev.phecda.foundation.core.domains.messageforwarding.service.f
 import com.trionesdev.phecda.model.device.PhecdaMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -26,11 +25,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.MessageForwardingErrors.MESSAGE_FORWARDING_RULE_NOT_FOUND;
+import static com.trionesdev.phecda.foundation.core.domains.messageforwarding.internal.event.EventConstants.MESSAGE_FORWARDING_RULE_CHANGE;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class MessageForwardingRuleService {
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final MessageContainer messageContainer;
     private final ForwardingActionFactory forwardingActionFactory;
     private final MessageForwardingRuleManager messageForwardingRuleManager;
     private final RuleSourceManager ruleSourceManager;
@@ -59,25 +61,25 @@ public class MessageForwardingRuleService {
     }
 
     public void changeEnable(String id, Boolean enabled) {
-        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(id).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
+        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(id).orElseThrow(() -> new NotFoundException(MESSAGE_FORWARDING_RULE_NOT_FOUND));
         MessageForwardingRulePO rule = MessageForwardingRulePO.builder().id(id).enabled(enabled).build();
         messageForwardingRuleManager.updateById(rule);
-        applicationEventPublisher.publishEvent(new MessageForwardingRuleChangeEvent(this, ruleSnap));
+        messageContainer.broadcast(MESSAGE_FORWARDING_RULE_CHANGE, ruleSnap.getId());
     }
 
     public void addRuleSource(RuleSourcePO ruleSource) {
-        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSource.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
+        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSource.getRuleId()).orElseThrow(() -> new NotFoundException(MESSAGE_FORWARDING_RULE_NOT_FOUND));
         ruleSourceManager.create(ruleSource);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
-            applicationEventPublisher.publishEvent(new MessageForwardingRuleChangeEvent(this, ruleSnap));
+            messageContainer.broadcast(MESSAGE_FORWARDING_RULE_CHANGE, ruleSnap.getId());
         }
     }
 
     public void deleteRuleSource(RuleSourcePO ruleSource) {
-        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSource.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
+        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSource.getRuleId()).orElseThrow(() -> new NotFoundException(MESSAGE_FORWARDING_RULE_NOT_FOUND));
         ruleSourceManager.delete(ruleSource);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
-            applicationEventPublisher.publishEvent(new MessageForwardingRuleChangeEvent(this, ruleSnap));
+            messageContainer.broadcast(MESSAGE_FORWARDING_RULE_CHANGE, ruleSnap.getId());
         }
     }
 
@@ -90,18 +92,18 @@ public class MessageForwardingRuleService {
     }
 
     public void addRuleSink(RuleSinkPO ruleSink) {
-        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSink.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
+        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSink.getRuleId()).orElseThrow(() -> new NotFoundException(MESSAGE_FORWARDING_RULE_NOT_FOUND));
         ruleSinkManager.create(ruleSink);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
-            applicationEventPublisher.publishEvent(new MessageForwardingRuleChangeEvent(this, ruleSnap));
+            messageContainer.broadcast(MESSAGE_FORWARDING_RULE_CHANGE, ruleSnap.getId());
         }
     }
 
     public void deleteRuleSink(RuleSinkPO ruleSink) {
-        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSink.getRuleId()).orElseThrow(() -> new NotFoundException("MESSAGE_FORWARDING_RULE_NOT_FOUND"));
+        MessageForwardingRulePO ruleSnap = messageForwardingRuleManager.findById(ruleSink.getRuleId()).orElseThrow(() -> new NotFoundException(MESSAGE_FORWARDING_RULE_NOT_FOUND));
         ruleSinkManager.delete(ruleSink);
         if (BooleanUtil.isTrue(ruleSnap.getEnabled())) {
-            applicationEventPublisher.publishEvent(new MessageForwardingRuleChangeEvent(this, ruleSnap));
+            messageContainer.broadcast(MESSAGE_FORWARDING_RULE_CHANGE, ruleSnap.getId());
         }
     }
 
