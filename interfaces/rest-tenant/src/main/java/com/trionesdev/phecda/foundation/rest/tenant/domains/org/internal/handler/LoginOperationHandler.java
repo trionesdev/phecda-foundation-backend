@@ -32,8 +32,8 @@ public class LoginOperationHandler extends OperationAuditHandler {
                 .success(operationAuditContext.getSuccess())
                 .errorMsg(operationAuditContext.getErrorMsg())
                 .build();
-        Optional.ofNullable(operationAuditContext.getBeforeValues()).ifPresent(map -> cmd.setBeforeValues(JSON.toJSONString(map)));
-        Optional.ofNullable(operationAuditContext.getAfterValues()).ifPresent(map -> cmd.setAfterValues(JSON.toJSONString(map)));
+        Optional.ofNullable(operationAuditContext.getBeforeContent()).ifPresent(map -> cmd.setBeforeValues(JSON.toJSONString(map)));
+        Optional.ofNullable(operationAuditContext.getAfterContent()).ifPresent(map -> cmd.setAfterValues(JSON.toJSONString(map)));
         if (operationAuditContext.getSuccess()) {
             var res = (TokenVO) operationAuditContext.getResponse();
             var token = res.getToken();

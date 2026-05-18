@@ -1,7 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.org.service.impl;
 
 import cn.hutool.core.util.IdUtil;
-import com.trionesdev.boot.core.autoconfigure.AppProperties;
 import com.trionesdev.commons.context.actor.ActorContext;
 import com.trionesdev.commons.context.actor.ActorRoleEnum;
 import com.trionesdev.commons.core.jwt.JwtClaims;
@@ -18,6 +17,7 @@ import com.trionesdev.phecda.foundation.core.domains.org.internal.OrgDomainConve
 import com.trionesdev.phecda.foundation.core.domains.org.internal.aggreate.entity.TenantMember;
 import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.DepartmentManager;
 import com.trionesdev.phecda.foundation.core.domains.org.manager.impl.TenantMemberManager;
+import com.trionesdev.spring.boot.core.autoconfigure.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

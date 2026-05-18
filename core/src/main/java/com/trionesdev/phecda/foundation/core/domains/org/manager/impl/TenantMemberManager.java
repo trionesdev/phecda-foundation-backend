@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.foundation.core.domains.org.manager.impl;
 
-import com.trionesdev.boot.core.autoconfigure.AppProperties;
+
 import com.trionesdev.commons.core.page.PageInfo;
 import com.trionesdev.phecda.foundation.core.domains.org.dao.criteria.TenantMemberCriteria;
 import com.trionesdev.phecda.foundation.core.domains.org.dao.impl.TenantDAO;
@@ -9,6 +9,7 @@ import com.trionesdev.phecda.foundation.core.domains.org.dao.po.TenantMemberPO;
 import com.trionesdev.phecda.foundation.core.domains.org.dao.po.TenantPO;
 import com.trionesdev.phecda.foundation.core.domains.org.internal.aggreate.entity.TenantMember;
 import com.trionesdev.phecda.foundation.core.domains.org.repository.impl.TenantMemberRepository;
+import com.trionesdev.spring.boot.core.autoconfigure.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;

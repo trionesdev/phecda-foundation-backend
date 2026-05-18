@@ -1,6 +1,5 @@
 package com.trionesdev.phecda;
 
-import com.trionesdev.csi.minio.annotation.EnableMinioClients;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @MapperScan(value = {"com.trionesdev.phecda.foundation.core.domains.*.*.mapper"})
-@EnableMinioClients
 public class ServeApplication {
     public static void main(String[] args) {
         log.info("------------Trionesdev Phecda app starting------------");
